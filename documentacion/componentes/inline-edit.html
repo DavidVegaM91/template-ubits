@@ -40,6 +40,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <main class="main-content">
@@ -235,10 +236,11 @@ Si el valor de algún campo se actualiza por código, usa autoResizeInlineEdit(e
     <script src="../../components/toast.js"></script>
     <script src="../../components/inline-edit.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
 
             setTimeout(function () {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (el) {
@@ -249,8 +251,6 @@ Si el valor de algún campo se actualiza por código, usa autoResizeInlineEdit(e
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-
-            loadDocsSidebar('inline-edit');
 
             showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'component-warning-alert',

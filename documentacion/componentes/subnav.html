@@ -106,6 +106,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         
 
@@ -310,14 +311,11 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
-            
-            // Cargar sidebar de documentación
-            loadDocsSidebar('sub-nav');
+bootDocsWorkspace();
             
             // Cargar alert de warning para prompts usando el componente oficial
             showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {

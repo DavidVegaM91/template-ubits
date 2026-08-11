@@ -188,7 +188,7 @@ Réplica **1:1** del Creator (**§ 3.3.3** en `contexto-planes-formacion-y-grupo
 | `mi-equipo-planes-formacion.css` | `@import` Creator + checklist de dependencias (fase 9) |
 | `mi-equipo-plan-competencias-shared.js` | Drawers y helpers compartidos crear/editar/detalle competencias |
 | `planes.css` | Estilos lista |
-| `catalogo-contenidos-drawer.js` | **Reutilizar** desde `../../lms-creator/planes-formacion/` (no duplicar) |
+| `catalogo-contenidos-drawer.js` | **Reutilizar** desde `../../../ubits-admin/lms-creator/planes-formacion/` (no duplicar) |
 | `catalogo-competencias-drawer.js` | Idem competencias |
 | `humanizador-fechas.js` | Fechas y estados Planeado/Vigente/No vigente |
 | `bd-master-colaboradores.js` | Fuente de jerarquía (E035–E040 subordinados de E006) |

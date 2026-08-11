@@ -260,7 +260,7 @@
                 tipo: 'archivo-descargable',
                 nombre: 'guia-mapa-conflicto.pdf',
                 pesoBytes: 2200000,
-                url: '../../lms-creator/demo-assets/guia-mapa-conflicto.pdf'
+                url: '../../../ubits-admin/lms-creator/demo-assets/guia-mapa-conflicto.pdf'
               },
               {
                 tipo: 'texto',
@@ -273,7 +273,7 @@
             titulo: 'Conversaciones difíciles según Thomas-Kilmann',
             tipo: 'scorm',
             /* Mismo SCORM IA del seed Creator (ccScormBuildDemoAiRenderedBlock) — no el simulador */
-            scormSrc: '../../lms-creator/thomas-kilmann-scorm.html'
+            scormSrc: '../../../ubits-admin/lms-creator/thomas-kilmann-scorm.html'
           },
           {
             id: 'p-3',
@@ -294,14 +294,14 @@
             id: 'p-4',
             titulo: 'Simulador de conversación difícil',
             tipo: 'scorm',
-            scormSrc: '../../lms-creator/simulador-scorm.html'
+            scormSrc: '../../../ubits-admin/lms-creator/simulador-scorm.html'
           },
           {
             id: 'p-5',
             titulo: 'Guía mapa de conflicto',
             tipo: 'pdf',
             /* Mismo PDF del seed Creator (demo-assets/guia-mapa-conflicto.pdf) */
-            pdfSrc: '../../lms-creator/demo-assets/guia-mapa-conflicto.pdf',
+            pdfSrc: '../../../ubits-admin/lms-creator/demo-assets/guia-mapa-conflicto.pdf',
             /* Paridad Creator: switch «Permitir descarga del PDF…» ON por defecto */
             allowPdfDownload: true
           },

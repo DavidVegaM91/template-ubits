@@ -31,6 +31,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -134,6 +135,7 @@
     <script src="../../components/seccion-creator.js"></script>
     <script src="../../components/indice-creator.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         /* Misma estructura y títulos que Figma Learn-Components · Índice Creator (242:5621) */
@@ -213,9 +215,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('indice-creator');
+            bootDocsWorkspace();
             var mode = document.getElementById('ic-preview-mode');
             if (mode) {
                 mode.checked = false;

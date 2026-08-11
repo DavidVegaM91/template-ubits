@@ -1,7 +1,7 @@
 /**
  * Workspace sidebar — paridad React AdminWorkspaceSidebar / colaborador.
  * API: loadWorkspaceSidebar(audience, activeId)
- *   audience: 'admin' | 'colaborador' (también alias 'default' → colaborador)
+ *   audience: 'admin' | 'colaborador' | 'docs' (también alias 'default' → colaborador)
  *   activeId: id del árbol o data-section legacy (aprendizaje, desempeño, …)
  *
  * Requiere: workspace-sidebar.css, badge-tag.css (badge «Nuevo»), submenu.js (flyouts colapsado), ia-button (Agente IA).
@@ -11,6 +11,23 @@
 
   var FLYOUT_ID = 'ubits-ws-sidebar-flyout';
   var STORAGE_COLLAPSED = 'ubits-ws-sidebar-collapsed';
+  var STORAGE_EMPRESA = 'ubits-admin-active-company';
+  var EMPRESA_MENU_ID = 'ubits-ws-empresa-menu';
+
+  var EMPRESA_LINKS = [
+    { id: 'gestion-usuarios', label: 'Gestión de usuarios', href: 'ubits-admin/empresa/gestion-de-usuarios.html', icon: 'fa-users' },
+    { id: 'personalizacion', label: 'Personalización', href: 'ubits-admin/empresa/personalizacion.html', icon: 'fa-paint-brush' },
+    { id: 'organigrama', label: 'Organigrama', href: 'ubits-admin/empresa/organigrama.html', icon: 'fa-sitemap' },
+    { id: 'datos-empresa', label: 'Datos de empresa', href: 'ubits-admin/empresa/datos-de-empresa.html', icon: 'fa-building' },
+    { id: 'roles-permisos', label: 'Roles y permisos', href: 'ubits-admin/empresa/roles-y-permisos.html', icon: 'fa-user-shield' },
+  ];
+
+  var EMPRESA_COMPANIES = [
+    { id: 'fiqsha', name: 'Fiqsha', mark: 'F', logoSrc: 'images/Client-logo.png', bg: '#FFFFFF', licenses: [940, 1000], credits: [25000, 45000] },
+    { id: 'alpha', name: 'Alpha', mark: 'A', bg: '#2E6BFF', licenses: [128, 150], credits: [4200, 10000] },
+    { id: 'beta', name: 'Beta', mark: 'B', bg: '#7A5AF8', licenses: [312, 400], credits: [18500, 20000] },
+    { id: 'omega', name: 'Omega', mark: 'O', bg: '#E0457B', licenses: [76, 100], credits: [1900, 5000] },
+  ];
 
   var LOGO_FULL =
     '<svg class="ws-sidebar__wordmark" viewBox="0 0 107 35" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
@@ -42,6 +59,245 @@
     return bp() + rel.replace(/^\.\.\//, '');
   }
 
+  function formatEmpresaQuota(used, total) {
+    return used.toLocaleString('es-CO') + '/' + total.toLocaleString('es-CO');
+  }
+
+  function getActiveEmpresaId() {
+    try {
+      var raw = sessionStorage.getItem(STORAGE_EMPRESA);
+      if (raw && EMPRESA_COMPANIES.some(function (c) { return c.id === raw; })) return raw;
+    } catch (e) { /* ignore */ }
+    return 'fiqsha';
+  }
+
+  function setActiveEmpresaId(id) {
+    try {
+      sessionStorage.setItem(STORAGE_EMPRESA, id);
+    } catch (e) { /* ignore */ }
+  }
+
+  function getActiveEmpresa() {
+    var id = getActiveEmpresaId();
+    return EMPRESA_COMPANIES.filter(function (c) { return c.id === id; })[0] || EMPRESA_COMPANIES[0];
+  }
+
+  function companyMarkHtml(company) {
+    if (company.logoSrc) {
+      return (
+        '<img class="ws-empresa__logo-img" src="' +
+        href(company.logoSrc) +
+        '" alt="" draggable="false" />'
+      );
+    }
+    return companyAvatarHtml(company);
+  }
+
+  function companyAvatarHtml(company) {
+    var initials = company.mark || (company.name ? company.name.charAt(0) : '');
+    if (typeof global.renderAvatar === 'function') {
+      return global.renderAvatar(
+        { nombre: company.name, initials: initials },
+        { size: 'xs', initials: initials, alt: company.name },
+      );
+    }
+    var letter = typeof global.formatAvatarInitials === 'function'
+      ? global.formatAvatarInitials(initials)
+      : String(initials || '').slice(0, 2).toUpperCase();
+    return (
+      '<span class="ubits-avatar ubits-avatar--xs" aria-label="' +
+      esc(company.name) +
+      '"><span class="ubits-avatar__initials" aria-hidden="true">' +
+      esc(letter) +
+      '</span></span>'
+    );
+  }
+
+  function ensureAvatarAssets(cb) {
+    var base = bp();
+    if (!document.querySelector('link[href*="components/avatar.css"]')) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = base + 'components/avatar.css';
+      document.head.appendChild(link);
+    }
+    if (typeof global.renderAvatar === 'function') {
+      cb();
+      return;
+    }
+    if (document.querySelector('script[src*="components/avatar.js"]')) {
+      var existing = document.querySelector('script[src*="components/avatar.js"]');
+      existing.addEventListener('load', cb);
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = base + 'components/avatar.js';
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+
+  function logoRowHtml() {
+    if (state.audience === 'docs') {
+      return (
+        '<div class="ws-sidebar__logo-row">' +
+        '<div class="ws-sidebar__logo" aria-label="UBITS" role="img">' +
+        LOGO_FULL +
+        LOGO_MARK +
+        '</div></div>'
+      );
+    }
+    if (state.audience === 'colaborador') {
+      return (
+        '<div class="ws-sidebar__logo-row">' +
+        '<div class="ws-sidebar__logo ws-sidebar__logo--company" aria-label="Fiqsha">' +
+        '<img class="ws-sidebar__company-logo" src="' +
+        href('images/Client-logo.png') +
+        '" alt="Fiqsha" draggable="false" />' +
+        '</div></div>'
+      );
+    }
+    var company = getActiveEmpresa();
+    return (
+      '<button type="button" class="ws-sidebar__logo-row ws-sidebar__logo-row--empresa" data-ws-action="empresa-menu" aria-label="Menú de empresa" data-tooltip="Menú de empresa" aria-haspopup="menu">' +
+      '<span class="ws-sidebar__logo ws-sidebar__logo--company" data-ws-empresa-logo aria-hidden="true">' +
+      companyMarkHtml(company) +
+      '</span>' +
+      '<span class="ws-sidebar__meatball" aria-hidden="true">' +
+      '<i class="far fa-ellipsis-vertical"></i></span>' +
+      '</button>'
+    );
+  }
+
+  function paintEmpresaLogo() {
+    var slot = document.querySelector('[data-ws-empresa-logo]');
+    if (!slot) return;
+    var company = getActiveEmpresa();
+    slot.setAttribute('aria-label', company.name);
+    slot.innerHTML = companyMarkHtml(company);
+  }
+
+  function closeEmpresaMenu() {
+    var existing = document.getElementById(EMPRESA_MENU_ID);
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    document.removeEventListener('mousedown', onEmpresaMenuDoc, true);
+    document.removeEventListener('keydown', onEmpresaMenuKey);
+  }
+
+  function onEmpresaMenuDoc(ev) {
+    var menu = document.getElementById(EMPRESA_MENU_ID);
+    if (!menu) return;
+    var t = ev.target;
+    if (menu.contains(t)) return;
+    if (t.closest && (t.closest('[data-ws-action="empresa-menu"]') || t.closest('[data-ws-empresa-logo]'))) {
+      return;
+    }
+    closeEmpresaMenu();
+  }
+
+  function onEmpresaMenuKey(ev) {
+    if (ev.key === 'Escape') closeEmpresaMenu();
+  }
+
+  function positionEmpresaMenu(el, anchor) {
+    var r = anchor.getBoundingClientRect();
+    var w = el.offsetWidth;
+    var h = el.offsetHeight;
+    var top = r.bottom + 4;
+    var left = r.left;
+    if (left + w > window.innerWidth - 8) left = Math.max(8, window.innerWidth - w - 8);
+    if (left < 8) left = 8;
+    if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);
+    el.style.top = top + 'px';
+    el.style.left = left + 'px';
+  }
+
+  function empresaMenuHtml() {
+    var company = getActiveEmpresa();
+    var html =
+      '<div class="ws-empresa-menu__head">' +
+      '<div class="ws-empresa-menu__metric"><span class="ubits-body-xs-regular">Licencias:</span>' +
+      '<span class="ubits-body-xs-bold">' +
+      formatEmpresaQuota(company.licenses[0], company.licenses[1]) +
+      '</span></div>' +
+      '<div class="ws-empresa-menu__metric"><span class="ubits-body-xs-regular">Créditos:</span>' +
+      '<span class="ubits-body-xs-bold">' +
+      formatEmpresaQuota(company.credits[0], company.credits[1]) +
+      '</span></div></div>' +
+      '<div class="ws-empresa-menu__sep"></div>' +
+      '<p class="ws-empresa-menu__label ubits-body-xs-regular">Configuración</p>';
+    EMPRESA_LINKS.forEach(function (link) {
+      html +=
+        '<button type="button" class="ws-empresa-menu__item" data-ws-empresa-href="' +
+        esc(href(link.href)) +
+        '"><i class="far ' +
+        link.icon +
+        '" aria-hidden="true"></i><span class="ubits-body-sm-regular">' +
+        esc(link.label) +
+        '</span></button>';
+    });
+    html +=
+      '<div class="ws-empresa-menu__sep"></div>' +
+      '<p class="ws-empresa-menu__label ubits-body-xs-regular">Empresas</p>';
+    EMPRESA_COMPANIES.forEach(function (c) {
+      var active = c.id === company.id;
+      html +=
+        '<button type="button" class="ws-empresa-menu__item' +
+        (active ? ' is-active' : '') +
+        '" data-ws-empresa-id="' +
+        esc(c.id) +
+        '"' +
+        (active ? ' aria-current="true"' : '') +
+        '>' +
+        companyAvatarHtml(c) +
+        '<span class="ubits-body-sm-regular">' +
+        esc(c.name) +
+        '</span>' +
+        (active ? '<i class="far fa-check ws-empresa-menu__check" aria-hidden="true"></i>' : '') +
+        '</button>';
+    });
+    return html;
+  }
+
+  function openEmpresaMenu(anchor) {
+    if (state.audience !== 'admin' || !anchor) return;
+    if (document.getElementById(EMPRESA_MENU_ID)) {
+      closeEmpresaMenu();
+      return;
+    }
+    ensureAvatarAssets(function () {
+      openEmpresaMenuReady(anchor);
+    });
+  }
+
+  function openEmpresaMenuReady(anchor) {
+    closeEmpresaMenu();
+    closeFlyout();
+    var menu = document.createElement('div');
+    menu.id = EMPRESA_MENU_ID;
+    menu.className = 'ws-empresa-menu';
+    menu.setAttribute('role', 'menu');
+    menu.innerHTML = empresaMenuHtml();
+    document.body.appendChild(menu);
+    positionEmpresaMenu(menu, anchor);
+    menu.addEventListener('click', function (ev) {
+      var cfg = ev.target.closest && ev.target.closest('[data-ws-empresa-href]');
+      if (cfg) {
+        var dest = cfg.getAttribute('data-ws-empresa-href');
+        closeEmpresaMenu();
+        if (dest) window.location.href = dest;
+        return;
+      }
+      var pick = ev.target.closest && ev.target.closest('[data-ws-empresa-id]');
+      if (pick) {
+        setActiveEmpresaId(pick.getAttribute('data-ws-empresa-id'));
+        paintEmpresaLogo();
+        closeEmpresaMenu();
+      }
+    });
+    document.addEventListener('mousedown', onEmpresaMenuDoc, true);
+    document.addEventListener('keydown', onEmpresaMenuKey);
+  }
+
   function adminNav() {
     return [
       { id: 'home', label: 'Inicio', icon: 'fa-house', href: 'ubits-admin/inicio/admin.html' },
@@ -67,14 +323,14 @@
             id: 'lms',
             label: 'LMS Creator',
             children: [
-              { id: 'contenidos', label: 'Contenidos', href: 'ubits-colaborador/lms-creator/contenidos.html' },
-              { id: 'categorias', label: 'Categorías', href: 'ubits-colaborador/lms-creator/categorias.html' },
+              { id: 'contenidos', label: 'Contenidos', href: 'ubits-admin/lms-creator/contenidos.html' },
+              { id: 'categorias', label: 'Categorías', href: 'ubits-admin/lms-creator/categorias.html' },
               {
                 id: 'u-corporativa',
                 label: 'Universidad corporativa',
-                href: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html',
+                href: 'ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html',
               },
-              { id: 'lmsai', label: 'LMS AI', href: 'ubits-colaborador/lms-creator/ia-panel-demo.html' },
+              { id: 'lmsai', label: 'LMS AI', href: 'ubits-admin/lms-creator/ia-panel-demo.html' },
             ],
           },
           {
@@ -84,12 +340,12 @@
               {
                 id: 'planes-lista',
                 label: 'Planes',
-                href: 'ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html',
+                href: 'ubits-admin/lms-creator/planes-formacion/planes-contenidos.html',
               },
               {
                 id: 'grupos',
                 label: 'Grupos',
-                href: 'ubits-colaborador/lms-creator/planes-formacion/grupos.html',
+                href: 'ubits-admin/lms-creator/planes-formacion/grupos.html',
               },
             ],
           },
@@ -100,12 +356,12 @@
               {
                 id: 'cert-descarga',
                 label: 'Descarga',
-                href: 'ubits-colaborador/lms-creator/certificados/certificados.html',
+                href: 'ubits-admin/lms-creator/certificados/certificados.html',
               },
               {
                 id: 'cert-config',
                 label: 'Configuración',
-                href: 'ubits-colaborador/lms-creator/certificados/certificados-configuracion.html',
+                href: 'ubits-admin/lms-creator/certificados/certificados-configuracion.html',
               },
             ],
           },
@@ -185,12 +441,6 @@
         ],
       },
       {
-        id: 'diagnostico',
-        label: 'Diagnóstico',
-        icon: 'fa-chart-mixed',
-        href: 'ubits-colaborador/diagnostico/diagnostico.html',
-      },
-      {
         id: 'desempeno',
         label: 'Desempeño',
         icon: 'fa-bars-progress',
@@ -206,16 +456,16 @@
         ],
       },
       {
+        id: 'diagnostico',
+        label: 'Diagnóstico',
+        icon: 'fa-chart-mixed',
+        href: 'ubits-colaborador/diagnostico/diagnostico.html',
+      },
+      {
         id: 'encuestas',
         label: 'Encuestas',
         icon: 'fa-clipboard-list-check',
         href: 'ubits-colaborador/encuestas/encuestas.html',
-      },
-      {
-        id: 'reclutamiento',
-        label: 'Reclutamiento',
-        icon: 'fa-users',
-        href: 'ubits-colaborador/reclutamiento/reclutamiento.html',
       },
       {
         id: 'tareas',
@@ -233,6 +483,90 @@
         label: 'Agentes',
         icon: 'fa-sparkles',
         href: 'ubits-colaborador/ia-para-hr/ia-para-hr.html',
+      },
+    ];
+  }
+
+  var DOCS_COMPONENT_FILE = {
+    'sub-nav': 'subnav.html',
+  };
+
+  function docsComponentHref(sectionId) {
+    var file = DOCS_COMPONENT_FILE[sectionId] || sectionId + '.html';
+    return 'documentacion/componentes/' + file;
+  }
+
+  function docsNav() {
+    var sections = global.DOCS_SIDEBAR_SECTIONS || [];
+    function leaves(group) {
+      return sections
+        .filter(function (s) {
+          return s.group === group;
+        })
+        .map(function (s) {
+          return {
+            id: 'components/' + s.id,
+            label: s.title,
+            href: docsComponentHref(s.id),
+          };
+        })
+        .sort(function (a, b) {
+          return a.label.localeCompare(b.label, 'es');
+        });
+    }
+    var navLeaves = leaves('navegacion');
+    var uiLeaves = leaves('ui');
+    var aprLeaves = leaves('aprendizaje');
+    var iaLeaves = leaves('ia');
+    var opsLeaves = leaves('operations');
+    var componentChildren = [];
+    if (navLeaves.length) {
+      componentChildren.push({ id: 'components-navegacion', label: 'Navegación', children: navLeaves });
+    }
+    if (uiLeaves.length) {
+      componentChildren.push({ id: 'components-ui', label: 'UI General', children: uiLeaves });
+    }
+    if (aprLeaves.length) {
+      componentChildren.push({ id: 'components-aprendizaje', label: 'Aprendizaje', children: aprLeaves });
+    }
+    if (iaLeaves.length) {
+      componentChildren.push({ id: 'components-ia', label: 'IA', children: iaLeaves });
+    }
+    if (opsLeaves.length) {
+      componentChildren.push({ id: 'components-operations', label: 'Operations', children: opsLeaves });
+    }
+    return [
+      {
+        id: 'inicio',
+        label: 'Inicio',
+        icon: 'fa-house',
+        href: 'documentacion/documentacion.html',
+      },
+      {
+        id: 'guia-prompts',
+        label: 'Guía de prompts',
+        icon: 'fa-comments',
+        href: 'documentacion/guia-prompts.html',
+      },
+      {
+        id: 'foundations',
+        label: 'Foundations',
+        icon: 'fa-swatchbook',
+        children: [
+          { id: 'foundations/colors', label: 'Colores', href: 'documentacion/guias/colores.html' },
+          { id: 'foundations/icons', label: 'Iconos', href: 'documentacion/guias/iconos.html' },
+          {
+            id: 'foundations/typography',
+            label: 'Tipografía',
+            href: 'documentacion/guias/tipografia.html',
+          },
+        ],
+      },
+      {
+        id: 'components',
+        label: 'Components',
+        icon: 'fa-cubes',
+        children: componentChildren,
       },
     ];
   }
@@ -332,7 +666,6 @@
     'metricas.html': 'metricas',
     'reportes.html': 'reportes',
     'encuestas.html': 'encuestas',
-    'reclutamiento.html': 'reclutamiento',
     'tareas.html': 'tareas-lista',
     'planes.html': 'planes',
     'plan-detail.html': 'planes',
@@ -347,6 +680,13 @@
     'certificados.html': 'cert-descarga',
     'certificados-configuracion.html': 'cert-config',
     'personalizacion-u-corporativa.html': 'u-corporativa',
+    'documentacion.html': 'inicio',
+    'guia-prompts.html': 'guia-prompts',
+    'sitemap.html': 'sitemap',
+    'colores.html': 'foundations/colors',
+    'iconos.html': 'foundations/icons',
+    'tipografia.html': 'foundations/typography',
+    'componentes.html': 'components-index',
     'personalizacion-seguimiento.html': 'seguimiento',
     'ia-panel-demo.html': 'lmsai',
   };
@@ -390,6 +730,12 @@
   }
 
   function resolveActiveId(raw, audience) {
+    if (audience === 'docs') {
+      if (!raw) return 'inicio';
+      var docsKey = String(raw);
+      if (docsKey === 'introduccion') return 'inicio';
+      return docsKey;
+    }
     if (!raw) return 'home';
     var key = String(raw);
     if (audience === 'colaborador') {
@@ -678,43 +1024,57 @@
   }
 
   function shellHtml() {
+    var isDocs = state.audience === 'docs';
     var appearance = state.audience === 'colaborador' ? 'dark' : 'light';
-    var ariaNav =
-      state.audience === 'colaborador' ? 'Navegación colaborador' : 'Navegación admin';
+    var ariaNav = isDocs
+      ? 'Navegación design system'
+      : state.audience === 'colaborador'
+        ? 'Navegación colaborador'
+        : 'Navegación admin';
+    var variantAttr = isDocs
+      ? 'docs-workspace'
+      : (state.audience === 'colaborador' ? 'colaborador' : 'admin') + '-workspace';
+    var modeTabs = isDocs
+      ? ''
+      : '<div class="ws-sidebar__mode-tabs" role="tablist" aria-label="Modo del sidebar" data-mode="' +
+        state.mode +
+        '">' +
+        '<span class="ws-sidebar__mode-thumb" aria-hidden="true"></span>' +
+        '<button type="button" class="ws-sidebar__mode-btn' +
+        (state.mode === 'workspace' ? ' is-active' : '') +
+        '" data-ws-mode="workspace" role="tab">Workspace</button>' +
+        '<button type="button" class="ws-sidebar__mode-btn' +
+        (state.mode === 'agente-ia' ? ' is-active' : '') +
+        '" data-ws-mode="agente-ia" role="tab">Agente IA</button>' +
+        '</div>';
+    var footerLink = isDocs
+      ? '<button type="button" class="ws-sidebar__footer-link' +
+        (state.activeId === 'sitemap' ? ' is-current' : '') +
+        '" data-ws-action="sitemap" aria-label="Sitemap"' +
+        (state.activeId === 'sitemap' ? ' aria-current="page"' : '') +
+        '><i class="far fa-sitemap ws-sidebar__nav-icon" aria-hidden="true"></i>' +
+        '<span class="ws-sidebar__label">Sitemap</span></button>'
+      : '<button type="button" class="ws-sidebar__footer-link" data-ws-action="feedback" aria-label="Feedback">' +
+        '<i class="far fa-comment ws-sidebar__nav-icon" aria-hidden="true"></i>' +
+        '<span class="ws-sidebar__label">Feedback</span></button>';
     return (
       '<aside class="ws-sidebar ws-sidebar--' +
       appearance +
       (state.collapsed ? ' is-collapsed' : '') +
       '" id="sidebar" data-variant="' +
-      (state.audience === 'colaborador' ? 'colaborador' : 'admin') +
-      '-workspace" data-appearance="' +
+      variantAttr +
+      '" data-appearance="' +
       appearance +
       '">' +
       '<div class="ws-sidebar__top">' +
-      '<div class="ws-sidebar__logo-row">' +
-      '<div class="ws-sidebar__logo" aria-label="UBITS" role="img">' +
-      LOGO_FULL +
-      LOGO_MARK +
+      logoRowHtml() +
+      modeTabs +
       '</div>' +
-      '</div>' +
-      '<div class="ws-sidebar__mode-tabs" role="tablist" aria-label="Modo del sidebar" data-mode="' +
-      state.mode +
-      '">' +
-      '<span class="ws-sidebar__mode-thumb" aria-hidden="true"></span>' +
-      '<button type="button" class="ws-sidebar__mode-btn' +
-      (state.mode === 'workspace' ? ' is-active' : '') +
-      '" data-ws-mode="workspace" role="tab">Workspace</button>' +
-      '<button type="button" class="ws-sidebar__mode-btn' +
-      (state.mode === 'agente-ia' ? ' is-active' : '') +
-      '" data-ws-mode="agente-ia" role="tab">Agente IA</button>' +
-      '</div></div>' +
       '<div class="ws-sidebar__nav-viewport"><nav class="ws-sidebar__sidenav" aria-label="' +
       ariaNav +
       '" data-ws-nav-root></nav></div>' +
       '<div class="ws-sidebar__footer">' +
-      '<button type="button" class="ws-sidebar__footer-link" data-ws-action="feedback" aria-label="Feedback">' +
-      '<i class="far fa-comment ws-sidebar__nav-icon" aria-hidden="true"></i>' +
-      '<span class="ws-sidebar__label">Feedback</span></button>' +
+      footerLink +
       '</div></aside>'
     );
   }
@@ -738,6 +1098,7 @@
     }
     applyBodyLayoutClasses();
     if (state.collapsed) closeFlyout();
+    closeEmpresaMenu();
     paintNav();
     /* Sync AppHeader toggle label */
     document.querySelectorAll('[data-ah-action="toggle-sidebar"]').forEach(function (btn) {
@@ -754,6 +1115,7 @@
 
   function setMode(mode) {
     state.mode = mode === 'agente-ia' ? 'agente-ia' : 'workspace';
+    document.body.classList.toggle('workspace-agent-mode', state.mode === 'agente-ia');
     var tabs = document.querySelector('.ws-sidebar__mode-tabs');
     if (tabs) {
       tabs.setAttribute('data-mode', state.mode);
@@ -762,6 +1124,7 @@
       });
     }
     closeFlyout();
+    closeEmpresaMenu();
     paintNav();
   }
 
@@ -856,7 +1219,7 @@
       if (!t || !t.closest) return;
 
       var logoHit = t.closest('.ws-sidebar__logo');
-      if (logoHit && state.collapsed) {
+      if (logoHit && state.audience !== 'admin' && state.collapsed) {
         setCollapsed(false);
         return;
       }
@@ -877,6 +1240,14 @@
         if (act === 'new-chat') {
           state.activeChat = 'Nuevo chat';
           paintNav();
+        }
+        if (act === 'empresa-menu') {
+          openEmpresaMenu(action);
+          return;
+        }
+        if (act === 'sitemap') {
+          window.location.href = href('documentacion/sitemap.html');
+          return;
         }
         if (act === 'feedback') {
           if (typeof global.showToast === 'function') {
@@ -956,7 +1327,9 @@
   function loadWorkspaceSidebar(audienceOrVariant, activeRaw) {
     var audience = audienceOrVariant;
     if (audience === 'default') audience = 'colaborador';
-    if (audience !== 'admin' && audience !== 'colaborador') audience = 'colaborador';
+    if (audience !== 'admin' && audience !== 'colaborador' && audience !== 'docs') {
+      audience = 'colaborador';
+    }
 
     if (typeof global.prepareWorkspaceLayoutShell === 'function') {
       global.prepareWorkspaceLayoutShell();
@@ -973,7 +1346,8 @@
     }
 
     state.audience = audience;
-    state.navTree = audience === 'admin' ? adminNav() : colaboradorNav();
+    state.navTree =
+      audience === 'admin' ? adminNav() : audience === 'docs' ? docsNav() : colaboradorNav();
     state.history = audience === 'admin' ? ADMIN_HISTORY : COLAB_HISTORY;
     // Preferir URL (hoja real) sobre activeSidebar de sección (ej. "tareas" → planes.html).
     state.activeId =
@@ -987,20 +1361,18 @@
     state.drillStack = state.collapsed ? [] : getNavContext(state.navTree, state.activeId).drillStack;
 
     var ctx = getNavContext(state.navTree, state.activeId);
-    state.openSections = {
-      aprendizaje: true,
-      desempeno: ctx.rootSectionId === 'desempeno',
-      seleccion: ctx.rootSectionId === 'seleccion',
-    };
+    state.openSections = {};
     if (ctx.rootSectionId) state.openSections[ctx.rootSectionId] = true;
 
     container.innerHTML = shellHtml();
+    document.body.classList.toggle('workspace-agent-mode', state.mode === 'agente-ia');
     applyBodyLayoutClasses();
     paintNav();
     bindEvents(container);
     ensureWorkspaceAppHeader(audience);
 
-    global._ubitsSidebarVariant = audience === 'admin' ? 'admin' : 'default';
+    global._ubitsSidebarVariant =
+      audience === 'admin' ? 'admin' : audience === 'docs' ? 'docs' : 'default';
     global._ubitsSidebarKind = 'workspace';
   }
 
@@ -1017,14 +1389,20 @@
     function mountHeader() {
       if (typeof global.loadAppHeader !== 'function') return;
       if (mount.querySelector('.ubits-app-header')) return;
+      var headerVariant =
+        audience === 'admin' ? 'admin' : audience === 'docs' ? 'docs' : 'colaborador';
       var opts = {
-        variant: audience === 'admin' ? 'admin' : 'colaborador',
-        title: audience === 'admin' ? 'Home' : 'Inicio',
+        variant: headerVariant,
+        title: audience === 'docs' ? 'Design system' : audience === 'admin' ? 'Home' : 'Inicio',
         borderless: true,
       };
       if (typeof global.resolveAppHeaderFromSubNavVariant === 'function') {
         var fromPage = global.resolveAppHeaderFromSubNavVariant(
-          audience === 'admin' ? 'admin-aprendizaje' : 'aprendizaje',
+          audience === 'admin'
+            ? 'admin-aprendizaje'
+            : audience === 'docs'
+              ? 'documentacion'
+              : 'aprendizaje',
         );
         opts = Object.assign({}, fromPage, { variant: opts.variant });
       }

@@ -41,6 +41,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <main class="main-content">
@@ -57,7 +58,7 @@
                                 Avatar
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Componente de avatar único (imagen o icono) y su variación Profile list: varios avatares superpuestos con opción +N cuando hay más personas.
+                                Componente de avatar único (imagen, inicial o icono) y su variación Profile list: varios avatares superpuestos con opción +N cuando hay más personas.
                             </p>
                         </div>
 
@@ -118,6 +119,9 @@
                                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('icono')">
                                             <span>Icono</span>
                                         </button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('inicial')">
+                                            <span>Inicial</span>
+                                        </button>
                                     </div>
                                 </div>
                                 <div id="avatar-mode-controls" style="margin-bottom: 16px;">
@@ -172,7 +176,12 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user-circle"></i></div>
                                     <div class="ubits-body-sm-bold">Avatar único</div>
-                                    <div class="ubits-body-sm-regular">Imagen o icono de usuario</div>
+                                    <div class="ubits-body-sm-regular">Imagen, inicial o icono de usuario</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-a"></i></div>
+                                    <div class="ubits-body-sm-bold">Inicial</div>
+                                    <div class="ubits-body-sm-regular">Letra(s) cuando no hay foto: empresas, grupos o personas sin imagen</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-users"></i></div>
@@ -268,6 +277,7 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var previewType = 'avatar';
@@ -293,7 +303,7 @@
         ];
 
         document.addEventListener('DOMContentLoaded', function() {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
             setTimeout(function() {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) {
                     item.classList.remove('active');
@@ -303,7 +313,6 @@
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-            loadDocsSidebar('avatar');
             showAlert('warning', 'Antes de enviar los prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', {
                 containerId: 'avatar-warning-alert',
                 noClose: true
@@ -317,6 +326,10 @@
             if (previewType === 'avatar') {
                 var persona = previewVariant === 'imagen' ? demoPersonaImagen : demoPersonaIcono;
                 var opts = { size: previewSize };
+                if (previewVariant === 'inicial') {
+                    persona = { nombre: 'Ana García', avatar: null };
+                    opts.initials = 'AG';
+                }
                 if (previewMode) opts.mode = previewMode;
                 if (previewSelectable) {
                     opts.selectable = true;

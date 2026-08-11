@@ -67,6 +67,26 @@
     border-radius: 50%;
 }
 
+/* Iniciales (cuando no hay imagen y se pasa initials) */
+.ubits-avatar__initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--ubits-font-family-sans);
+    font-weight: var(--ubits-font-weight-semibold);
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    user-select: none;
+}
+
+.ubits-avatar--xs .ubits-avatar__initials { font-size: var(--font-size-xs); }
+.ubits-avatar--sm .ubits-avatar__initials { font-size: var(--font-size-xs); }
+.ubits-avatar--md .ubits-avatar__initials { font-size: var(--font-size-sm); }
+.ubits-avatar--lg .ubits-avatar__initials { font-size: var(--font-size-md); }
+.ubits-avatar--xl .ubits-avatar__initials { font-size: var(--font-size-lg); }
+
 /* Fallback: icono de usuario (cuando no hay imagen) */
 .ubits-avatar__fallback {
     display: flex;

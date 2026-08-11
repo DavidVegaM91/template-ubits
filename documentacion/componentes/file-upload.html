@@ -38,6 +38,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <main class="main-content">
@@ -257,6 +258,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
     <script src="../../components/alert.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/tooltip.js"></script>
@@ -264,10 +266,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            loadSubNav('top-nav-container', 'documentacion');
-            loadSidebar('ninguno');
-            loadDocsSidebar('file-upload');
-
+            bootDocsWorkspace();
             createFileUpload({
                 containerId: 'preview-container',
                 id: 'preview-file-upload',

@@ -37,6 +37,7 @@
 
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
             <div style="display: flex;">
@@ -317,6 +318,7 @@
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
@@ -325,8 +327,7 @@
     <script src="../../components/tooltip.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('tooltip');
+            bootDocsWorkspace();
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar los prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', { containerId: 'tooltip-warning-alert' });

@@ -59,6 +59,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <main class="main-content">
@@ -196,6 +197,7 @@
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/input.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/learn-question.js"></script>
 
@@ -414,7 +416,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
 
             setTimeout(() => {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => item.classList.remove('active'));
@@ -423,8 +425,6 @@
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-
-            loadDocsSidebar('learn-question');
 
             showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'component-warning-alert',

@@ -28,6 +28,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -112,6 +113,7 @@
     <script src="../../components/resources-card.js"></script>
     <script src="../../components/complementary-resources.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         function crRender(variant) {
@@ -136,9 +138,7 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function () {
-            loadSidebar('ninguno');
-            loadSubNav('top-nav-container', 'documentacion');
-            loadDocsSidebar('complementary-resources');
+            bootDocsWorkspace();
             crRender('both');
         });
     </script>

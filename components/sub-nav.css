@@ -24,21 +24,6 @@
     /* Crear stacking context para que el dropdown esté por encima del buscador */
 }
 
-/* Client Logo */
-.sub-nav-logo {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    height: 100%;
-}
-
-.sub-nav-logo-img {
-    height: 24px;
-    width: auto;
-    object-fit: contain;
-    display: block;
-}
-
 /* Nav Tabs Container */
 .nav-tabs {
     display: flex;

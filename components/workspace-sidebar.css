@@ -80,6 +80,21 @@
   gap: var(--gap-sm);
   height: var(--size-2xl);
   padding: 0 var(--padding-xs);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button.ws-sidebar__logo-row--empresa {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  border-radius: var(--border-radius-sm);
+}
+
+button.ws-sidebar__logo-row--empresa:hover {
+  background: var(--ws-surface);
 }
 
 .ws-sidebar.is-collapsed .ws-sidebar__logo-row {
@@ -91,6 +106,7 @@
   display: flex;
   align-items: center;
   height: var(--size-2xl);
+  min-width: 0;
 }
 
 .ws-sidebar__wordmark {
@@ -106,6 +122,7 @@
   width: auto;
   display: none;
   flex-shrink: 0;
+  object-fit: contain;
   color: var(--ws-logo);
 }
 
@@ -117,8 +134,157 @@
   display: block;
 }
 
-.ws-sidebar.is-collapsed .ws-sidebar__logo {
+.ws-sidebar__company-logo,
+.ws-empresa__logo-img {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ws-sidebar.is-collapsed .ws-sidebar__company-logo,
+.ws-sidebar.is-collapsed .ws-empresa__logo-img {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+}
+
+.ws-empresa__mark {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--ubits-font-family-sans);
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ws-sidebar__meatball {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--ws-fg);
+  border-radius: var(--border-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ws-sidebar.is-collapsed .ws-sidebar__meatball {
+  display: none;
+}
+
+.ws-sidebar.is-collapsed .ws-sidebar__logo--company {
   cursor: pointer;
+}
+
+/* Menú empresa (portal a body) */
+.ws-empresa-menu {
+  position: fixed;
+  z-index: 1200;
+  width: 214px;
+  overflow: visible;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--ubits-elevation-overlay);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.ws-empresa-menu__head {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0;
+}
+
+.ws-empresa-menu__metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  min-height: 24px;
+  padding: 0 var(--padding-sm);
+  border-radius: var(--border-radius-sm);
+  white-space: nowrap;
+  color: var(--ubits-fg-1-high);
+}
+
+.ws-empresa-menu__metric span:first-child {
+  color: var(--ubits-fg-1-medium);
+}
+
+.ws-empresa-menu__metric span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+
+.ws-empresa-menu__sep {
+  height: 1px;
+  background: var(--ubits-border-1);
+  margin: var(--padding-xs) 0;
+}
+
+.ws-empresa-menu__label {
+  margin: 0;
+  padding: var(--padding-xs) var(--padding-md) 2px;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ws-empresa-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-height: 36px;
+  padding: 0 var(--padding-md);
+  border: none;
+  background: transparent;
+  color: var(--ubits-fg-1-high);
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.ws-empresa-menu__item:hover {
+  background: var(--ubits-bg-2);
+}
+
+.ws-empresa-menu__item.is-active {
+  background: var(--ubits-bg-active);
+}
+
+.ws-empresa-menu__item i:first-child {
+  width: 16px;
+  text-align: center;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+}
+
+.ws-empresa-menu__item-mark {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  max-width: 20px;
+}
+
+.ws-empresa-menu__item .ws-empresa__logo-img.ws-empresa-menu__item-mark {
+  width: 20px;
+  height: 20px;
+}
+
+.ws-empresa-menu__check {
+  margin-left: auto;
+  color: var(--ubits-accent-brand-static);
+  flex-shrink: 0;
 }
 
 /* Tabs Workspace | Agente IA */
@@ -431,6 +597,12 @@
 .ws-sidebar__footer-link:hover {
   background: var(--ws-surface);
   color: var(--ws-fg-strong);
+}
+
+.ws-sidebar__footer-link.is-current {
+  background: var(--ws-surface);
+  color: var(--ws-fg-strong);
+  font-weight: var(--font-weight-semibold);
 }
 
 .ws-sidebar.is-collapsed .ws-sidebar__footer-link {

@@ -1,0 +1,45 @@
+/* Workspace footer — pie oficial. Flujo del documento; no sticky. */
+
+.ubits-workspace-footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  width: 100%;
+  max-width: 1440px;
+  margin: auto auto 0;
+  padding: var(--padding-md) var(--padding-lg);
+  box-sizing: border-box;
+  color: var(--ubits-fg-1-medium);
+  background: transparent;
+}
+
+.ubits-workspace-footer__wordmark {
+  width: 48px;
+  height: auto;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+  display: block;
+}
+
+.ubits-workspace-footer__sep {
+  opacity: 0.5;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-workspace-footer__link {
+  color: var(--ubits-fg-1-medium);
+  text-decoration: none;
+}
+
+.ubits-workspace-footer__link:hover {
+  text-decoration: underline;
+  color: var(--ubits-fg-1-high);
+}
+
+/* Agente IA: el chat ocupa el main; el pie no aporta y estorba. */
+body.workspace-agent-mode .ubits-workspace-footer {
+  display: none;
+}

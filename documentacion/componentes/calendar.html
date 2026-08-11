@@ -34,6 +34,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
             <div style="display: flex;">
@@ -138,6 +139,7 @@
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
@@ -146,8 +148,7 @@
     <script src="../../components/calendar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('calendar');
+            bootDocsWorkspace();
             if (typeof createCalendar === 'function') {
                 createCalendar({
                     containerId: 'calendar-doc-container',

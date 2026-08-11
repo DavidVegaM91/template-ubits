@@ -169,7 +169,7 @@ Misma estructura que Fase 3, con:
 
 1. [x] `mi-equipo-planes-formacion.css` — `@import` de `lms-creator.css` + `planes-formacion.css` + checklist en cabecera (no duplicar CSS Creator completo).
 2. [x] Comentario checklist en `planes.html` + documentación en `contexto-mi-equipo.md` §7.
-3. [x] `catalogo-*-drawer.js` importados desde `../../lms-creator/planes-formacion/` en todas las pantallas que los usan.
+3. [x] `catalogo-*-drawer.js` importados desde `../../../ubits-admin/lms-creator/planes-formacion/` en todas las pantallas que los usan.
 4. [x] `initMiEquipoLayout()` + mock en las 8 páginas HTML del módulo.
 
 ---

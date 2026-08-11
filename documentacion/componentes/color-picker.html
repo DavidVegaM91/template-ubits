@@ -22,6 +22,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
             <div style="display: flex;">
@@ -144,6 +145,7 @@
     <script src="../../components/input.js"></script>
     <script src="../../components/color-picker.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var cpDemoHex = '#0C5BEF';
@@ -169,9 +171,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('color-picker');
+            bootDocsWorkspace();
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                     containerId: 'cp-warning-alert',

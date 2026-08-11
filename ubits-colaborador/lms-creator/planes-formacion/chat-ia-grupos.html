@@ -1,177 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
-    <title>UBITS Playground - LMS Creator - Chat IA grupos</title>
-
-    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
-    <link rel="stylesheet" href="../../../general-styles/styles.css">
-    <link rel="stylesheet" href="../lms-creator.css">
-    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
-    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../../general-styles/ubits-ia-appearance.css">
-    <link rel="stylesheet" href="../../../components/sub-nav.css">
-    <link rel="stylesheet" href="../../../components/sidebar.css">
-    <link rel="stylesheet" href="../../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../../components/profile-menu.css">
-    <link rel="stylesheet" href="../../../components/button.css">
-    <link rel="stylesheet" href="../../../components/chip.css">
-    <link rel="stylesheet" href="../../../components/input.css">
-    <link rel="stylesheet" href="../../../components/ia-button.css">
-    <link rel="stylesheet" href="../../../general-styles/ubits-ia-chat.css">
-    <link rel="stylesheet" href="../../../components/empty-state.css">
-    <link rel="stylesheet" href="../../../components/tooltip.css">
-    <link rel="stylesheet" href="./chat-ia-grupos.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0;url=../../../ubits-admin/lms-creator/planes-formacion/chat-ia-grupos.html">
+  <link rel="canonical" href="../../../ubits-admin/lms-creator/planes-formacion/chat-ia-grupos.html">
+  <title>Redirigiendo a LMS Creator</title>
+  <script>
+    (function () {
+      location.replace("../../../ubits-admin/lms-creator/planes-formacion/chat-ia-grupos.html" + location.search + location.hash);
+    })();
+  </script>
 </head>
-<body class="chat-ia-grupos-page aprendizaje-ia-pages ubits-ia-chat-page ia-chat-mobile-drawer-page" data-theme="light">
-    <div class="dashboard-container">
-        <div class="tooltip" id="tooltip"></div>
-        <div id="sidebar-container"></div>
-
-        <main class="main-content">
-            <div id="top-nav-container"></div>
-            <div class="content-area">
-                <div class="content-sections">
-                    <div class="section-single ubits-ia-chat">
-                        <div class="ubits-ia-chat-historial is-open" id="group-creation-historial-panel" aria-label="Mis chats">
-                            <div class="ubits-ia-chat-historial__header">
-                                <div class="ubits-ia-chat-historial__header-start" id="group-creation-historial-header-start">
-                                    <button type="button"
-                                        class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                                        id="group-creation-historial-panel-back" data-tooltip="Volver" data-tooltip-delay="1000"
-                                        aria-label="Volver a grupos">
-                                        <i class="far fa-arrow-left"></i>
-                                    </button>
-                                    <span id="group-creation-historial-panel-title" class="ubits-body-md-bold">Mis chats</span>
-                                    <button type="button"
-                                        class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                                        id="group-creation-historial-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000"
-                                        aria-label="Buscar conversaciones">
-                                        <i class="far fa-search"></i>
-                                    </button>
-                                    <div id="group-creation-historial-search-container" class="ubits-ia-chat-historial__search-field" style="display: none;" aria-hidden="true"></div>
-                                </div>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" data-tooltip="Cerrar" data-tooltip-delay="1000" aria-label="Cerrar panel Mis chats">
-                                    <i class="far fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="ubits-ia-chat-historial__body">
-                                <div id="group-creation-historial-list" class="ubits-ia-chat-historial__list"></div>
-                                <div id="group-creation-historial-empty" class="ubits-ia-chat-historial__empty">
-                                    <div id="group-creation-historial-empty-state-container"></div>
-                                </div>
-                            </div>
-                            <div class="ubits-ia-chat-historial__footer">
-                                <button type="button"
-                                    class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md"
-                                    id="group-creation-historial-panel-nuevo-chat"
-                                    disabled
-                                    aria-label="Iniciar nuevo chat">
-                                    <i class="far fa-plus"></i>
-                                    <span>Nuevo chat</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="ubits-ia-chat__main ubits-ia-chat__main--welcome">
-                            <div class="widget-chat" id="group-creation-chat-container"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div class="ia-chat-mobile-drawer-backdrop" id="ia-chat-mobile-drawer-backdrop" aria-hidden="true"></div>
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
-
-    <script src="../../../components/tooltip.js"></script>
-    <script src="../../../components/sidebar.js"></script>
-    <script src="../../../components/sub-nav.js"></script>
-    <script src="../../../components/tab-bar.js"></script>
-    <script src="../../../components/floating-menu.js"></script>
-    <script src="../../../components/profile-menu.js"></script>
-    <script src="../../../components/empty-state.js"></script>
-    <script src="../../../components/input.js"></script>
-    <script src="../../../components/ia-chat-mobile-drawer.js"></script>
-    <script src="../../../components/ia-chat-streaming.js"></script>
-    <script src="../../../components/group-creation-chat.js"></script>
-    <script src="../../../script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
-            loadSidebar('creator', 'planes-formacion');
-            loadSubNav('top-nav-container', 'creator-planes');
-            loadTabBar('tab-bar-container', 'creator');
-            loadFloatingMenu('floating-menu-container', 'creator');
-            loadProfileMenu('profile-menu-container');
-
-            var groupHistorialBack = document.getElementById('group-creation-historial-panel-back');
-            if (groupHistorialBack) {
-                groupHistorialBack.addEventListener('click', function () {
-                    window.location.href = 'grupos.html';
-                });
-            }
-
-            if (typeof initGroupCreationChat === 'function') {
-                initGroupCreationChat('group-creation-chat-container', { welcomeLayout: true, userFirstName: 'María Alejandra' });
-            }
-            if (typeof initIaChatMobileDrawer === 'function') {
-                initIaChatMobileDrawer({
-                    closeButtonId: 'group-creation-historial-panel-close',
-                    closeListSelector: '#group-creation-historial-list',
-                    nuevoChatButtonId: 'group-creation-historial-panel-nuevo-chat'
-                });
-            }
-
-            /* Mismo patrón que editar-plan-contenidos.html (tab Planes de formación): esta vista pertenece al submódulo Grupos. */
-            function forceCreatorSubnavGruposActive() {
-                var wrap = document.getElementById('top-nav-container');
-                if (!wrap) return;
-                var tab = wrap.querySelector('.nav-tab[data-tab="grupos"]');
-                if (tab) {
-                    wrap.querySelectorAll('.nav-tab, .hamburger-item').forEach(function (item) { item.classList.remove('active'); });
-                    tab.classList.add('active');
-                }
-                var selItem = wrap.querySelector('.module-selector-item[data-tab="grupos"]');
-                if (selItem) {
-                    wrap.querySelectorAll('.module-selector-item').forEach(function (item) { item.classList.remove('active'); });
-                    selItem.classList.add('active');
-                    var labelBtn = wrap.querySelector('.module-selector-button-text');
-                    if (labelBtn) labelBtn.textContent = 'Grupos';
-                }
-            }
-            setTimeout(function () {
-                forceCreatorSubnavGruposActive();
-                var sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
-                if (sidebarBtn) {
-                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
-                    sidebarBtn.classList.add('active');
-                }
-                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
-                if (modulosTab) {
-                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
-                    modulosTab.classList.add('active');
-                }
-                if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('grupos');
-                }
-            }, 200);
-            setTimeout(forceCreatorSubnavGruposActive, 550);
-
-            setTimeout(function() {
-                var chatRoot = document.getElementById('group-creation-chat');
-                var chatMain = document.querySelector('.ubits-ia-chat__main');
-                if (chatRoot && chatMain) {
-                    chatRoot.classList.add('ubits-ia-chat-thread--welcome');
-                    chatMain.classList.add('ubits-ia-chat__main--welcome');
-                }
-            }, 100);
-        });
-    </script>
+<body>
+  <p>LMS Creator ahora vive en admin. <a href="../../../ubits-admin/lms-creator/planes-formacion/chat-ia-grupos.html">Continuar</a></p>
 </body>
 </html>

@@ -15,7 +15,7 @@ Flujo de **Descarga de certificados** con 3 modos (global / contenido / colabora
 ## Estructura de archivos (vanilla — source of truth)
 
 ```
-ubits-colaborador/lms-creator/certificados/
+ubits-admin/lms-creator/certificados/
 ├── certificados.html
 ├── certificados.css
 ├── certificados.js
@@ -38,7 +38,7 @@ ubits-colaborador/lms-creator/certificados/
 
 ## Shell de página (sin `header-product`)
 
-- `loadSidebar('creator', 'certificados')`
+- `initWorkspaceLayout({ audience: 'admin', activeSidebar: 'cert-descarga' })`
 - `loadSubNav(..., 'creator-certificados')` → **Descarga** (activa) / **Configuración**
 - `loadTabBar` + `loadFloatingMenu` variante `creator`
 - `content-sections` → `section-single` > `widget--transparent` + selection cards + `.certificados-form-card`
@@ -111,7 +111,7 @@ Implementados en `certificados.js` (`HASH_SPECS`, `applyUiState`, `hashchange`).
 | `#contenido` … `#contenido-solicitud-duplicada` | Misma tabla para modo contenido |
 | `#colaborador` … `#colaborador-solicitud-duplicada` | Misma tabla para modo colaborador |
 
-**React:** replicar con `useEffect` + `router` hash o query; útil para Storybook/demos en `/ubits-colaborador/lms-creator/certificados`.
+**React:** replicar con `useEffect` + `router` hash o query; útil para Storybook/demos en `/ubits-admin/lms-creator/certificados`.
 
 ---
 
@@ -187,7 +187,7 @@ Usar junto con la skill **`ubits-component-migration`**. Orden recomendado:
 
 | Vanilla | React destino |
 |---------|---------------|
-| `certificados.html` | `pages/ubits-colaborador/lms-creator/certificados.tsx` |
+| `certificados.html` | `pages/ubits-admin/lms-creator/certificados.tsx` |
 | `certificados.css` | `certificados-page.module.css` (o CSS de página junto al `.tsx`) |
 | `certificados.js` | Lógica en page + hooks (`useCertificadosForm`, `useCertificadosHash`) |
 | `contexto-descarga-certificados.md` | Este doc (no portar; referencia) |
@@ -197,7 +197,7 @@ Usar junto con la skill **`ubits-component-migration`**. Orden recomendado:
 
 - Layout **tipo 1** LMS Creator: sidebar creator + SubNav Descarga/Configuración.
 - **Sin** `HeaderProduct`.
-- Ruta sugerida: `/ubits-colaborador/lms-creator/certificados`
+- Ruta sugerida: `/ubits-admin/lms-creator/certificados`
 
 ### 3. Componentes obligatorios (no HTML crudo)
 

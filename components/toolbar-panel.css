@@ -12,7 +12,7 @@
  * - Checklist extendido para automatización: .cursor/rules/cursor-rules.mdc → «Implementar Toolbar panel».
  * - Vista cuadrícula/tabla: button-group.css (+ button-group.js si es selectable). Botones búsqueda/filtro: ubits-button--sm.
  * - Variante sin contenedor: .ubits-toolbar-panel--plain (sin fondo, borde ni padding).
- * - Referencia en pantalla: ubits-colaborador/lms-creator/contenidos.html, ubits-colaborador/aprendizaje/u-corporativa.html.
+ * - Referencia en pantalla: ubits-admin/lms-creator/contenidos.html, ubits-colaborador/aprendizaje/u-corporativa.html.
  */
 
 .ubits-toolbar-panel {

@@ -9,6 +9,16 @@
  * @param {string} str
  * @returns {string}
  */
+function formatAvatarInitials(value) {
+    var trimmed = String(value == null ? '' : value).trim();
+    if (!trimmed) return '';
+    var parts = trimmed.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+        return ((parts[0].charAt(0) || '') + (parts[1].charAt(0) || '')).toUpperCase();
+    }
+    return trimmed.slice(0, 2).toUpperCase();
+}
+
 function escapeAttr(str) {
     if (str == null) return '';
     return String(str)
@@ -29,8 +39,8 @@ function getAvatarImagesPrefixForPage() {
             : '';
         if (path.indexOf('/ubits-colaborador/aprendizaje/mi-equipo/') !== -1) return '../../../';
         if (path.indexOf('/ubits-colaborador/aprendizaje/exp-estudio/') !== -1) return '../../../';
-        if (path.indexOf('/ubits-colaborador/lms-creator/planes-formacion/') !== -1) return '../../../';
-        if (path.indexOf('/ubits-colaborador/lms-creator/') !== -1) return '../../';
+        if (path.indexOf('/ubits-admin/lms-creator/planes-formacion/') !== -1) return '../../../';
+        if (path.indexOf('/ubits-admin/lms-creator/') !== -1) return '../../';
         if (path.indexOf('/ubits-colaborador/') !== -1) return '../../';
         if (path.indexOf('/ubits-admin/') !== -1) return '../../';
         if (path.indexOf('/documentacion/') !== -1) return '../../';
@@ -67,6 +77,7 @@ function normalizeAvatarUrlForPage(avatar) {
  * @param {Object} [options] - Opciones del avatar
  * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
  * @param {string} [options.alt] - Texto alternativo para la imagen (por defecto usa el nombre)
+ * @param {string} [options.initials] - Letra(s) inicial(es) si no hay imagen. Máx. 2 caracteres.
  * @param {boolean} [options.showTooltip=false] - Si true, añade data-tooltip con el nombre (requiere initTooltip del componente tooltip)
  * @param {number} [options.tooltipDelay=1000] - Delay en ms antes de mostrar el tooltip (solo si showTooltip es true)
  * @param {string|null} [options.mode=null] - Modo activo: null (Colaborador, sin badge), 'admin' (badge "Admin"), 'lms' (badge "LMS")
@@ -83,10 +94,16 @@ function renderAvatar(persona, options) {
     const tabIndexAttr = opts.selectable ? ' tabindex="0"' : '';
     const nombre = persona && (persona.nombre || persona.name);
     const avatarUrl = normalizeAvatarUrlForPage(persona && (persona.avatar || persona.providerLogo));
+    const initials = formatAvatarInitials(opts.initials || (persona && persona.initials) || '');
 
-    const inner = avatarUrl
-        ? `<img src="${escapeAttr(avatarUrl)}" alt="${escapeAttr(opts.alt != null ? opts.alt : (nombre || 'Avatar'))}" class="ubits-avatar__img">`
-        : `<span class="ubits-avatar__fallback"><i class="far fa-user"></i></span>`;
+    var inner;
+    if (avatarUrl) {
+        inner = `<img src="${escapeAttr(avatarUrl)}" alt="${escapeAttr(opts.alt != null ? opts.alt : (nombre || 'Avatar'))}" class="ubits-avatar__img">`;
+    } else if (initials) {
+        inner = `<span class="ubits-avatar__initials" aria-hidden="true">${escapeAttr(initials)}</span>`;
+    } else {
+        inner = `<span class="ubits-avatar__fallback"><i class="far fa-user"></i></span>`;
+    }
 
     const tooltipAttrs = opts.showTooltip && nombre
         ? ` data-tooltip="${escapeAttr(nombre)}" data-tooltip-delay="${Number(opts.tooltipDelay) || 1000}"`
@@ -319,6 +336,7 @@ if (typeof document !== 'undefined') {
 // Exponer globalmente para uso en páginas HTML
 if (typeof window !== 'undefined') {
     window.renderAvatar = renderAvatar;
+    window.formatAvatarInitials = formatAvatarInitials;
     window.renderProfileList = renderProfileList;
     window.normalizeAvatarUrlForPage = normalizeAvatarUrlForPage;
     window.initProfileLists = initProfileLists;

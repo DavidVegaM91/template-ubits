@@ -193,6 +193,7 @@
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/popover.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var refreshPopoverDocPreview = function () {};
@@ -309,7 +310,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
             setTimeout(function () {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
                     item.classList.remove('active');
@@ -319,7 +320,6 @@
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-            loadDocsSidebar('popover');
             initPopoverDocPreview();
             showAlert('warning', 'Antes de usar los prompts en Cursor, sustituye los textos entre [corchetes] por tus datos.', {
                 containerId: 'popover-warning-prompts',

@@ -23,7 +23,7 @@ Carpeta única de **bases de datos del playground** (JavaScript en `window`, sin
 
 ## Mapa de uso por página
 
-Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ubits-colaborador/tareas/` o `ubits-colaborador/lms-creator/`).
+Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ubits-colaborador/tareas/` o `ubits-admin/lms-creator/`).
 
 ### LMS Creator — páginas
 

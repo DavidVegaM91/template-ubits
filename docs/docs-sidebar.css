@@ -259,6 +259,12 @@
     box-sizing: border-box;
 }
 
+body.page-layout-workspace .components-content {
+    margin-left: 0;
+    width: 100%;
+    max-width: none;
+}
+
 @media (max-width: 768px) {
     .components-content {
         margin-left: 0;

@@ -20,6 +20,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -143,12 +144,11 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/rich-text-editor.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('rich-text-editor');
+            bootDocsWorkspace();
             if (typeof initRichTextEditor === 'function') initRichTextEditor('#rte-demo');
             var rteRoot = document.getElementById('rte-demo');
             var previewRequiredSw = document.getElementById('rte-preview-required-switch');

@@ -32,6 +32,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <div id="ubits-toast-container"></div>
 
@@ -375,6 +376,7 @@
     <script src="../../components/segmented-progress.js"></script>
     <script src="../../components/ia-panel-artifact-content.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         
@@ -411,9 +413,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadSidebar('ninguno');
-            loadSubNav('top-nav-container', 'documentacion');
-            loadDocsSidebar('ia-panel');
+            bootDocsWorkspace();
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu pantalla.', { containerId: 'ia-panel-warning-alert', noClose: true });
             }

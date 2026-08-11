@@ -24,6 +24,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -197,12 +198,11 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('dropdown-menu');
-
+            bootDocsWorkspace();
             var container = document.getElementById('dropdown-menu-container');
             var trigger = document.getElementById('dropdown-menu-trigger');
             if (!container || !trigger || typeof getDropdownMenuHtml !== 'function') return;

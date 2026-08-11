@@ -84,13 +84,6 @@
   flex-shrink: 0;
 }
 
-.ubits-app-header__company-logo {
-  height: 24px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-}
-
 .ubits-app-header__icon-btn {
   width: var(--size-4xl);
   height: var(--size-4xl);

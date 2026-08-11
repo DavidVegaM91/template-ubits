@@ -18,6 +18,7 @@
 </head>
 <body class="documentacion-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <!-- Main Content -->
@@ -75,6 +76,23 @@
                             Componentes propios, colores que cambian automáticamente entre modo claro y oscuro. Tipografía oficial e iconos listos para usar.
                         </p>
                     </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 24px; margin-bottom: 48px;">
+                    <a href="guia-prompts.html" style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); text-decoration: none; color: inherit;">
+                        <div style="font-size: var(--font-size-d1); margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-comments"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">Guía de prompts</h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Prompts listos para crear pantallas UBITS en Cursor, sin tener que saber código.
+                        </p>
+                    </a>
+                    <a href="sitemap.html" style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); text-decoration: none; color: inherit;">
+                        <div style="font-size: var(--font-size-d1); margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-sitemap"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">Sitemap</h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Mapa de todas las pantallas del playground con enlace directo a cada una.
+                        </p>
+                    </a>
                 </div>
 
                 <!-- How It Works Section -->
@@ -356,10 +374,10 @@
     <script src="../components/sidebar.js"></script>
     <script src="../components/sub-nav.js"></script>
     <script src="../script.js"></script>
+    <script src="../docs/docs-workspace-boot.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
         });
 
     </script>

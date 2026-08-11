@@ -58,7 +58,6 @@ const SIDEBAR_SECTION_TO_SUBNAV = {
         'diagnóstico': 'diagnostico',
         'desempeño': 'desempeno',
         'encuestas': 'encuestas',
-        'reclutamiento': 'reclutamiento',
         'tareas': 'tareas',
         'ia-para-hr': null
     },
@@ -429,7 +428,7 @@ window.openAdminLmsMigrateConfirm = function (basePathOpt, destinationFullUrl) {
     var targetUrl =
         destinationFullUrl != null && typeof destinationFullUrl === 'string' && destinationFullUrl !== ''
             ? destinationFullUrl
-            : bp + 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html';
+            : bp + 'ubits-admin/lms-creator/contenidos-sin-migrar.html';
 
     ensureAdminLmsMigrateModalAssets(bp, function () {
         clearAdminLmsMigrateModalHandlers();
@@ -614,7 +613,7 @@ function ensureWorkspaceSidebarAssets(basePath, callback) {
 function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     // Compatibilidad hacia atrás: si el primer parámetro no es una variante conocida,
     // se usa la API antigua (sidebar default + ese data-section como activo).
-    const VARIANT_KEYS = ['default', 'admin', 'creator'];
+    const VARIANT_KEYS = ['default', 'admin', 'creator', 'docs'];
     let variant = 'default';
     let actualActiveButton = activeButton;
 
@@ -651,15 +650,16 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     const basePath = getBasePath();
     console.log('Base path calculado:', basePath);
 
-    // Admin + colaborador (default) → Workspace sidebar (paridad React).
+    // Admin + colaborador (default) + docs → Workspace sidebar (paridad React).
     // Creator sigue con rail clásico hasta unificar layouts.
-    if (variant === 'admin' || variant === 'default') {
+    if (variant === 'admin' || variant === 'default' || variant === 'docs') {
         ensureWorkspaceSidebarAssets(basePath, function () {
             if (typeof window.loadWorkspaceSidebar !== 'function') {
                 console.error('loadWorkspaceSidebar no disponible');
                 return;
             }
-            const audience = variant === 'admin' ? 'admin' : 'colaborador';
+            const audience =
+                variant === 'admin' ? 'admin' : variant === 'docs' ? 'docs' : 'colaborador';
             window.loadWorkspaceSidebar(audience, actualActiveButton);
         });
         return;
@@ -679,16 +679,16 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     </div>
                 </div>
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="lms-creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="lms-creator" onclick="window.location.href='${basePath}ubits-admin/lms-creator/contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-bolt"></i>
                     </button>
-                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-admin/lms-creator/planes-formacion/planes-contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard-list"></i>
                     </button>
-                    <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados/certificados.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-admin/lms-creator/certificados/certificados.html'" style="cursor: pointer;">
                         <i class="far fa-award"></i>
                     </button>
-                    <button class="nav-button" data-section="personalizacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="personalizacion" onclick="window.location.href='${basePath}ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html'" style="cursor: pointer;">
                         <i class="far fa-palette"></i>
                     </button>
                 </div>
@@ -819,13 +819,13 @@ function buildSidebarAvatarSubmenuOptions(variant, basePath) {
 
     if (variant === 'admin') {
         options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/aprendizaje/home-learn.html', leftIcon: 'user-gear' });
-        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-colaborador/lms-creator/contenidos.html', leftIcon: 'bolt' });
+        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-admin/lms-creator/contenidos.html', leftIcon: 'bolt' });
     } else if (variant === 'creator') {
         options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/aprendizaje/home-learn.html', leftIcon: 'user-gear' });
         options.push({ text: 'Modo Administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });
     } else {
         options.push({ text: 'Modo Administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });
-        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-colaborador/lms-creator/contenidos.html', leftIcon: 'bolt' });
+        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-admin/lms-creator/contenidos.html', leftIcon: 'bolt' });
     }
 
     options.push({ text: 'Documentación', value: 'action:documentacion', leftIcon: 'book' });

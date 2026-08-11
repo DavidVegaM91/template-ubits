@@ -9,21 +9,12 @@
  *     breadcrumb: [{ label, href? }],
  *     borderless: boolean (default true),
  *     userName, userEmail, userRole, avatarSrc,
- *     companyLogoSrc, companyLogoAlt,
  *   }
  *
  * También: resolveAppHeaderFromSubNavVariant(variant) → options
  */
 (function (global) {
   'use strict';
-
-  var EMPRESA_LINKS = [
-    { id: 'gestion-usuarios', label: 'Gestión de usuarios', href: 'ubits-admin/empresa/gestion-de-usuarios.html', icon: 'users' },
-    { id: 'personalizacion', label: 'Personalización', href: 'ubits-admin/empresa/personalizacion.html', icon: 'paint-brush' },
-    { id: 'organigrama', label: 'Organigrama', href: 'ubits-admin/empresa/organigrama.html', icon: 'sitemap' },
-    { id: 'datos-empresa', label: 'Datos de empresa', href: 'ubits-admin/empresa/datos-de-empresa.html', icon: 'building' },
-    { id: 'roles-permisos', label: 'Roles y permisos', href: 'ubits-admin/empresa/roles-y-permisos.html', icon: 'user-shield' },
-  ];
 
   var PAGE_TITLES = {
     'admin.html': 'Inicio',
@@ -67,6 +58,15 @@
     'organigrama.html': 'Organigrama',
     'datos-de-empresa.html': 'Datos de empresa',
     'roles-y-permisos.html': 'Roles y permisos',
+    'documentacion.html': 'Inicio',
+    'guia-prompts.html': 'Guía de prompts',
+    'sitemap.html': 'Sitemap',
+    'componentes.html': 'Componentes',
+    'colores.html': 'Colores',
+    'iconos.html': 'Iconos',
+    'tipografia.html': 'Tipografía',
+    'plantilla-ubits.html': 'Plantilla',
+    'validador-ubits.html': 'Validador',
   };
 
   var VARIANT_META = {
@@ -123,9 +123,26 @@
     return String(last).split('?')[0].split('#')[0].toLowerCase();
   }
 
+  function titleFromFilename(file) {
+    if (PAGE_TITLES[file]) return PAGE_TITLES[file];
+    var slug = String(file || '').replace(/\.html$/i, '');
+    if (!slug) return '';
+    return slug
+      .split('-')
+      .map(function (w) {
+        return w.charAt(0).toUpperCase() + w.slice(1);
+      })
+      .join(' ');
+  }
+
   function resolveTitleFromPage(fallback) {
     var file = currentFilename();
-    return PAGE_TITLES[file] || fallback || 'Home';
+    if (PAGE_TITLES[file]) return PAGE_TITLES[file];
+    var path = (window.location.pathname || '').replace(/\\/g, '/');
+    if (path.indexOf('/documentacion/') !== -1) {
+      return titleFromFilename(file) || fallback || 'Home';
+    }
+    return fallback || 'Home';
   }
 
   function isDark() {
@@ -247,8 +264,6 @@
     var userName = opts.userName || 'María Alejandra Sánchez Pardo';
     var userEmail = opts.userEmail || 'masanchez@fiqsha.demo';
     var userRole = opts.userRole || (isDocs ? 'Design system' : isColab ? 'Colaborador' : 'Admin');
-    var companyLogo = opts.companyLogoSrc || base + 'images/Client-logo.png';
-    var companyAlt = opts.companyLogoAlt || 'Fiqsha';
     var borderless = opts.borderless !== false;
     var dark = isDark();
 
@@ -258,22 +273,9 @@
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--pill" data-ah-action="novedades" aria-label="Novedades" data-tooltip="Novedades">' +
         '<i class="far fa-bullhorn" aria-hidden="true"></i>' +
         '<span class="ubits-app-header__label-desktop">Novedades</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--pill" data-ah-action="empresa" aria-label="Configuración" aria-haspopup="menu" data-tooltip="Configuración">' +
-        '<i class="far fa-gear" aria-hidden="true"></i>' +
-        '<span class="ubits-app-header__label-desktop">Configuración</span>' +
-        '<i class="far fa-angle-down ubits-app-header__label-desktop" aria-hidden="true"></i></button>' +
         '<button type="button" class="ubits-app-header__icon-btn" data-ah-action="help" aria-label="Centro de ayuda" data-tooltip="Centro de ayuda">' +
         '<i class="far fa-circle-question" aria-hidden="true"></i></button>';
     }
-
-    var company =
-      isColab
-        ? '<img class="ubits-app-header__company-logo" src="' +
-          esc(companyLogo) +
-          '" alt="' +
-          esc(companyAlt) +
-          '" />'
-        : '';
 
     var notifMount = !isDocs ? '<div class="ubits-app-header__notif" data-ah-notif></div>' : '';
 
@@ -321,7 +323,6 @@
       '</nav></div>' +
       '<div class="ubits-app-header__right">' +
       adminActions +
-      company +
       notifMount +
       '<div class="ubits-app-header__menu-wrap">' +
       '<button type="button" class="ubits-app-header__avatar-btn" data-ah-action="avatar" aria-label="Menú de cuenta de ' +
@@ -437,11 +438,6 @@
         return;
       }
 
-      if (action === 'empresa') {
-        openEmpresaMenu(actionEl);
-        return;
-      }
-
       if (action === 'help') {
         window.location.href = href('ubits-admin/otros/admin-help-center.html');
         return;
@@ -480,43 +476,6 @@
 
     document.addEventListener('mousedown', function onDoc(ev) {
       if (!root.contains(ev.target)) closeMenu();
-    });
-  }
-
-  function openEmpresaMenu(anchor) {
-    if (typeof global.getDropdownMenuHtml !== 'function' || typeof global.openDropdownMenu !== 'function') {
-      window.location.href = href(EMPRESA_LINKS[0].href);
-      return;
-    }
-    var overlayId = 'ubits-app-header-empresa';
-    var existing = document.getElementById(overlayId);
-    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
-
-    var options = EMPRESA_LINKS.map(function (link) {
-      return {
-        text: link.label,
-        value: href(link.href),
-        leftIcon: link.icon,
-      };
-    });
-
-    var html = global.getDropdownMenuHtml({
-      overlayId: overlayId,
-      contentId: overlayId + '-content',
-      options: options,
-    });
-    var wrap = document.createElement('div');
-    wrap.innerHTML = html;
-    var overlay = wrap.firstElementChild;
-    document.body.appendChild(overlay);
-    global.openDropdownMenu(overlayId, anchor, { alignRight: true });
-
-    overlay.addEventListener('click', function (ev) {
-      var opt = ev.target && ev.target.closest && ev.target.closest('[data-value]');
-      if (!opt) return;
-      var value = opt.getAttribute('data-value');
-      if (typeof global.closeDropdownMenu === 'function') global.closeDropdownMenu(overlayId);
-      if (value) window.location.href = value;
     });
   }
 

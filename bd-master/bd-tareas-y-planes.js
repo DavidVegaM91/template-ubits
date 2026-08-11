@@ -83,8 +83,8 @@
         try {
             var path = (global.location && global.location.pathname) ? String(global.location.pathname) : '';
             if (path.indexOf('/ubits-colaborador/aprendizaje/mi-equipo/') !== -1) return '../../../';
-            if (path.indexOf('/ubits-colaborador/lms-creator/planes-formacion/') !== -1) return '../../../';
-            if (path.indexOf('/ubits-colaborador/lms-creator/') !== -1) return '../../';
+            if (path.indexOf('/ubits-admin/lms-creator/planes-formacion/') !== -1) return '../../../';
+            if (path.indexOf('/ubits-admin/lms-creator/') !== -1) return '../../';
             if (path.indexOf('/ubits-colaborador/') !== -1) return '../../';
             if (path.indexOf('/ubits-admin/') !== -1) return '../../';
         } catch (e) { /* noop */ }

@@ -5,7 +5,7 @@
 
 // Configuración del sidebar de documentación
 // Orden: introducción, navegación (fijo), UI general (alfabético), aprendizaje (alfabético), IA (alfabético), operations (alfabético)
-const DOCS_SIDEBAR_SECTIONS = [
+var DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
@@ -15,6 +15,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'header-product', title: 'Header Product', group: 'navegacion' },
     { id: 'stepper', title: 'Stepper', group: 'navegacion' },
     { id: 'paginator', title: 'Paginator', group: 'navegacion' },
+    { id: 'workspace-footer', title: 'Workspace footer', group: 'navegacion' },
     // Aprendizaje (alfabético por title)
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
     { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
@@ -90,6 +91,9 @@ const DOCS_SIDEBAR_SECTIONS = [
     // Operations (alfabético por title)
     { id: 'task-strip', title: 'Task strip', group: 'operations' }
 ];
+if (typeof window !== 'undefined') {
+    window.DOCS_SIDEBAR_SECTIONS = DOCS_SIDEBAR_SECTIONS;
+}
 
 /**
  * Generar HTML del sidebar a partir de DOCS_SIDEBAR_SECTIONS
@@ -371,6 +375,7 @@ function initDocsSidebar(activeSection) {
             'switch': 'switch.html',
             'tab': 'tab.html',
             'paginator': 'paginator.html',
+            'workspace-footer': 'workspace-footer.html',
             'popover': 'popover.html',
             'progress-bar': 'progress-bar.html',
             'segmented-progress': 'segmented-progress.html',

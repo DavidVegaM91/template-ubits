@@ -48,7 +48,7 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 
 1. **Mínimo habitual:** estilos base UBITS + **`components/button.css`** + **`components/toolbar-panel.css`**.
 2. **Iconos con `data-tooltip` en la barra:** `tooltip.css`, `tooltip.js`, `initTooltip(...)` tras re-render (badges, chips, etc.).
-3. **Búsqueda expandible (lupa → `createInput` type `search`):** `input.css`, `input.js`, contenedor **`ubits-toolbar-panel__search-inline`** (patrón canónico: **`ubits-colaborador/lms-creator/contenidos.html`** — copiar ese flujo, no improvisar).
+3. **Búsqueda expandible (lupa → `createInput` type `search`):** `input.css`, `input.js`, contenedor **`ubits-toolbar-panel__search-inline`** (patrón canónico: **`ubits-admin/lms-creator/contenidos.html`** — copiar ese flujo, no improvisar).
    - **PROHIBIDO:** Añadir otro **`ubits-button`** (p. ej. cerrar con `fa-times`) **junto** al `createInput` dentro de `__search-inline`. No forma parte del patrón del template; duplica UX (el Input tipo `search` ya cubre limpiar texto) y ya ocurrió un error al implementar la toolbar en otra página. **Colapsar la barra:** clic fuera con campo vacío → volver a la lupa; si no hay resultados, **empty state** con «Limpiar búsqueda» según README.
 4. **`createInput` type `select`** (barra o modal de filtros): **`dropdown-menu.css`** y script **`dropdown-menu.js` antes de `input.js`** (si no, el desplegable del Input se rompe).
 5. **Modal de filtros:** `modal.css`, `modal.js` (`openModal` / `closeModal`).
@@ -58,7 +58,7 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 9. **Un solo botón «Filtrar» con varios criterios:** clase **`ubits-button--active`**, **attention badge** con número de criterios (no filas), **`aria-label`** con conteo — README «Patrón: un solo botón Filtrar».
 10. **«Ver como» cuadrícula / lista:** dos **`ubits-button--tertiary`** mutuamente excluyentes, **`aria-pressed`**, **`ubits-button--active`** en el seleccionado; el cambio de vista es JS/CSS **debajo** del panel, no dentro de `toolbar-panel.css`.
 
-**Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
+**Referencia de producto:** `ubits-admin/lms-creator/contenidos.html` + `contenidos.css`.
 
 ### **🛠 AL usar `createUbitsDataTable` (`components/ubits-data-table.js` + `ubits-data-table.css`):**
 1. **Import obligatorio:** `components/ubits-data-table.css` + `components/ubits-data-table.js`; si hay empty state de “sin datos” o “sin resultados de búsqueda”, también **`components/empty-state.css`** y **`components/empty-state.js`** (el data table llama a `loadEmptyState`).
@@ -294,7 +294,7 @@ openModal({
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
 - **Sidebar** (Left navigation) - 3 variantes (default, admin, creator) → `components-sidebar.css` + `components/sidebar.js`  
   - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`) + Footer (Modo oscuro, Perfil)
-  - **Variante Admin (Workspace):** Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). Configuración en AppHeader (ex Empresa).
+  - **Variante Admin (Workspace):** Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). Configuración en el menú del logo de empresa (tres puntos; ex Empresa / ex AppHeader).
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
@@ -344,7 +344,7 @@ openModal({
 - **Profile Menu** → `components/profile-menu.css` + `components/profile-menu.js`
 - **Modal** (overlay, header/body/footer) → `components/modal.css` + `components/modal.js`. **Renderizado recomendado:** `openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })` para estructura siempre correcta. **Si usas HTML directo:** título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO usar h2). Cerrar con `closeModal(overlayId)`.
 - **Coachmark** (product tour: máscara + spotlight + Popover por paso) → `components/coachmark.css` + `components/coachmark.js` — requiere `popover.css`, `popover.js`, `button.css`; API `UBITS_COACHMARK.start({ steps: [...] })` / `UBITS_COACHMARK.close()`. Doc: `documentacion/componentes/coachmark.html`
-- **Docs Sidebar** → `docs/docs-sidebar.css` + `docs/docs-sidebar.js`
+- **Docs Workspace** → `bootDocsWorkspace()` (`docs/docs-workspace-boot.js`) + `loadWorkspaceSidebar('docs')`. El catálogo de componentes sigue en `docs/docs-sidebar.js` (`DOCS_SIDEBAR_SECTIONS`). Sitemap: `documentacion/sitemap.html`
 
 ## 📋 ARCHIVOS DEL PROYECTO - QUÉ HACE CADA UNO
 
@@ -377,9 +377,11 @@ openModal({
 - **`ubits-colaborador/tareas/tareas.html`** - Tareas
 
 ### **📚 DOCUMENTACIÓN Y HERRAMIENTAS (documentacion/):**
+- **`documentacion/documentacion.html`** - Inicio de la doc (solo vanilla; público menos técnico)
+- **`documentacion/sitemap.html`** - Mapa de pantallas con URLs vanilla
 - **`documentacion/componentes.html`** - Lista completa de componentes UBITS (CHECK FIRST)
 - **`documentacion/validador-ubits.html`** - Validador automático (USE ALWAYS)
-- **`documentacion/guia-prompts.html`** - Prompts para personalización
+- **`documentacion/guia-prompts.html`** - Prompts para personalización (solo vanilla)
 - **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
 - **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (páginas de producto)
 - **`documentacion/componentes/component-doc-template.html`** - Plantilla base para documentación de componentes (usar al crear doc de un componente)
@@ -401,9 +403,9 @@ openModal({
 
 **5. Documentación técnica – Sección desplegable, muy completa.** Todo lo técnico dentro de "Documentación técnica" con Mostrar/Ocultar (`toggleTechnicalDocs()`, `#technical-docs-content`). Incluir: Estructura del componente (HTML escapado), Requisitos (CSS/JS), Cómo implementar (ejemplo completo), API (parámetros, opciones), bugs/soluciones. En el **.js del componente** (components/): comentarios con bugs encontrados al implementar, ejemplos, datos enlazados.
 
-**6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (`group`: `main` | `navegacion` | `ui` | `aprendizaje` | `operations`; en el sidebar: Navegación → UI general → Aprendizaje → Operations; dentro de cada grupo, orden alfabético por `title`) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
+**6. Sidebar Workspace docs.** Siempre añadir el componente en `docs/docs-sidebar.js` (`DOCS_SIDEBAR_SECTIONS`: `group` `navegacion` | `ui` | `aprendizaje` | `ia` | `operations`; orden alfabético por `title` dentro de cada grupo) y en el mapeo `sectionToFile` si el archivo no es `{id}.html`. El chrome de la página es `bootDocsWorkspace()` (Workspace docs: Inicio, Guía de prompts, Foundations, Components, Sitemap). No uses SubNav `documentacion` ni `loadDocsSidebar` en páginas nuevas.
 
-**7. Modo oscuro (obligatorio, no olvidar).** En **cada** `documentacion/componentes/*.html`, después de `<script src="../../docs/docs-sidebar.js"></script>`, incluir `<script src="../../script.js"></script>`. `script.js` ejecuta `loadSavedTheme()` al cargar y sincroniza `document.body` con `localStorage.getItem('theme')` (claro/oscuro). Sin este script, la página queda anclada a `data-theme="light"` del HTML aunque el usuario ya activó modo oscuro en el resto del playground.
+**7. Modo oscuro (obligatorio, no olvidar).** En **cada** `documentacion/componentes/*.html`, incluir `<script src="../../script.js"></script>` y `<script src="../../docs/docs-workspace-boot.js"></script>`. `script.js` ejecuta `loadSavedTheme()` al cargar y sincroniza `document.body` con `localStorage.getItem('theme')` (claro/oscuro). Sin este script, la página queda anclada a `data-theme="light"` del HTML aunque el usuario ya activó modo oscuro en el resto del playground.
 
 ### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
 
@@ -1098,8 +1100,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variante Admin
     loadSidebar('admin', 'inicio'); // Activa sidebar admin con inicio
 
-    // Variante Creator (LMS Creator, colaborador)
-    loadSidebar('creator', 'lms-creator');
+    // LMS Creator (listas): Workspace admin — no usar rail creator
+    initWorkspaceLayout({ audience: 'admin', activeSidebar: 'contenidos' });
 });
 </script>
 ```
@@ -1587,15 +1589,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 **Referencias canónicas:** `catalogo-proveedores-helpers.js`, `catalogo-contenidos-drawer.js`, `zona-estudio.js` (`mapCatalogoToCard`), `components/card-content.js` (JSDoc de `cardData`).
 
-#### **8. DOCS SIDEBAR (Documentation Navigation)**
+#### **8. DOCS WORKSPACE (Documentation Navigation)**
 ```html
-<!-- Container for Docs Sidebar -->
-<div id="docs-sidebar-container"></div>
-
-<!-- JavaScript to load Docs Sidebar -->
+<div id="sidebar-container"></div>
+<div id="top-nav-container"></div>
+<script src="../../docs/docs-workspace-boot.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadDocsSidebar('CURRENT_SECTION');
+    bootDocsWorkspace();
 });
 </script>
 ```
@@ -1768,13 +1769,11 @@ document.addEventListener('DOMContentLoaded', function() {
 - **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion` (universidad corporativa en LMS Creator: `lms-creator/personalizacion-u-corporativa.html`; la vista colaborador sigue en `aprendizaje/u-corporativa.html`)
 - **Footer:** Modo oscuro, Perfil (menú: Modo Colaborador + Modo Administrador sin divisor; Documentación; contraseña y sesión).
 - **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes de formación + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
-- **Ejemplo:**
+- **Ejemplo (listas LMS Creator = Workspace admin):**
   ```html
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-      loadSidebar('creator', 'lms-creator');
-      loadSubNav('top-nav-container', 'creator-lms');
-      // Planes: loadSubNav(..., 'creator-planes'); etc.
+      initWorkspaceLayout({ audience: 'admin', activeSidebar: 'contenidos', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
   });
   </script>
   ```
@@ -1906,7 +1905,7 @@ Before finishing any task, verify:
 - [ ] **NO SERVER REQUIRED:** Files work by double-clicking (no npm, yarn, or server needed)
 - [ ] **TITLE ALIGNMENT:** Product interfaces have left-aligned titles (NOT centered)
 - [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
-- [ ] **DOC PAGES (documentacion/componentes/):** No tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference; include **`../../script.js`** after `docs-sidebar.js` so dark mode matches `localStorage`
+- [ ] **DOC PAGES (documentacion/componentes/):** Workspace docs via `bootDocsWorkspace()`; no tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference; include **`../../script.js`** so dark mode matches `localStorage`
 - [ ] **COMPONENTS:** Checked `componentes.html` before creating any UI element
 - [ ] **COMPONENTS:** NO custom buttons created (UBITS Button component exists)
 - [ ] **COMPONENTS:** NO custom alerts created (UBITS Alert component exists)

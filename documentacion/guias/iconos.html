@@ -21,6 +21,7 @@
 </head>
 <body class="iconos-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         
 
@@ -81,10 +82,10 @@
     <!-- Contenedor para Toast UBITS -->
     <div id="ubits-toast-container"></div>
 
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
+bootDocsWorkspace();
             // Iconos ordenados alfabéticamente para fácil búsqueda
             const allIcons = [
                 { name: 'address-book', class: 'fa-address-book', icon: '◇' },

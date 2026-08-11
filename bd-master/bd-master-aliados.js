@@ -4,7 +4,7 @@
  */
 window.BD_MASTER_ALIADOS = {
   "version": "1.0",
-  "nota": "Logos relativos a la raíz del repositorio (images/Favicons/). Desde ubits-colaborador/lms-creator usar ../../images/Favicons/. Fiqsha es aly-018 (último id y último en el array).",
+  "nota": "Logos relativos a la raíz del repositorio (images/Favicons/). Desde ubits-admin/lms-creator usar ../../images/Favicons/. Fiqsha es aly-018 (último id y último en el array).",
   "aliados": [
     {
       "id": "aly-001",

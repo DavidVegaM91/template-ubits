@@ -30,6 +30,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -140,6 +141,7 @@
     <script src="../../components/ia-button.js"></script>
     <script src="../../components/learn-content-img-trailer.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var LCB_DEMO_IMG = '../../images/cards-learn/introduccion-al-growth-marketing.jpeg';
@@ -222,9 +224,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('learn-content-img-trailer');
+            bootDocsWorkspace();
             lcbSetPreviewState('empty');
             document.querySelectorAll('.lcb-state-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {

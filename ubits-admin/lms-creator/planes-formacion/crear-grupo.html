@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>UBITS Playground - LMS Creator - Nuevo grupo</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-workspace.css">
+    <link rel="stylesheet" href="../lms-creator.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/inline-edit.css">
+    <link rel="stylesheet" href="../../../components/ia-button.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/drawer.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="./crear-grupo.css">
+</head>
+<body data-theme="light" class="page-crear-grupo">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-crear-grupo">
+                        <div class="crear-grupo-form">
+                            <!-- Nombre del grupo (editable inline, como plan-detail) -->
+                            <div class="crear-grupo-form__field crear-grupo-form__field--nombre">
+                                <textarea class="ubits-inline-edit ubits-heading-h1" id="grupo-nombre" placeholder="Nombre del grupo" rows="1" maxlength="250"></textarea>
+                            </div>
+                            <!-- Descripción (editable inline, como plan-detail) -->
+                            <div class="crear-grupo-form__field crear-grupo-form__field--desc">
+                                <textarea class="task-detail-desc-editable ubits-body-sm-regular" id="grupo-descripcion" placeholder="Descripción del grupo" rows="1"></textarea>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-grupos-lista">
+                            <div id="crear-grupo-integrantes-data-table-container" class="crear-grupo-integrantes-tabla"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/inline-edit.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../../bd-master/bd-tareas-y-planes.js"></script>
+    <script src="../../../components/layout-workspace.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/header-product.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/empty-state.js"></script>
+    <script src="./drawer-participantes-colab-table.js"></script>
+    <script src="../../../components/ubits-data-table.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/drawer.js"></script>
+    <script src="../../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initWorkspaceLayout({ audience: 'admin', activeSidebar: 'grupos', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
+            loadTabBar('tab-bar-container', 'admin');
+            loadFloatingMenu('floating-menu-container', 'admin');
+            loadProfileMenu('profile-menu-container');
+            
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Crear grupo',
+                    breadcrumbItems: [],
+                    backButton: {
+                        onClick: function() {
+                            window.location.href = 'grupos.html';
+                        }
+                    },
+                    secondaryButtons: [
+                        {
+                            text: 'Guardar',
+                            icon: 'fa-floppy-disk',
+                            onClick: function() {
+                                window.location.href = 'grupos.html';
+                            }
+                        }
+                    ]
+                });
+            }
+
+            setTimeout(() => {
+                var tab = document.querySelector('.nav-tab[data-tab="grupos"]');
+                if (tab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
+                    tab.classList.add('active');
+                }
+                var sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
+                    sidebarBtn.classList.add('active');
+                }
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function(item) { item.classList.remove('active'); });
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('grupos');
+                }
+            }, 200);
+
+            // Auto-resize textareas nombre y descripción (inline como plan-detail)
+            setTimeout(function() {
+                var nombreTa = document.getElementById('grupo-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                    });
+                }
+                var descTa = document.getElementById('grupo-descripcion');
+                if (descTa) {
+                    descTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                    });
+                }
+            }, 0);
+
+            // Lista de integrantes: data-table vacía con título, buscador y botón Agregar integrantes
+            var integrantesData = [];
+            var integrantesTablaRef = null;
+            function escapeHtmlGrupo(t) {
+                if (t == null) return '';
+                var d = document.createElement('div');
+                d.textContent = t;
+                return d.innerHTML;
+            }
+            function buildIntegranteRowHtml(row) {
+                var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
+                var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
+                    (avatarUrl
+                        ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeHtmlGrupo(row.nombre) + '" class="ubits-avatar__img"></span>'
+                        : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
+                    '<span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.nombre) + '</span></div>';
+                return '<td data-col="nombre">' + usuarioCell + '</td>' +
+                    '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.correo) + '</span></td>' +
+                    '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.area || '') + '</span></td>';
+            }
+
+            var isDrawerGestionar = false;
+
+            function updateIntegrantesPrimaryButton() {
+                var cont = document.getElementById('crear-grupo-integrantes-data-table-container');
+                if (!cont) return;
+                var btn = cont.querySelector('.ubits-dt-primary-btn');
+                if (!btn) return;
+                var isGestionar = integrantesData.length > 0;
+                if (isGestionar) {
+                    btn.innerHTML = '<i class="far fa-pen"></i><span>Gestionar integrantes</span>';
+                } else {
+                    btn.innerHTML = '<i class="far fa-plus"></i><span>Agregar integrantes</span>';
+                }
+            }
+
+            function abrirDrawerAgregarIntegrantes() {
+                isDrawerGestionar = integrantesData.length > 0;
+                var tituloDrawer = isDrawerGestionar ? 'Gestionar integrantes' : 'Agregar integrantes';
+                var labelFooter = isDrawerGestionar ? 'Guardar' : 'Agregar';
+                var bodyHtml = '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" style="display:block">' +
+                    '<div id="drawer-integrantes-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
+                    '</div>';
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-integrantes-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-integrantes-agregar"><span class="ubits-body-sm-regular">' + labelFooter + '</span></button>';
+
+                if (typeof openDrawer === 'function') {
+                    var overlay = openDrawer({
+                        overlayId: 'drawer-agregar-integrantes',
+                        title: tituloDrawer,
+                        bodyHtml: bodyHtml,
+                        footerHtml: footerHtml,
+                        size: 'lg',
+                        onClose: function() {}
+                    });
+                    initDrawerAgregarIntegrantes(overlay, isDrawerGestionar);
+                }
+            }
+
+            function initDrawerAgregarIntegrantes(overlay, isGestionar) {
+                if (!overlay) return;
+                var DPC = window.DrawerParticipantesColabTable;
+                var initialSelectedIds = isGestionar ? integrantesData.map(function(i) { return i.id; }) : [];
+                var empleadosDrawerRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                var empleadosDrawer = empleadosDrawerRaw.map(function(e, idx) {
+                    return DPC ? DPC.mapEmpleadoParaDrawerColab(e, idx) : e;
+                });
+                overlay._empleadosDrawer = empleadosDrawer;
+                overlay._isGestionar = isGestionar;
+
+                var container = overlay.querySelector('#drawer-integrantes-colab-data-table-container');
+                if (container && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+                    var drawerTablaRef = DPC.createDrawerParticipantesColabDataTable({
+                        containerId: 'drawer-integrantes-colab-data-table-container',
+                        tableId: 'drawer-integrantes-colab-table',
+                        getData: function() { return empleadosDrawer; },
+                        initialSelectedIds: initialSelectedIds,
+                        i18n: {
+                            selectAll: 'Seleccionar todo',
+                            deselectAll: 'Deseleccionar todo',
+                            verSeleccionados: 'Ver seleccionados',
+                            buscar: 'Buscar',
+                            columnasVisibles: 'Columnas visibles'
+                        }
+                    });
+                    overlay._drawerIntegrantesTablaRef = drawerTablaRef;
+                }
+
+                overlay.querySelector('#drawer-integrantes-cancel').addEventListener('click', function() {
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-integrantes');
+                });
+                overlay.querySelector('#drawer-integrantes-agregar').addEventListener('click', function() {
+                    var ref = overlay._drawerIntegrantesTablaRef;
+                    var empleados = overlay._empleadosDrawer || [];
+                    var mapById = {};
+                    empleados.forEach(function(e) { mapById[e.id] = e; });
+                    if (ref && typeof ref.getSelectedIds === 'function') {
+                        var ids = ref.getSelectedIds();
+                        if (overlay._isGestionar) {
+                            integrantesData.length = 0;
+                            ids.forEach(function(id) {
+                                var e = mapById[id];
+                                if (e) integrantesData.push({ id: e.id, nombre: e.nombre, correo: e.correo, area: e.area || '', avatar: e.avatar || null });
+                            });
+                        } else {
+                            ids.forEach(function(id) {
+                                var e = mapById[id];
+                                if (e && !integrantesData.some(function(i) { return i.id === e.id || (i.correo === e.correo && i.nombre === e.nombre); })) {
+                                    integrantesData.push({ id: e.id, nombre: e.nombre, correo: e.correo, area: e.area || '', avatar: e.avatar || null });
+                                }
+                            });
+                        }
+                    }
+                    if (integrantesTablaRef && typeof integrantesTablaRef.refresh === 'function') integrantesTablaRef.refresh();
+                    updateIntegrantesPrimaryButton();
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-integrantes');
+                });
+
+                if (container) container.style.flexDirection = 'column';
+            }
+
+            if (typeof createUbitsDataTable === 'function') {
+                integrantesTablaRef = createUbitsDataTable({
+                    containerId: 'crear-grupo-integrantes-data-table-container',
+                    tableId: 'crear-grupo-integrantes-table',
+                    title: 'Lista de integrantes',
+                    columns: [
+                        { id: 'nombre', label: 'Nombre del usuario', sortable: true },
+                        { id: 'correo', label: 'Correo', sortable: true },
+                        { id: 'area', label: 'Área', sortable: true }
+                    ],
+                    getData: function() { return integrantesData; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildIntegranteRowHtml,
+                    features: { checkboxes: false, search: true, resultsCount: true },
+                    emptyState: {
+                        message: 'Aún no hay integrantes',
+                        icon: 'far fa-user-plus',
+                        description: 'Agrega personas al grupo para gestionar su acceso y permisos.'
+                    },
+                    primaryButton: {
+                        text: 'Agregar integrantes',
+                        icon: 'fa-plus',
+                        onClick: function() { abrirDrawerAgregarIntegrantes(); }
+                    }
+                });
+                updateIntegrantesPrimaryButton();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -28,13 +28,15 @@ Elige **una** familia por pantalla. En producto solo hay **Workspace** e **Inmer
 
 | # | Nombre | Referencia | Qué incluye | CSS / `body` / API |
 |---|--------|------------|--------------|-------------------|
-| **1** | **Workspace** | [`ubits-colaborador/aprendizaje/home-learn.html`](ubits-colaborador/aprendizaje/home-learn.html), [`ubits-admin/inicio/admin.html`](ubits-admin/inicio/admin.html), [`ubits-colaborador/ia-para-hr/ia-para-hr.html`](ubits-colaborador/ia-para-hr/ia-para-hr.html) | Shell **`.ubits-layout-workspace`**: sidebar Workspace flotante + **AppHeader** + columna main con scroll. Sustituye los antiguos layouts «estándar» (con SubNav) y «sin SubNav». Móvil: TabBar + Floating menu. | **`body.page-layout-workspace`**. Importar **`general-styles/layout-workspace.css`**. API: **`initWorkspaceLayout({ audience, activeSidebar, headerVariant })`** (`components/layout-workspace.js`). También se activa al usar `loadSidebar('admin'\|'default'|…)`. |
-| **2** | **Inmersivo** | [`ubits-colaborador/lms-creator/crear-contenido.html`](ubits-colaborador/lms-creator/crear-contenido.html) | Sin Sidebar ni AppHeader de producto: raíz **`.ubits-layout-immersive`**, cabecera **`.ubits-layout-immersive__header`**, **`main.ubits-layout-immersive__main`**, pie **`.ubits-layout-immersive__footer`**. Stage: **`.ubits-layout-immersive__stage`**. | **`body.page-layout-immersive`** (+ **`no-subnav`**). **`general-styles/layout-immersive.css`**. |
-| **—** | **Documentación** | [`documentacion/componentes.html`](documentacion/componentes.html) | Docs Sidebar + SubNav `documentacion` (legacy de la doc). No es layout de producto. | `docs-sidebar` + `docstyles` + `sub-nav` + base. |
+| **1** | **Workspace** | [`ubits-colaborador/aprendizaje/home-learn.html`](ubits-colaborador/aprendizaje/home-learn.html), [`ubits-admin/inicio/admin.html`](ubits-admin/inicio/admin.html), [`ubits-colaborador/ia-para-hr/ia-para-hr.html`](ubits-colaborador/ia-para-hr/ia-para-hr.html) | Shell **`.ubits-layout-workspace`**: sidebar Workspace flotante + **AppHeader** + columna main con scroll + **Workspace footer** al final del main (no sticky; `components/workspace-footer.js`). Admin: logo de empresa + menú de tres puntos. Colaborador: logo sin menú. Sustituye los antiguos layouts «estándar» (con SubNav) y «sin SubNav». Móvil: TabBar + Floating menu. | **`body.page-layout-workspace`**. Importar **`general-styles/layout-workspace.css`**. API: **`initWorkspaceLayout({ audience, activeSidebar, headerVariant })`** (`components/layout-workspace.js`). También se activa al usar `loadSidebar('admin'\|'default'|…)`. |
+| **2** | **Inmersivo** | [`ubits-admin/lms-creator/crear-contenido.html`](ubits-admin/lms-creator/crear-contenido.html) | Sin Sidebar ni AppHeader de producto: raíz **`.ubits-layout-immersive`**, cabecera **`.ubits-layout-immersive__header`**, **`main.ubits-layout-immersive__main`**, pie **`.ubits-layout-immersive__footer`**. Stage: **`.ubits-layout-immersive__stage`**. | **`body.page-layout-immersive`** (+ **`no-subnav`**). **`general-styles/layout-immersive.css`**. |
+| **—** | **Documentación** | [`documentacion/documentacion.html`](documentacion/documentacion.html) | **Workspace** `audience: 'docs'`: mismo shell que admin (sidebar flotante + AppHeader + pie). Nav extra de vanilla: **Inicio** y **Guía de prompts** (público menos técnico). Footer del sidebar: **Sitemap**. | `initWorkspaceLayout({ audience: 'docs' })` / `bootDocsWorkspace()`. Sitemap: [`documentacion/sitemap.html`](documentacion/sitemap.html). |
 
-**LMS Creator (listas):** en React van en Workspace admin; en vanilla las listas con `loadSidebar('creator')` aún usan rail creator (transición). Flujos crear/editar → Inmersivo.
+**LMS Creator (listas):** Workspace admin (`initWorkspaceLayout({ audience: 'admin' })`) en `ubits-admin/lms-creator/`. Las URLs viejas `ubits-colaborador/lms-creator/*` redirigen a admin. Flujos crear/editar contenido → Inmersivo.
 
-**Modo oscuro en documentación de componentes (`documentacion/componentes/*.html`):** Cada página **debe** incluir `<script src="../../script.js"></script>` justo **después** de `docs-sidebar.js` (mismo patrón que `documentacion/componentes/button.html` y `component-doc-template.html`). Ese script registra `loadSavedTheme()` en `DOMContentLoaded` y aplica en `<body>` la preferencia guardada en `localStorage` (`theme`). Sin `script.js`, el atributo fijo `data-theme="light"` del HTML deja la doc siempre en claro aunque el usuario haya puesto toda la plataforma en modo oscuro.
+**Modo oscuro en documentación de componentes (`documentacion/componentes/*.html`):** Cada página **debe** incluir `<script src="../../script.js"></script>` (mismo patrón que `documentacion/componentes/button.html` y `component-doc-template.html`). Ese script registra `loadSavedTheme()` en `DOMContentLoaded` y aplica en `<body>` la preferencia guardada en `localStorage` (`theme`). Sin `script.js`, el atributo fijo `data-theme="light"` del HTML deja la doc siempre en claro aunque el usuario haya puesto toda la plataforma en modo oscuro.
+
+**Chrome de documentación:** `bootDocsWorkspace()` (`docs/docs-workspace-boot.js`) monta Workspace docs. No uses SubNav `documentacion` ni `loadDocsSidebar` en páginas nuevas.
 
 **Mantenimiento:** cáscara Workspace → **`general-styles/layout-workspace.css`** + **`components/layout-workspace.js`**. Cáscara inmersiva → **`general-styles/layout-immersive.css`**. Evita copiar reglas de layout en un CSS de página salvo overrides muy localizados.
 
@@ -49,7 +51,7 @@ En pantallas donde **solo hay un botón de filtros** en la barra (icono `fa-filt
 3. **Accesibilidad:** actualizar **`aria-label`** del botón para incluir el conteo cuando sea mayor que cero (p. ej. «Abrir filtros (3 filtros aplicados)»).
 4. **Opcional recomendado:** fila de **chips** “Filtros aplicados” con quitar individual y “Limpiar filtros”, alineado con tablas tipo seguimiento / lista de contenidos.
 
-**Referencias en el repo:** [`ubits-colaborador/tareas/tareas.html`](ubits-colaborador/tareas/tareas.html) + [`tareas.js`](ubits-colaborador/tareas/tareas.js) (`updateTareasFiltrosButtonBadge`, `getTareasFiltrosAplicadosCount`); [`ubits-colaborador/lms-creator/contenidos.html`](ubits-colaborador/lms-creator/contenidos.html) (`updateContenidosFiltrosButtonBadge`, chips y modal de filtros).
+**Referencias en el repo:** [`ubits-colaborador/tareas/tareas.html`](ubits-colaborador/tareas/tareas.html) + [`tareas.js`](ubits-colaborador/tareas/tareas.js) (`updateTareasFiltrosButtonBadge`, `getTareasFiltrosAplicadosCount`); [`ubits-admin/lms-creator/contenidos.html`](ubits-admin/lms-creator/contenidos.html) (`updateContenidosFiltrosButtonBadge`, chips y modal de filtros).
 
 **No es este patrón:** listas donde cada columna tiene su propio `fa-filter` en el `<thead>` (p. ej. seguimiento), ni tablas data-table con filtros solo por columna; ahí el “activo” se marca **por columna**, no con un único contador en un botón global.
 
@@ -94,7 +96,7 @@ El dashboard **`ubits-colaborador/aprendizaje/home-learn.html`** usa el componen
 
 ### Fuente de datos de búsqueda
 
-Los resultados unen **`bd-master/bd-contenidos-ubits.js`** y **`bd-master/bd-contenidos-fiqsha.js`** vía **`ubits-colaborador/lms-creator/planes-formacion/catalogo-contenidos-drawer.js`** (`refreshCatalogoContenidosDrawer()`). El filtro es **local en el playground** (título, descripción, tipo, competencia, proveedor, categoría, nivel, idioma).
+Los resultados unen **`bd-master/bd-contenidos-ubits.js`** y **`bd-master/bd-contenidos-fiqsha.js`** vía **`ubits-admin/lms-creator/planes-formacion/catalogo-contenidos-drawer.js`** (`refreshCatalogoContenidosDrawer()`). El filtro es **local en el playground** (título, descripción, tipo, competencia, proveedor, categoría, nivel, idioma).
 
 ### Debounce + skeleton (evitar parpadeo)
 
@@ -182,7 +184,7 @@ Bloque reutilizable para la **barra** de una lista o catálogo (título + meta a
 | Contador en `__meta` | Tipografía + tu JS | Debe reflejar **ítems visibles / total** (o el criterio que defina producto). |
 | Ver como cuadrícula / tabla | Botones tertiary mutuamente excluyentes | `ubits-button--active` y `aria-pressed`; tu JS cambia la vista debajo del panel, no el CSS del toolbar. |
 
-**Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
+**Referencia de producto:** `ubits-admin/lms-creator/contenidos.html` + `contenidos.css`.
 
 ## Tabla solo de datos: Data Table (`createUbitsDataTable`)
 
@@ -219,46 +221,32 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
   - `admin-diagnostico` - Administración de diagnóstico
   - `admin-encuestas` - Administración de encuestas
   - `documentacion` - Solo para páginas de documentación
-  - `creator-lms` - LMS Creator: Contenidos, Categorías (`ubits-colaborador/lms-creator/`)
+  - `creator-lms` - LMS Creator: Contenidos, Categorías (`ubits-admin/lms-creator/`)
   - `creator-planes` - LMS Creator: Planes de formación, Grupos
   - `creator-certificados` - LMS Creator: Descarga, Configuración
   - `creator-personalizacion` - LMS Creator: Universidad corporativa, Seguimiento
 - **Sidebar** - Navegación lateral con **3 variantes** (`components/sidebar.js`):
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
-  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). **Configuración** (ex Empresa) en AppHeader. Incluye modo oscuro / feedback en footer del Workspace.
-  - **Variante creator:** rail oscuro con cuatro módulos del producto LMS Creator — `lms-creator` (Contenidos), `planes-formacion`, `certificados`, `personalizacion`. Uso típico: `loadSidebar('creator', 'lms-creator')` (o la sección activa correspondiente). Detalle en [LMS Creator (producto aparte)](#lms-creator-producto-aparte-del-colaborador) más abajo.
-- **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-colaborador/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
+  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
+  - **Variante creator (deprecada):** el rail oscuro ya no se usa en LMS Creator. Las listas van en Workspace admin. Ver [LMS Creator](#lms-creator-producto-de-admin).
+- **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-admin/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
 - **Profile Menu** - Menú desplegable del perfil de usuario
 
 **Páginas sin SubNav (layout 2):** Ver [Layouts de página (cuatro experiencias)](#layouts-de-página-cuatro-experiencias). Referencias rápidas: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
 
-### LMS Creator (producto aparte del colaborador)
+### LMS Creator (producto de admin)
 
-El **LMS Creator** es un producto de prototipo dentro del playground: vive en **`ubits-colaborador/lms-creator/`**, comparte shell UBITS (SubNav, TabBar, Floating menu, toasts) pero tiene **su propia barra lateral** (variante **`creator`** del Sidebar) y **SubNav por módulo** (no mezclar pestañas entre módulos).
+El **LMS Creator** vive en **`ubits-admin/lms-creator/`**. Las **listas** usan el **Workspace admin** (mismo sidebar que el resto de admin: Productos → Aprendizaje → Contenidos, etc.). Crear/editar contenido usa **Inmersivo**. El rail `creator` quedó deprecado y no se usa en estas páginas.
 
 #### **Cómo entra el usuario**
 
 | Origen | Comportamiento |
 |--------|----------------|
-| Menú del avatar (sidebar default) | **Modo LMS Creator** → `lms-creator/contenidos.html` |
-| `aprendizaje/u-corporativa.html` | Botón **Acceder a LMS Creator** → `../lms-creator/contenidos.html` |
-| Floating menu (móvil) | Acordeón **LMS Creator** con enlaces a cada vista principal |
-
-En el **rail del sidebar default** no hay icono dedicado al Creator (solo las rutas anteriores).
-
-#### **Sidebar variante `creator`**
-
-`loadSidebar('creator', '<sección>')` — si omites el segundo argumento, la sección activa por defecto es **`lms-creator`**.
-
-| `data-section` (2.º arg) | Destino principal del ícono |
-|--------------------------|------------------------------|
-| `lms-creator` | `contenidos.html` |
-| `planes-formacion` | `planes-formacion/planes-contenidos.html` |
-| `certificados` | `certificados/certificados.html` |
-| `personalizacion` | `personalizacion/personalizacion-u-corporativa.html` |
-
-El logo UBITS en el header del sidebar es solo marca (sin enlace ni hover de interacción) en todas las variantes. El menú de perfil del Creator incluye **Modo Colaborador** (enlace a `ubits-colaborador/perfil/profile.html`) y **Modo Administrador**, además de documentación y sesión (ver `components/sidebar.js`).
+| Sidebar Workspace admin → Aprendizaje | Contenidos, Categorías, U. corporativa, LMS AI, Planes, Grupos, Certificados |
+| Menú del avatar (colaborador) | **Modo LMS Creator** → `ubits-admin/lms-creator/contenidos.html` |
+| `aprendizaje/u-corporativa.html` | Botón **Acceder a LMS Creator** → `../../ubits-admin/lms-creator/contenidos.html` |
+| Bookmark viejo `ubits-colaborador/lms-creator/*` | Redirect HTML al mismo path bajo admin (conserva `?` y `#`) |
 
 #### **SubNav: un módulo = una variante**
 
@@ -290,17 +278,17 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 
 | Caso | Dónde |
 |------|--------|
-| Editar plan de contenidos / competencias | `ubits-colaborador/lms-creator/planes-formacion/editar-plan-contenidos.html`, `editar-plan-competencias.html` (`tryNavigateBackEditarPlan*`, `openSalirSinGuardarModal*`, `serializePlanEdit*`, `capturePlanEdit*Baseline`) |
+| Editar plan de contenidos / competencias | `ubits-admin/lms-creator/planes-formacion/editar-plan-contenidos.html`, `editar-plan-competencias.html` (`tryNavigateBackEditarPlan*`, `openSalirSinGuardarModal*`, `serializePlanEdit*`, `capturePlanEdit*Baseline`) |
 | Mismo enfoque modal (otro producto) | `ubits-admin/desempeno/360/editar-360.html` — función `confirmarSalir()` con título «Salir sin guardar» y flag de borrador (`draft.guardado`) |
 
 **Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion/personalizacion-u-corporativa.html`**.
 
-**Universidad corporativa y LMS Creator (contenidos publicados):** la lista de **`ubits-colaborador/aprendizaje/u-corporativa.html`** debe mostrar **los mismos contenidos publicados** que expone el catálogo **`contents`** en `bd-master/bd-contenidos-fiqsha.js` (lo que en producto equivaldría a lo creado y dejado en estado publicado por la empresa en **LMS Creator → Contenidos**, `ubits-colaborador/lms-creator/contenidos.html`). Los **filtros** de la vista colaborador (tipo, categoría Fiqsha, nivel, idioma) están alineados con el **modal Filtros** de esa página Creator para que PM, diseño y datos mock sigan una sola verdad.
+**Universidad corporativa y LMS Creator (contenidos publicados):** la lista de **`ubits-colaborador/aprendizaje/u-corporativa.html`** debe mostrar **los mismos contenidos publicados** que expone el catálogo **`contents`** en `bd-master/bd-contenidos-fiqsha.js` (lo que en producto equivaldría a lo creado y dejado en estado publicado por la empresa en **LMS Creator → Contenidos**, `ubits-admin/lms-creator/contenidos.html`). Los **filtros** de la vista colaborador (tipo, categoría Fiqsha, nivel, idioma) están alineados con el **modal Filtros** de esa página Creator para que PM, diseño y datos mock sigan una sola verdad.
 
 #### **Contexto en Markdown (no es UI)**
 
-- `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos (incluye **Implementación en página dedicada** y rutas QA)
-- `ubits-colaborador/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
+- `ubits-admin/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos (incluye **Implementación en página dedicada** y rutas QA)
+- `ubits-admin/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
 
 **Datos y utilidades:** muchas vistas enlazan **`bd-master/`** y **`general-utils/humanizador-fechas.js`**; el detalle por archivo está en **`bd-master/README.md`**.
 
@@ -314,7 +302,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 | **HTML del handle** | Mismo archivo, `paginasCreatorItemHtml()`: grip sólido gris (`fas fa-grip-vertical`) en `<span class="ubits-paginas-creator__drag-handle" draggable="true" …>` a la izquierda del icono de tipo (`ubits-paginas-creator__type-icon-wrap`). Solo el handle inicia el arrastre; el resto de la fila sigue siendo clic para activar / doble clic para editar. |
 | **Estilos** | `components/paginas-creator.css`: `.ubits-paginas-creator__drag-handle` (`cursor: grab` / `:active` y `.is-dragging` → `grabbing`); `.is-drop-before` / `.is-drop-after` (línea de inserción arriba/abajo); `.is-dragging` solo opacidad (sin borde/outline en el ítem arrastrado). |
 | **Evento al soltar** | `document` → `CustomEvent` **`ubits-paginas-creator-action`** con `detail.action === 'reordenar'` y `detail.item` (la fila movida). Coexiste con `mover-arriba` / `mover-abajo` / `eliminar` del menú ⋮. |
-| **Consumo actual** | `ubits-colaborador/lms-creator/crear-contenido.js`: en el listener de `ubits-paginas-creator-action` también trata **`reordenar`** (igual que mover arriba/abajo: refrescar tooltips del mount y estado del flujo). |
+| **Consumo actual** | `ubits-admin/lms-creator/crear-contenido.js`: en el listener de `ubits-paginas-creator-action` también trata **`reordenar`** (igual que mover arriba/abajo: refrescar tooltips del mount y estado del flujo). |
 | **Tooltips durante arrastre** | En `dragstart`: clase **`ubits-paginas-creator-dragging`** en `document.body` + `hideTooltip()`. En `dragend`: se quita la clase. `components/tooltip.js` comprueba esa clase en **mouseenter** y **focus** (antes del timeout y antes de `showTooltip`) para no mostrar tooltips mientras dura el arrastre. |
 
 **Mapeo rápido para otro reordenamiento:** (1) Si es otra lista dentro del mismo componente, reutiliza el mismo patrón en `paginas-creator.js` o extrae funciones compartidas. (2) Si es otro componente con DnD + `data-tooltip`, o bien reutiliza la clase en `body` + la misma guarda en `tooltip.js`, o bien generaliza a una API tipo `setTooltipDragSuppression(true/false)` y una sola clase semántica (p. ej. `ubits-suppress-tooltips`) para no acoplar el tooltip a un solo producto. (3) Mantén siempre una alternativa **sin arrastrar** (botones / menú) por **WCAG 2.5.7** (arrastre no esencial).
@@ -373,6 +361,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Table** - Tablas de datos - **RENDERIZADO: HTML directo**
 - **Data Table** - Tabla configurable con búsqueda, filtros, orden, selección, empty states y barra de acciones - **RENDERIZADO: `createUbitsDataTable(options)`** — `ubits-data-table.css` + `ubits-data-table.js` + dependencias (`table.css`, `button.css`, `input.css`, etc.); doc: `documentacion/componentes/ubits-data-table.html`; ver también [Tabla solo de datos](#tabla-solo-de-datos-data-table-createubitsdatatable)
 - **Toolbar panel** - Barra de cabecera de lista/catálogo (título, meta, acciones; solo layout) - **RENDERIZADO: HTML directo** — `toolbar-panel.css` + `button.css`; doc: `documentacion/componentes/toolbar-panel.html`; ver [Toolbar panel](#toolbar-panel-ubits-toolbar-panel)
+- **Workspace footer** - Pie legal del layout Workspace (wordmark + términos + privacidad). Al final del main, no sticky. Se oculta en Agente IA. - **RENDERIZADO: `mountWorkspaceFooter()` / `getWorkspaceFooterHtml()`** — `workspace-footer.css` + `workspace-footer.js`; lo monta `layout-workspace.js`; doc: `documentacion/componentes/workspace-footer.html`
 - **Button group** - Agrupación visual de botones contiguos (primario/secundario/terciario; tamaños sm/md/lg; icon-only con tooltip) - **RENDERIZADO: HTML directo** — `button-group.css` + `button.css`; doc: `documentacion/componentes/button-group.html`
 - **Carousel indicators** - Puntos de paginación estilo Swiper dynamic bullets (máx. 6 visibles; ventana deslizante; modo `--dynamic` con 11+ slides) - **RENDERIZADO: HTML directo + `initCarouselIndicators()`** — `carousel-indicators.css`; doc: `documentacion/componentes/carousel-indicators.html`
 - **Hero search** - Buscador principal del Inicio Aprendizaje (variantes `default` y `app`; input pill nativo; no usar `createInput`) - **RENDERIZADO: `mountHeroSearch()`** — `hero-search.css` + `hero-search.js`; doc: `documentacion/componentes/hero-search.html`; patrón en [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml)
@@ -500,7 +489,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - ✅ **SIEMPRE usar estructura oficial** UBITS
 
 ### **📚 Componentes de documentación (solo para páginas de documentación):**
-- **Docs Sidebar** - Navegación para páginas de documentación (ej: `button.html`, `alert.html`, `empty-state.html`). **NO usar en páginas de producto** (ej: `u-corporativa.html`, `catalogo.html`, etc.)
+- **Docs Workspace** - Navegación de documentación (`bootDocsWorkspace()`, audience `docs`). Incluye Inicio, Guía de prompts, Foundations, Components y Sitemap. **NO usar en páginas de producto** (ej: `u-corporativa.html`, `catalogo.html`, etc.)
 
 ## 🎯 **LOS 3 GRANDES ENTREGABLES DE UBITS PLAYGROUND**
 
@@ -695,6 +684,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   │   ├── number-stepper, paginator, popover, progress-bar, radio-button, save-indicator
 │   │   ├── segmented-progress, selection-card, skeleton, status-panel, status-tag, stepper
 │   │   ├── switch, tab, table, toast, toolbar-panel, tooltip, ubits-data-table, video-player
+│   │   └── workspace-footer
 │   ├── Aprendizaje / LMS Creator
 │   │   ├── card-content, card-content-compact, complementary-resources, hero-search
 │   │   ├── learn-content-img-trailer, learn-question, indice-creator, paginas-creator
@@ -705,7 +695,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   └── JS auxiliar (sin .css propio)
 │       ├── ia-panel-artifact-content.js, group-creation-chat.js
 │       ├── ia-chat-mobile-drawer.js, ia-chat-streaming.js, ubits-confetti.js
-│   └── Catálogo + doc: documentacion/componentes.html · docs/docs-sidebar.js (DOCS_SIDEBAR_SECTIONS)
+│   └── Catálogo + doc: documentacion/ · bootDocsWorkspace() · docs/playground-sitemap.js
 ├── 📁 ubits-admin/           # Módulo de administración
 │   ├── inicio/
 │   ├── empresa/                         # SubNav empresa
@@ -773,7 +763,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 Carpeta de **scripts que exponen datos en `window`** (competencias, habilidades, colaboradores, catálogos de contenidos, tareas/planes, etc.). **No hay JSON externo ni `fetch`**: todo funciona abriendo HTML con `file://`, pensado para prototipos y demos.
 
 - **Documentación completa:** [`bd-master/README.md`](bd-master/README.md) — inventario de archivos, variables globales, mapa de qué página carga qué, y relaciones (p. ej. contenidos → niveles, aliados, competencias).
-- **Helpers fuera de esta carpeta:** algunas vistas (p. ej. LMS Creator) cargan scripts en `ubits-colaborador/lms-creator/` que **leen** estos maestros y arman listas para drawers (`catalogo-contenidos-drawer.js`, `catalogo-competencias-drawer.js`); esos helpers **no** son BD: solo transforman lo que ya está en `bd-master/`.
+- **Helpers fuera de esta carpeta:** algunas vistas (p. ej. LMS Creator) cargan scripts en `ubits-admin/lms-creator/` que **leen** estos maestros y arman listas para drawers (`catalogo-contenidos-drawer.js`, `catalogo-competencias-drawer.js`); esos helpers **no** son BD: solo transforman lo que ya está en `bd-master/`.
 
 **Ruta típica desde HTML en subcarpetas:** `../../bd-master/nombre-archivo.js`.
 

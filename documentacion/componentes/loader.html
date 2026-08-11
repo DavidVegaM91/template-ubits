@@ -23,6 +23,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <!-- Main Content -->
@@ -156,10 +157,11 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/loader.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
             
             setTimeout(function() {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) {
@@ -170,8 +172,6 @@
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-            
-            loadDocsSidebar('loader');
             
             showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'component-warning-alert',

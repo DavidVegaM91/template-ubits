@@ -58,6 +58,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -439,6 +440,7 @@
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/stepper.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var STEPPER_DOC_HASH_VERTICAL = '#vertical';
@@ -554,9 +556,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('stepper');
+            bootDocsWorkspace();
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza lo que va entre [corchetes] con datos reales de tu pantalla o flujo.', {
                     containerId: 'stepper-warning-alert',

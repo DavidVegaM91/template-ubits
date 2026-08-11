@@ -43,6 +43,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
 <div class="dashboard-container">
+        <div id="sidebar-container"></div>
     <div class="tooltip" id="tooltip"></div>
 
     <main class="main-content">
@@ -257,13 +258,12 @@
 <script src="../../components/sidebar.js"></script>
 <script src="../../components/toast.js"></script>
 <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
 <script src="../../script.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    loadSubNav('top-nav-container', 'documentacion');
-    loadSidebar('ninguno');
-    loadDocsSidebar('selection-card');
+    bootDocsWorkspace();
     if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 });
 

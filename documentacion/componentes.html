@@ -18,6 +18,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         
 
@@ -143,14 +144,12 @@
     <script src="../components/sidebar.js"></script>
     <script src="../components/sub-nav.js"></script>
     <script src="../docs/docs-sidebar.js"></script>
+    <script src="../docs/docs-workspace-boot.js"></script>
     <script src="../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
+bootDocsWorkspace();
             
-            // Cargar sidebar de documentación (esto también carga el dropdown móvil automáticamente)
-            loadDocsSidebar('introduccion');
         });
 
     </script>

@@ -20,32 +20,6 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         ]
     },
     {
-        id: 'creator',
-        title: 'LMS Creator',
-        icon: 'far fa-bolt',
-        accent: '#f59e0b',
-        subitems: [
-            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
-            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
-            { id: 'planes-contenidos', title: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html' },
-            { id: 'planes-competencias', title: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-competencias.html' },
-            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' },
-            { id: 'certificados-descarga', title: 'Certificados (descarga)', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
-            { id: 'certificados-config', title: 'Certificados (configuración)', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' },
-            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
-            { id: 'personalizacion-seguimiento', title: 'Seguimiento (UC)', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
-        ]
-    },
-    {
-        id: 'diagnostico',
-        title: 'Diagnóstico',
-        icon: 'far fa-chart-mixed',
-        accent: '#ec4899',
-        url: '../../ubits-colaborador/diagnostico/diagnostico.html',
-        isLink: true,
-        clickable: true
-    },
-    {
         id: 'desempeno',
         title: 'Desempeño',
         icon: 'far fa-bars-progress',
@@ -57,6 +31,32 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
             { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart-line', url: '../../ubits-colaborador/desempeno/reportes.html' }
         ]
     },
+    {
+        id: 'creator',
+        title: 'LMS Creator',
+        icon: 'far fa-bolt',
+        accent: '#f59e0b',
+        subitems: [
+            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-admin/lms-creator/contenidos.html' },
+            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-admin/lms-creator/categorias.html' },
+            { id: 'planes-contenidos', title: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
+            { id: 'planes-competencias', title: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-admin/lms-creator/planes-formacion/planes-competencias.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-admin/lms-creator/planes-formacion/grupos.html' },
+            { id: 'certificados-descarga', title: 'Certificados (descarga)', icon: 'far fa-download', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
+            { id: 'certificados-config', title: 'Certificados (configuración)', icon: 'far fa-sliders', url: '../../ubits-admin/lms-creator/certificados/certificados-configuracion.html' },
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento (UC)', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+        ]
+    },
+    {
+        id: 'diagnostico',
+        title: 'Diagnóstico',
+        icon: 'far fa-chart-mixed',
+        accent: '#ec4899',
+        url: '../../ubits-colaborador/diagnostico/diagnostico.html',
+        isLink: true,
+        clickable: true
+    },
             {
                 id: 'encuestas',
                 title: 'Encuestas',
@@ -66,15 +66,6 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
                 isLink: true,
                 clickable: false
             },
-    {
-        id: 'reclutamiento',
-        title: 'Reclutamiento',
-        icon: 'far fa-users',
-        accent: '#06b6d4',
-        url: '../../ubits-colaborador/reclutamiento/reclutamiento.html',
-        isLink: true,
-        clickable: true
-    },
     {
         id: 'tareas',
         title: 'Tareas',
@@ -143,11 +134,11 @@ const FLOATING_MENU_SECTIONS_ADMIN = [
         title: 'Aprendizaje',
         icon: 'far fa-graduation-cap',
         subitems: [
-            { id: 'admin-lms-creator', title: 'LMS Creator', icon: 'far fa-bolt', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html' },
-            { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html' },
-            { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
-            { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/certificados/certificados.html' },
-            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+            { id: 'admin-lms-creator', title: 'LMS Creator', icon: 'far fa-bolt', url: '../../ubits-admin/lms-creator/contenidos.html' },
+            { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
+            { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
+            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     {
@@ -194,8 +185,8 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'LMS Creator',
         icon: 'far fa-bolt',
         subitems: [
-            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
-            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' }
+            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-admin/lms-creator/contenidos.html' },
+            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-admin/lms-creator/categorias.html' }
         ]
     },
     {
@@ -203,9 +194,9 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Planes de formación',
         icon: 'far fa-clipboard-list',
         subitems: [
-            { id: 'planes-contenidos', title: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html' },
-            { id: 'planes-competencias', title: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-competencias.html' },
-            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' }
+            { id: 'planes-contenidos', title: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
+            { id: 'planes-competencias', title: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-admin/lms-creator/planes-formacion/planes-competencias.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-admin/lms-creator/planes-formacion/grupos.html' }
         ]
     },
     {
@@ -213,8 +204,8 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Certificados',
         icon: 'far fa-award',
         subitems: [
-            { id: 'certificados-descarga', title: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
-            { id: 'certificados-config', title: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' }
+            { id: 'certificados-descarga', title: 'Descarga', icon: 'far fa-download', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
+            { id: 'certificados-config', title: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-admin/lms-creator/certificados/certificados-configuracion.html' }
         ]
     },
     {
@@ -222,8 +213,8 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Personalización',
         icon: 'far fa-palette',
         subitems: [
-            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
-            { id: 'personalizacion-seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     }
 ];
@@ -301,13 +292,13 @@ function getFloatingProfileMenuHTML(variant) {
 
     if (variant === 'admin') {
         parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html'));
-        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html'));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-admin/lms-creator/contenidos.html'));
     } else if (variant === 'creator') {
         parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html'));
         parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html'));
     } else {
         parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html'));
-        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html'));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-admin/lms-creator/contenidos.html'));
     }
 
     parts.push(rowLink('fp-doc', 'Documentación', 'far fa-book', base + 'documentacion/documentacion.html', ' target="_blank" rel="noopener noreferrer"'));
@@ -378,7 +369,7 @@ function handleAdminLmsMigrateFloatingClick(event) {
     var targetUrl =
         rel && typeof rel === 'string'
             ? bp + rel
-            : bp + 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html';
+            : bp + 'ubits-admin/lms-creator/contenidos-sin-migrar.html';
     if (typeof window.openAdminLmsMigrateConfirm === 'function') {
         window.openAdminLmsMigrateConfirm(bp, targetUrl);
     }
@@ -618,7 +609,6 @@ function setActiveItemByCurrentPage() {
         'ia-para-hr.html': 'ia-para-hr',
         'ubits-ai.html': 'ia-para-hr',
         'diagnostico.html': 'diagnostico',
-        'reclutamiento.html': 'reclutamiento',
         'home-learn.html': 'inicio',
         'modo-estudio-ia.html': 'modo-estudio-ia',
         'catalogo.html': 'catalogo',

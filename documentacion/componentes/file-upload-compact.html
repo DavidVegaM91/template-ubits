@@ -38,6 +38,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <main class="main-content">
@@ -282,6 +283,7 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
     <script src="../../components/alert.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/tooltip.js"></script>
@@ -291,10 +293,7 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
         var _fucDemoPreviewUrl = '../../images/Favicons/UBITS.jpg';
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadSubNav('top-nav-container', 'documentacion');
-            loadSidebar('ninguno');
-            loadDocsSidebar('file-upload-compact');
-
+            bootDocsWorkspace();
             createFileUploadCompact({
                 containerId: 'preview-container',
                 id: 'preview-file-upload-compact',

@@ -76,14 +76,14 @@
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../components/button.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/notifications-menu.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSidebar === 'function') loadSidebar('documentacion', 'componentes');
+            bootDocsWorkspace();
             if (typeof loadSubNav === 'function') loadSubNav(document.getElementById('subnav-container'), 'documentacion');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('notifications-menu');
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 
             var mount = document.getElementById('notifications-menu-preview');

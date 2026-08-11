@@ -79,30 +79,30 @@ const TOP_NAV_VARIANTS = {
     'creator-lms': {
         name: 'LMS Creator',
         tabs: [
-            { id: 'contenidos', label: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
-            { id: 'categorias', label: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' }
+            { id: 'contenidos', label: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-admin/lms-creator/contenidos.html' },
+            { id: 'categorias', label: 'Categorías', icon: 'far fa-tags', url: '../../ubits-admin/lms-creator/categorias.html' }
         ]
     },
     'creator-planes': {
         name: 'Planes de formación',
         tabs: [
-            { id: 'planes-contenidos', label: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html' },
-            { id: 'planes-competencias', label: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-competencias.html' },
-            { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' }
+            { id: 'planes-contenidos', label: 'Planes de contenidos', icon: 'far fa-layer-group', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
+            { id: 'planes-competencias', label: 'Planes de competencias', icon: 'far fa-bullseye', url: '../../ubits-admin/lms-creator/planes-formacion/planes-competencias.html' },
+            { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-admin/lms-creator/planes-formacion/grupos.html' }
         ]
     },
     'creator-certificados': {
         name: 'Certificados',
         tabs: [
-            { id: 'descarga', label: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
-            { id: 'configuracion', label: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' }
+            { id: 'descarga', label: 'Descarga', icon: 'far fa-download', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
+            { id: 'configuracion', label: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-admin/lms-creator/certificados/certificados-configuracion.html' }
         ]
     },
     'creator-personalizacion': {
         name: 'Personalización',
         tabs: [
-            { id: 'universidad-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
-            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+            { id: 'universidad-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     empresa: {
@@ -119,11 +119,11 @@ const TOP_NAV_VARIANTS = {
     'admin-aprendizaje': {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'lms-creator', label: 'LMS Creator', icon: 'far fa-bolt', url: '../../ubits-colaborador/lms-creator/contenidos-sin-migrar.html' },
-            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html' },
-            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
-            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
-            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+            { id: 'lms-creator', label: 'LMS Creator', icon: 'far fa-bolt', url: '../../ubits-admin/lms-creator/contenidos-sin-migrar.html' },
+            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
+            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     'admin-desempeño': {
@@ -247,17 +247,8 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         }
     }
 
-    // Logo del cliente antes de los tabs (solo para variantes que NO sean documentacion)
-    const basePath = getSubNavBasePath();
-    const clientLogo = variant !== 'documentacion' ? `
-        <div class="sub-nav-logo">
-            <img src="${basePath}images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
-        </div>
-    ` : '';
-
     return `
         <div class="sub-nav" data-variant="${variant}">
-            ${clientLogo}
             <div class="nav-tabs">
                 ${leftContent}
             </div>
@@ -489,6 +480,7 @@ const PAGE_TO_TAB = {
     'table.html': 'section3',
     'toast.html': 'section3',
     'toolbar-panel.html': 'section3',
+    'workspace-footer.html': 'section3',
     'tooltip.html': 'section3',
     'colores.html': 'section4',
     'iconos.html': 'section5',

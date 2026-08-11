@@ -149,6 +149,7 @@
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/coachmark.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         window.runCoachmarkDocDemo = function runCoachmarkDocDemo() {
@@ -223,7 +224,7 @@
 
         function initCoachmarkDocPage() {
             try {
-                loadSubNav('top-nav-container', 'documentacion');
+                bootDocsWorkspace();
             } catch (e1) { /* ignore */ }
             setTimeout(function () {
                 try {
@@ -237,7 +238,6 @@
                 } catch (e2) { /* ignore */ }
             }, 200);
             try {
-                loadDocsSidebar('coachmark');
             } catch (e3) { /* ignore */ }
             try {
                 showAlert('warning', 'Antes de usar los prompts en Cursor, sustituye los textos entre [corchetes] por tus datos.', {

@@ -31,6 +31,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -151,6 +152,7 @@
     <script src="../../components/paginas-creator.js"></script>
     <script src="../../components/seccion-creator.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var scPreviewState = { sectionActive: true, longTitle: false, hasDescription: false };
@@ -189,9 +191,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('seccion-creator');
+            bootDocsWorkspace();
             scRenderPreview();
             if (typeof initSeccionCreator === 'function') {
                 initSeccionCreator('#sc-preview-mount');

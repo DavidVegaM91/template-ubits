@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../images/playground-favicon.svg">
+    <title>Sitemap | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../general-styles/styles.css">
+    <link rel="stylesheet" href="../general-styles/layout-workspace.css">
+    <link rel="stylesheet" href="../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../components/status-tag.css">
+    <link rel="stylesheet" href="../components/input.css">
+    <link rel="stylesheet" href="../docs/docstyles.css">
+    <link rel="stylesheet" href="../docs/playground-sitemap.css">
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area" style="display: block; width: 100%;">
+                <div id="playground-sitemap-root">
+                    <div class="ubits-sitemap-hero">
+                        <h1 class="ubits-heading-h1 ubits-sitemap-hero__title">Sitemap</h1>
+                        <p class="ubits-body-md-regular ubits-sitemap-hero__desc">
+                            Mapa de pantallas del playground con diseño real y sus variantes (empty, pasos, demos).
+                            Cada fila es una URL directa — no incluye páginas vacías ni placeholders.
+                        </p>
+                        <div class="ubits-sitemap-toolbar">
+                            <div class="ubits-sitemap-toolbar__row">
+                                <div class="ubits-input-wrapper ubits-sitemap-scope">
+                                    <label class="ubits-input-label ubits-body-sm-regular" for="sitemap-scope">Buscar en</label>
+                                    <select id="sitemap-scope" class="ubits-input ubits-input--sm" data-sitemap-scope>
+                                        <option value="all">Todos</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="colaborador">Colaborador</option>
+                                    </select>
+                                </div>
+                                <div class="ubits-input-wrapper ubits-sitemap-search">
+                                    <label class="visually-hidden" for="sitemap-search">Buscar</label>
+                                    <input
+                                        id="sitemap-search"
+                                        class="ubits-input ubits-input--sm"
+                                        type="search"
+                                        placeholder="Buscar pantalla, variante o URL…"
+                                        aria-label="Buscar en el sitemap"
+                                        data-sitemap-search
+                                    />
+                                </div>
+                            </div>
+                            <p class="ubits-body-sm-regular ubits-sitemap-count" data-sitemap-count></p>
+                        </div>
+                    </div>
+                    <div data-sitemap-list></div>
+                    <p class="ubits-body-xs-regular ubits-sitemap-footnote">
+                        Ruta canónica: <code>documentacion/sitemap.html</code>.
+                        Si agregas una pantalla nueva con diseño, súmala en
+                        <code>docs/playground-sitemap.js</code>.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../bd-master/bd-tareas-y-planes.js"></script>
+    <script src="../bd-master/bd-planes-formacion.js"></script>
+    <script src="../docs/docs-workspace-boot.js"></script>
+    <script src="../docs/playground-sitemap.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            bootDocsWorkspace();
+            mountPlaygroundSitemap('playground-sitemap-root');
+        });
+    </script>
+</body>
+</html>

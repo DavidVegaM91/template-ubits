@@ -7,8 +7,8 @@
  * en estructuras listas para la UI. No persiste datos ni es una BD: solo lee lo ya cargado en window.
  *
  * DÓNDE SE USA (carga este archivo con <script src="...">)
- * - ubits-colaborador/lms-creator/crear-plan-competencias.html
- * - ubits-colaborador/lms-creator/detalle-plan-competencias.html
+ * - ubits-admin/lms-creator/crear-plan-competencias.html
+ * - ubits-admin/lms-creator/detalle-plan-competencias.html
  * - ubits-colaborador/aprendizaje/catalogo.html
  *
  * DEPENDENCIAS (orden obligatorio antes de este script)

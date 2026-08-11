@@ -21,7 +21,7 @@ El usuario descarga temporalmente la carpeta de un microfrontend de producción 
 6. Nunca usar colores hardcodeados — siempre `var(--ubits-...)`.
 7. Nunca usar SCSS, Tailwind ni clases de la librería original — solo CSS con tokens UBITS.
 8. El output debe ser uno o varios `.html` standalone que funcionen sin instalar dependencias.
-9. Respetar la estructura de carpetas del Playground (`ubits-admin/`, `ubits-colaborador/`, `ubits-colaborador/lms-creator/`, etc.).
+9. Respetar la estructura de carpetas del Playground (`ubits-admin/`, `ubits-colaborador/`, `ubits-admin/lms-creator/`, etc.).
 
 ## 📖 Qué archivos leer del repo descargado (en este orden)
 1. El `.tsx` de la vista principal (ej. `modules/<feature>/adapters/input/<pantalla>/<pantalla>.tsx`).

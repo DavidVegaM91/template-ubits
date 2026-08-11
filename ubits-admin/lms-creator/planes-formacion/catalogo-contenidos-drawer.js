@@ -8,9 +8,9 @@
  * drawer. No es una BD ni hace fetch: solo fusiona y enriquece datos en el cliente.
  *
  * DÓNDE SE USA (carga este archivo con <script src="./catalogo-contenidos-drawer.js">)
- * - ubits-colaborador/lms-creator/crear-plan-contenidos.html
- * - ubits-colaborador/lms-creator/editar-plan-contenidos.html
- * - ubits-colaborador/lms-creator/detalle-plan.html
+ * - ubits-admin/lms-creator/crear-plan-contenidos.html
+ * - ubits-admin/lms-creator/editar-plan-contenidos.html
+ * - ubits-admin/lms-creator/detalle-plan.html
  *
  * DEPENDENCIAS (orden recomendado antes de este script)
  * Maestros: bd-master-niveles-contenido, bd-master-aliados, bd-master-competencias,

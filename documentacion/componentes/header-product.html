@@ -107,6 +107,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <!-- Main Content -->
@@ -423,6 +424,7 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         
@@ -468,8 +470,7 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSubNav('top-nav-container', 'documentacion');
-            loadDocsSidebar('header-product');
+            bootDocsWorkspace();
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'header-product-warning-alert', noClose: true });
             }

@@ -68,6 +68,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <main class="main-content">
             <div id="top-nav-container"></div>
@@ -316,10 +317,11 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
             setTimeout(function() {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) { item.classList.remove('active'); });
                 var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
@@ -327,7 +329,6 @@
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
-            loadDocsSidebar('chip');
             showAlert('warning', 'Reemplaza los textos entre [corchetes] con la información de tu proyecto antes de enviar el prompt a Cursor.', {
                 containerId: 'chip-warning-alert',
                 noClose: true

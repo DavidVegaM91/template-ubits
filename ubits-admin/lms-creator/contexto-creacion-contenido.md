@@ -911,7 +911,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ## Migración a React (`Ubits-React`)
 
-Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/lms-creator/…`), **solo entra lo vigente en vanilla hoy** y lo cerrado en [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md). No reutilizar variantes, modales ni props que ya se eliminaron del referente.
+Al portar este flujo a páginas del playground React (`pages/ubits-admin/lms-creator/…`), **solo entra lo vigente en vanilla hoy** y lo cerrado en [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md). No reutilizar variantes, modales ni props que ya se eliminaron del referente.
 
 | Portar (oficial) | No portar (legacy eliminado) |
 |------------------|------------------------------|

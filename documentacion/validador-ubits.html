@@ -208,10 +208,12 @@
 </head>
 <body class="documentacion-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         
         <!-- Main Content -->
         <main class="main-content" style="margin-left: 12px;">
+            <div id="top-nav-container"></div>
             <!-- Content Area -->
             <div class="content-area" style="display: block; width: 100%;">
                 <div class="validator-container">
@@ -376,9 +378,10 @@
 
     <script src="../components/alert.js"></script>
     <script src="../components/toast.js"></script>
+    <script src="../docs/docs-workspace-boot.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
+            bootDocsWorkspace();
             // Cargar alert informativo
             showAlert('info', 'Sube los dos archivos (HTML y CSS) de tu página para validar. El validador revisa tokens de color, tipografía, espaciado (font-size, border-radius, gap, padding) y componentes en ambos archivos.', {
                 containerId: 'info-alert-container',

@@ -3,7 +3,7 @@
  *
  * Uso:
  *   initWorkspaceLayout({
- *     audience: 'colaborador' | 'admin',  // default: colaborador
+ *     audience: 'colaborador' | 'admin' | 'docs',  // default: colaborador
  *     activeSidebar: 'aprendizaje',
  *     headerVariant: 'aprendizaje',      // legacy SubNav key → título AppHeader
  *     title: 'Catálogo',                 // opcional
@@ -52,7 +52,9 @@
 
     dash.classList.add('ubits-layout-workspace');
 
-    if (dash.querySelector(':scope > .ubits-layout-workspace__main-wrap')) {
+    var existingWrap = dash.querySelector(':scope > .ubits-layout-workspace__main-wrap');
+    if (existingWrap) {
+      mountWorkspaceFooter(existingWrap);
       return dash;
     }
 
@@ -78,19 +80,53 @@
     dash.insertBefore(wrap, main);
     wrap.appendChild(header);
     wrap.appendChild(main);
+    mountWorkspaceFooter(wrap);
 
     return dash;
   }
 
+  function mountWorkspaceFooter(wrap) {
+    if (!wrap || wrap.querySelector('[data-workspace-footer]')) return;
+
+    function go() {
+      if (typeof global.mountWorkspaceFooter === 'function') {
+        global.mountWorkspaceFooter(wrap);
+      }
+    }
+
+    if (typeof global.mountWorkspaceFooter === 'function') {
+      go();
+      return;
+    }
+
+    var base = getBasePath();
+    if (!document.querySelector('link[href*="workspace-footer.css"]')) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = base + 'components/workspace-footer.css';
+      document.head.appendChild(link);
+    }
+    if (document.querySelector('script[src*="workspace-footer.js"]')) {
+      var existing = document.querySelector('script[src*="workspace-footer.js"]');
+      existing.addEventListener('load', go);
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = base + 'components/workspace-footer.js';
+    s.onload = go;
+    document.head.appendChild(s);
+  }
+
   function resolveAudience(opts) {
     opts = opts || {};
+    if (opts.audience === 'docs' || opts.variant === 'docs') return 'docs';
     if (opts.audience === 'admin' || opts.variant === 'admin') return 'admin';
     if (opts.audience === 'colaborador' || opts.variant === 'colaborador' || opts.variant === 'default') {
       return 'colaborador';
     }
-    if (opts.variant === 'admin') return 'admin';
     /* Inferir por URL */
     var path = (window.location.pathname || '').replace(/\\/g, '/');
+    if (path.includes('/documentacion/')) return 'docs';
     if (path.includes('/ubits-admin/')) return 'admin';
     return 'colaborador';
   }
@@ -107,11 +143,19 @@
     var headerVariant =
       opts.headerVariant ||
       opts.subNavVariant ||
-      (audience === 'admin' ? 'admin-aprendizaje' : 'aprendizaje');
+      (audience === 'admin'
+        ? 'admin-aprendizaje'
+        : audience === 'docs'
+          ? 'documentacion'
+          : 'aprendizaje');
+    var headerAudience =
+      audience === 'admin' ? 'admin' : audience === 'docs' ? 'docs' : 'colaborador';
 
     function mountChrome() {
       if (typeof global.loadSidebar === 'function') {
-        global.loadSidebar(audience === 'admin' ? 'admin' : 'default', activeSidebar);
+        var sbVariant =
+          audience === 'admin' ? 'admin' : audience === 'docs' ? 'docs' : 'default';
+        global.loadSidebar(sbVariant, activeSidebar);
       } else if (typeof global.loadWorkspaceSidebar === 'function') {
         global.loadWorkspaceSidebar(audience, activeSidebar);
       }
@@ -121,20 +165,22 @@
         var headerOpts =
           typeof global.resolveAppHeaderFromSubNavVariant === 'function'
             ? global.resolveAppHeaderFromSubNavVariant(headerVariant)
-            : { variant: audience === 'admin' ? 'admin' : 'colaborador', borderless: true };
+            : { variant: headerAudience, borderless: true };
         if (opts.title) {
           headerOpts.title = opts.title;
           headerOpts.breadcrumb = opts.breadcrumb || [{ label: opts.title }];
         }
-        headerOpts.variant = audience === 'admin' ? 'admin' : 'colaborador';
+        headerOpts.variant = headerAudience;
         global.loadAppHeader(headerMount, headerOpts);
       } else if (headerMount && typeof global.loadSubNav === 'function' && opts.headerVariant) {
         global.loadSubNav('top-nav-container', opts.headerVariant);
       }
 
-      var tabBar = opts.tabBar !== false;
-      var floating = opts.floatingMenu !== false;
-      var profile = opts.profileMenu !== false;
+      var tabBar = audience === 'docs' ? opts.tabBar === true : opts.tabBar !== false;
+      var floating =
+        audience === 'docs' ? opts.floatingMenu === true : opts.floatingMenu !== false;
+      var profile =
+        audience === 'docs' ? opts.profileMenu === true : opts.profileMenu !== false;
       var tabVar = opts.tabBarVariant || (audience === 'admin' ? 'admin' : 'default');
       var floatVar = opts.floatingMenuVariant || (audience === 'admin' ? 'admin' : 'default');
 

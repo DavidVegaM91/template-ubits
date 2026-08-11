@@ -200,6 +200,34 @@
     box-shadow: none !important;
 }
 
+/* Workspace docs: el shell ya da el offset del sidebar. Anula márgenes del layout legacy. */
+body.page-layout-workspace .main-content {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+body.page-layout-workspace #docs-sidebar-container,
+body.page-layout-workspace #docs-dropdown-container,
+body.page-layout-workspace .docs-sidebar,
+body.page-layout-workspace .docs-dropdown {
+    display: none !important;
+}
+
+/* El rail viejo de componentes reservaba ~304px. Workspace ya tiene sidenav. */
+body.page-layout-workspace .components-content,
+body.page-layout-workspace .docs-page {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+body.page-layout-workspace .main-content div:has(> #docs-sidebar-container) {
+    display: block !important;
+}
+
 /* ========================================
    LAYOUT DE DOCUMENTACIÓN
    ======================================== */

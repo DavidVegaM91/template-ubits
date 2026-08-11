@@ -20,6 +20,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         <div id="ubits-toast-container"></div>
 
@@ -137,6 +138,7 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/hero-search.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         var HS_DOC_BAR_ID = 'hero-search-doc-bar';
@@ -170,10 +172,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
-            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
-            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('hero-search');
-
+            bootDocsWorkspace();
             heroSearchDocRender(false);
 
             var toggle = document.getElementById('hero-search-preview-active');

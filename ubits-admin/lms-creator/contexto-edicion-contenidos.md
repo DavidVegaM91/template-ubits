@@ -613,7 +613,7 @@ Si el tipo no tiene archivo físico, la descarga debe ser igualmente **un único
 
 | Concepto | Vanilla | React |
 |----------|---------|-------|
-| Página de edición | **`editar-contenido.html`** + CSS/JS dedicados | `pages/ubits-colaborador/lms-creator/editar-contenido.tsx` |
+| Página de edición | **`editar-contenido.html`** + CSS/JS dedicados | `pages/ubits-admin/lms-creator/editar-contenido.tsx` |
 | Query | `?id={contentId}`; `&readonly=1` si Archivado | Igual |
 | Hash opcional | `#recursos`, `#informacion`, `#certificado`, `#visibilidad`; Resultados: `#resultados-progreso`, `#resultados-evaluaciones`, `#resultados-gestion-intentos`, `#resultados-descargas` | Igual |
 | Lista origen | `contenidos.html` | `contenidos.tsx` |

@@ -2,7 +2,7 @@
  * Playground UBITS — base maestra (template local).
  * Cargar ANTES de bd-tareas-y-planes.js:
  * <script src="../../bd-master/bd-master-colaboradores.js"></script>
- * Rutas relativas desde ubits-colaborador/tareas/ o ubits-colaborador/lms-creator/.
+ * Rutas relativas desde ubits-colaborador/tareas/ o ubits-admin/lms-creator/.
  */
 window.BD_MASTER_COLABORADORES = {
   "version": "1.0",

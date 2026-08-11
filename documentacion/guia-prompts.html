@@ -177,6 +177,7 @@
 </head>
 <body class="documentacion-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
 
         <!-- Main Content -->
@@ -516,10 +517,10 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
     <script src="../components/sub-nav.js"></script>
     <script src="../components/alert.js"></script>
     <script src="../components/toast.js"></script>
+    <script src="../docs/docs-workspace-boot.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
+            bootDocsWorkspace();
 
             // Cargar alerts usando el componente oficial
             showAlert('info', 'Importante: Estos prompts están diseñados para Cursor AI.', {

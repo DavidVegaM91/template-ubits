@@ -143,6 +143,7 @@
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
+        <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
         
 
@@ -404,29 +405,11 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
-            
-            // Forzar activación de Componentes en todas las páginas de documentación
-            setTimeout(() => {
-                // Quitar todas las clases active primero
-                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Activar solo Componentes
-                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
-                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
-                if (navTab) navTab.classList.add('active');
-                if (hamburgerItem) hamburgerItem.classList.add('active');
-            }, 200);
-            
-            // Cargar sidebar de documentación
-            loadDocsSidebar('tab-bar');
-            
+bootDocsWorkspace();
             // Cargar floating menu para el preview
             loadFloatingMenu('floating-menu-container');
             

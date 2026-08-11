@@ -89,10 +89,10 @@ Aprendizaje (SubNav colaborador)
 
 | Rol | Carpeta | Qué hace |
 |-----|---------|----------|
-| **Autor** | `ubits-colaborador/lms-creator/` | Crear/editar contenidos, portada, recursos, evaluaciones |
+| **Autor** | `ubits-admin/lms-creator/` | Crear/editar contenidos, portada, recursos, evaluaciones |
 | **Learner** | `exp-estudio/` | **Solo lectura** — render de lo que el autor montó |
 
-Ver [`lms-creator/contexto-creacion-contenido.md`](../lms-creator/contexto-creacion-contenido.md).
+Ver [`lms-creator/contexto-creacion-contenido.md`](../../ubits-admin/lms-creator/contexto-creacion-contenido.md).
 
 ---
 
