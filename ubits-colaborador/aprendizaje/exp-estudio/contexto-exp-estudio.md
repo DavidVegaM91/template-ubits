@@ -38,7 +38,7 @@ El colaborador entra a `exp-estudio.html` desde **cualquier pantalla de `ubits-c
 
 **Regla transversal:** no es exclusivo del módulo Aprendizaje; cualquier `ubits-colaborador/*` que renderice un contenido debe enlazar aquí.
 
-**Excepción — Rutas de aprendizaje:** en cards se ven como otro tipo de contenido, pero por dentro son **agrupadores**. En BD ya están discriminadas (`tipoContenido: "Ruta de aprendizaje"`). **Por ahora**, clic en una ruta **no navega** a ningún lado; la experiencia de estudio de ruta se hará después.
+**Excepción — Rutas de aprendizaje:** en cards se ven como otro tipo de contenido, pero por dentro son **agrupadores**. En BD ya están discriminadas (`tipoContenido: "Ruta de aprendizaje"`). El clic abre la portada de ruta en `exp-ruta/exp-ruta.html?id=…` (navegación lineal/libre).
 
 ### 1.2 Progreso parcial y reanudación
 
@@ -55,7 +55,7 @@ El colaborador entra a `exp-estudio.html` desde **cualquier pantalla de `ubits-c
 | Tipo | ¿Usa exp-estudio? |
 |------|-------------------|
 | Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica | **Sí** — misma experiencia (Portada → Recursos → Cierre) |
-| Ruta de aprendizaje | **No** en v1 — clic sin destino; experiencia futura |
+| Ruta de aprendizaje | **Sí** → `exp-ruta/exp-ruta.html?id=` (agrupador; no usa índice de páginas de curso) |
 | Programa | Pendiente confirmar; no mencionado en alcance v1 |
 
 El **primer demo** puede ser un contenido tipo **Curso**, pero la **shell y el flujo** aplican a todos los tipos consumibles del § 3 (salvo rutas).
@@ -199,7 +199,7 @@ En datos mock del playground, los tipos viven en `bd-master/bd-master-tipos-cont
 | tct-008 | Caso de estudio | ✅ |
 | tct-009 | Documento técnico | ✅ |
 | tct-010 | Ejercicios de práctica | ✅ |
-| tct-011 | Ruta de aprendizaje | ❌ clic sin destino |
+| tct-011 | Ruta de aprendizaje | ✅ `exp-ruta/exp-ruta.html?id=` |
 | tct-012 | Programa | Pendiente |
 
 En `BDS_CONTENIDOS_UBITS` las rutas ya vienen con `tipoContenido: "Ruta de aprendizaje"` y descripción de agrupador.
@@ -1921,7 +1921,7 @@ Ver **[`contexto-aprendizaje.md` § 1](../contexto-aprendizaje.md#1-usuario-demo
 | Renders Recursos | `lms-creator/crear-contenido.js`, `crear-contenido-pdf-viewer.js`, `crear-contenido.css` | **Reutilizar** mounts § 6.2; sin footers edición |
 | Confeti cierre | `components/ubits-confetti.js` | `launchUbitsConfetti()` en § 7.4 |
 | Seguimiento learner | `aprendizaje/contexto-zona-estudio.md` | **Sin sync** progreso exp-estudio → historial (§ 8.2) |
-| Rutas de aprendizaje | `lms-creator/contexto-creacion-ruta.md` | **Fuera de v1** — clic sin destino |
+| Rutas de aprendizaje | `lms-creator/contexto-creacion-ruta.md` + `exp-ruta/` | Portada learner + navegación lineal/libre |
 | **Modo estudio IA** | `modo-estudio-ia.html`, `HU-modo-estudio-IA.md` | **Producto distinto** — ver § 10.1 y [`contexto-aprendizaje.md` § 2.1](../contexto-aprendizaje.md#21-comparativa-clave--modo-estudio-ia-vs-experiencia-de-estudio) |
 | Contexto módulo Aprendizaje | `contexto-aprendizaje.md` | Índice maestro — **leer antes** de cualquier pantalla del módulo |
 

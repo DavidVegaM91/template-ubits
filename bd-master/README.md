@@ -84,6 +84,8 @@ Mock de planes Mi equipo: **`mi-equipo-planes-mock.js`** (capa sobre `BD_PLANES_
 
 `origen`, `catalogoId` (`catalogo_ubits`), `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds`, `expertos`, `aliadoId`, `nivelIngles`, `conCertificacion`, `providersAliadosIds`, más campos de compatibilidad (`id`, `fileName`, `title`, `imagePath`).
 
+**Rutas de aprendizaje:** además `contenidosIds` (array de ids de contenidos hijos en orden) y opcional `tipoNavegacion` (`lineal` | `libre`, default lineal). El `tiempoValor` de la ruta debe reflejar la suma de los tiempos de los hijos.
+
 ### Fiqsha (`BDS_CONTENIDOS_FIQSHA`)
 
 - **`contents[]` (publicado):** `origen`, `catalogoId` (`catalogo_fiqsha`), `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `conCertificacion`, `categoriaFiqshaId`, `proveedorAliadoId`; campos de compatibilidad `id`, `title`, `imagePath`, `legacyLms` si aplica.

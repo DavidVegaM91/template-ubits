@@ -3,7 +3,7 @@
 Documento de referencia sobre el flujo **Crear ruta de aprendizaje** en el módulo LMS Creator. Una **ruta** es un tipo de contenido que **agrupa otros contenidos** (cursos, shorts, etc.); no tiene secciones, páginas ni recursos propios como un curso.
 
 **Para quién es:** producto, diseño y negocio (lenguaje conceptual).  
-**Referencias técnicas en Playground:** `crear-ruta.html`, `crear-ruta.js`, `crear-ruta-certificado.js`, `crear-ruta-publicacion.js`, `crear-ruta-contenidos-drawer.js`, `contexto-creacion-contenido.md` (portada y certificado/visibilidad de referencia), `crear-plan-contenidos.html` (patrón drawer de catálogo).
+**Referencias técnicas en Playground:** `crear-ruta.html`, `crear-ruta.js`, `crear-ruta-certificado.js`, `crear-ruta-configuracion.js`, `crear-ruta-publicacion.js`, `crear-ruta-contenidos-drawer.js`, `contexto-creacion-contenido.md` (portada y Ajustes de referencia), `crear-plan-contenidos.html` (patrón drawer de catálogo).
 
 ---
 
@@ -14,7 +14,7 @@ Documento de referencia sobre el flujo **Crear ruta de aprendizaje** en el módu
 | 1    | Portada       | Título, imagen/tráiler, descripción y ficha técnica **reducida** |
 | 2    | Contenidos    | Añadir y ordenar contenidos hijos de la ruta |
 | 3    | Certificado   | Switch, plantillas mock Fiqsha, preview orientativa, empty state |
-| 4    | Visibilidad   | 4 estados (Borrador, Público, Privado, Oculto); modales y drawer Privado |
+| 4    | Ajustes       | Hub con **Visibilidad** + **Tipo de navegación** (lineal / libre). Sin pesos de evaluación |
 
 **4 pasos** en el stepper lateral (misma estructura inmersiva que `crear-contenido.html`).
 
@@ -138,9 +138,11 @@ Mismas 3 plantillas que crear contenido (doble firma, estándar Fiqsha, onboardi
 | 1 Portada | `#portada` | — |
 | 2 Contenidos | `#contenidos` | — |
 | 3 Certificado | `#certificado` | — |
-| 4 Visibilidad | `#visibilidad` | `#publicacion` (se normaliza a `#visibilidad`) |
+| 4 Ajustes (hub) | `#ajustes` | `#visibilidad`, `#publicacion` (se normalizan a `#ajustes`) |
+| 4 · Visibilidad | `#ajustes-visibilidad` | — |
+| 4 · Tipo de navegación | `#ajustes-navegacion` | — |
 
-Al cambiar de paso con el stepper o los botones Anterior/Siguiente, la URL se actualiza con `history.replaceState` (mismo patrón que `crear-contenido.html`).
+Al cambiar de paso con el stepper o los botones Anterior/Siguiente, la URL se actualiza con `history.replaceState` (mismo patrón que `crear-contenido.html`). Dentro de Ajustes, las cards del hub actualizan el hash al panel correspondiente.
 
 ---
 
@@ -153,7 +155,9 @@ Si abres la página **sin borrador previo** y el hash apunta a un paso posterior
 | `#portada` o vacío | Portada | Ninguno (formulario vacío) |
 | `#contenidos` | Contenidos | Solo portada |
 | `#certificado` | Certificado | Portada + 5 contenidos |
-| `#visibilidad` / `#publicacion` | Visibilidad | Portada + contenidos + certificado (defaults) |
+| `#ajustes` / `#visibilidad` / `#publicacion` | Ajustes (hub) | Portada + contenidos + certificado (defaults) |
+| `#ajustes-visibilidad` | Ajustes · Visibilidad | Igual |
+| `#ajustes-navegacion` | Ajustes · Tipo de navegación | Igual |
 
 **Demo portada:** título «Ruta de liderazgo para equipos de alto rendimiento», imagen IA, categoría Fiqsha «Comunicación para líderes», nivel Intermedio.
 
@@ -169,11 +173,24 @@ La semilla solo corre **una vez** al cargar (`window._crDemoSeeded`); cambiar el
 
 ---
 
-## Paso 4 — Visibilidad
+## Paso 4 — Ajustes
 
-**Archivos:** `crear-ruta-publicacion.js`, `crear-contenido-publicacion.css` (clases `publicacion-paso__*`).
+**Archivos:** `crear-ruta-configuracion.js`, `crear-ruta-publicacion.js`, `crear-contenido-configuracion.css`, `crear-contenido-publicacion.css`.
 
-**Propósito:** configurar visibilidad de la ruta (Borrador, Público, Privado, Oculto).
+**Propósito:** hub de ajustes de la ruta (mismo patrón que **crear contenido → Ajustes**, **sin** pesos de evaluación ni impacto).
+
+### Hub
+
+| Card | Resumen en hub | Panel |
+|------|----------------|-------|
+| **Visibilidad** | Borrador / Público / Privado / Oculto | `#ajustes-visibilidad` |
+| **Tipo de navegación** | Lineal / Libre | `#ajustes-navegacion` |
+
+**Texto introductorio del hub:** «Define la visibilidad de la ruta y el tipo de navegación para los estudiantes.»
+
+**Hash canónico del paso:** `#ajustes`. Alias legacy `#visibilidad` / `#publicacion` → hub.
+
+### Visibilidad
 
 **Layout:** intro + cuadrícula 2×2 de `ubits-selection-card` + radios.
 
@@ -191,9 +208,16 @@ La semilla solo corre **una vez** al cargar (`window._crDemoSeeded`); cambiar el
 
 Limitaciones post-publicación en copy de las tarjetas: **orden de contenidos o reemplazar contenidos** (no secciones/páginas como en curso).
 
-**Hash URL:** `#visibilidad` (alias `#publicacion`).
+### Tipo de navegación
 
-**Siguiente** en Visibilidad: botón **Publicar** → redirige a `contenidos.html` con card anclada (`id` `24004`), imagen `portadas-ia/01-personas-en-oficina.jpg` y tag según la visibilidad elegida (Borrador, Público, Privado u Oculto). Toast: «Ruta creada exitosamente».
+| Opción | Comportamiento learner |
+|--------|------------------------|
+| **Lineal** *(default)* | Deben completar los contenidos **en orden**; no saltan a uno posterior. |
+| **Libre** | Pueden abrir **cualquier contenido** de la ruta. |
+
+Estado en memoria: `getCrearRutaTipoNavegacion()` / `sessionStorage` clave `ubits-crear-ruta-tipo-navegacion`. Al publicar se incluye `tipoNavegacion` en el pin de sesión.
+
+**Siguiente** en Ajustes: botón **Publicar** → redirige a `contenidos.html` con card anclada (`id` `24004`), imagen `portadas-ia/01-personas-en-oficina.jpg` y tag según la visibilidad elegida (Borrador, Público, Privado u Oculto). Toast: «Ruta creada exitosamente».
 
 ---
 
@@ -223,9 +247,11 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 | `crear-ruta.css` | Estilos paso Contenidos, lista y drawer catálogo |
 | `crear-ruta.js` | Stepper, portada, validaciones, lista, navegación, hashes URL y demo deep link |
 | `crear-ruta-certificado.js` | Paso Certificado (plantillas, preview) |
-| `crear-ruta-publicacion.js` | Paso Visibilidad (radios, modales, drawer Privado) |
+| `crear-ruta-configuracion.js` | Paso Ajustes — hub Visibilidad + Tipo de navegación |
+| `crear-ruta-publicacion.js` | Panel Visibilidad (radios, modales, drawer Privado) |
 | `crear-ruta-contenidos-drawer.js` | Drawer catálogo y selección múltiple |
 | `crear-contenido-certificado.css` | Layout y preview certificado (compartido) |
+| `crear-contenido-configuracion.css` | Hub Ajustes y paneles (compartido con crear contenido) |
 | `crear-contenido-publicacion.css` | Layout tarjetas Visibilidad y drawer colaboradores (`.page-crear-ruta` + `.page-crear-contenido`) |
 | `contenidos-crear-menu.js` | Menú Crear contenido / Crear ruta en lista |
 | `contexto-creacion-ruta.md` | Este documento |
@@ -253,4 +279,4 @@ Misma regla que en **`contexto-creacion-contenido.md` → Migración a React**: 
 
 ---
 
-*Última actualización: **Portada** documentada (vacío IA + modal único); sección **Migración a React**. Hashes URL por paso y deep link demo progresivo (ruta de liderazgo); pasos Certificado y Visibilidad implementados.*
+*Última actualización: paso 4 renombrado a **Ajustes** (hub Visibilidad + Tipo de navegación lineal/libre); hashes `#ajustes`, `#ajustes-visibilidad`, `#ajustes-navegacion`.*

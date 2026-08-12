@@ -537,7 +537,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "descripcion": "Ruta de aprendizaje creada en LMS Creator; agrupa contenidos de liderazgo inclusivo y estratégico.",
       "imagen": "images/cards-learn/portadas-ia/01-personas-en-oficina.jpg",
       "tipoContenido": "Ruta de aprendizaje",
-      "tiempoValor": 150,
+      "tiempoValor": 255,
       "unidadTiempo": "minutos",
       "idioma": "Español",
       "title": "Ruta de liderazgo para equipos de alto rendimiento",
@@ -548,6 +548,14 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2025-10-15",
       "visibilidadLms": "Borrador",
       "catalogoId": "catalogo_fiqsha",
+      "contenidosIds": [
+        "u014",
+        "u009",
+        "u040",
+        "u063",
+        "u069"
+      ],
+      "tipoNavegacion": "lineal",
       "conCertificacion": true,
       "plantillaCertificadoId": "tpl-estandar",
       "plantillaCertificado": "Certificado estándar Fiqsha"

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>Experiencia de ruta — UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-workspace.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="../../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../../components/progreso-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/titulo-specs-cta-exp-estudio.css">
+    <link rel="stylesheet" href="./exp-ruta.css">
+</head>
+<body data-theme="light" class="page-exp-ruta">
+    <div id="ubits-toast-container"></div>
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget--transparent">
+                            <div id="exp-ruta-stage" class="exp-ruta-stage exp-ruta-stage--portada" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/layout-workspace.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/progress-bar.js"></script>
+    <script src="../../../components/avatar.js"></script>
+    <script src="../../../components/card-content-compact.js"></script>
+    <script src="../../../components/progreso-exp-estudio.js"></script>
+    <script src="../../../components/titulo-specs-cta-exp-estudio.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../../bd-master/catalogo-proveedores-helpers.js"></script>
+    <script src="./exp-ruta.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'aprendizaje', headerVariant: 'aprendizaje' });
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            if (typeof window.initExpRuta === 'function') window.initExpRuta();
+        });
+    </script>
+</body>
+</html>

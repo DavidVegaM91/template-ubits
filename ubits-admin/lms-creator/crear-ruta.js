@@ -21,8 +21,12 @@
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_CONTENIDOS = '#contenidos';
     var HASH_PAGE_CERTIFICADO = '#certificado';
+    /** Paso 4 canónico: hub Ajustes */
+    var HASH_PAGE_AJUSTES = '#ajustes';
+    var HASH_PAGE_AJUSTES_VISIBILIDAD = '#ajustes-visibilidad';
+    var HASH_PAGE_AJUSTES_NAVEGACION = '#ajustes-navegacion';
+    /** Alias legacy del paso 4 (hub) */
     var HASH_PAGE_VISIBILIDAD = '#visibilidad';
-    /** Alias legacy del paso 4 */
     var HASH_PAGE_PUBLICACION = '#publicacion';
 
     /** Demo deep link — ruta de liderazgo */
@@ -254,14 +258,27 @@
     function hashForCrearRutaPageStep(idx) {
         if (idx === 1) return HASH_PAGE_CONTENIDOS;
         if (idx === 2) return HASH_PAGE_CERTIFICADO;
-        if (idx === 3) return HASH_PAGE_VISIBILIDAD;
+        if (idx === 3) return HASH_PAGE_AJUSTES;
         return HASH_PAGE_PORTADA;
+    }
+
+    function isAjustesStepHash(h) {
+        if (typeof window.isCrearRutaAjustesHash === 'function') {
+            return window.isCrearRutaAjustesHash(h);
+        }
+        return (
+            h === HASH_PAGE_AJUSTES ||
+            h === HASH_PAGE_AJUSTES_VISIBILIDAD ||
+            h === HASH_PAGE_AJUSTES_NAVEGACION ||
+            h === HASH_PAGE_VISIBILIDAD ||
+            h === HASH_PAGE_PUBLICACION
+        );
     }
 
     function getDemoSeedLevelForHash(h) {
         if (h === HASH_PAGE_CONTENIDOS) return 1;
         if (h === HASH_PAGE_CERTIFICADO) return 2;
-        if (h === HASH_PAGE_VISIBILIDAD || h === HASH_PAGE_PUBLICACION) return 3;
+        if (isAjustesStepHash(h)) return 3;
         return 0;
     }
 
@@ -357,10 +374,17 @@
             goToStep(1, { skipUrl: true });
         } else if (h === HASH_PAGE_CERTIFICADO) {
             goToStep(2, { skipUrl: true });
-        } else if (h === HASH_PAGE_VISIBILIDAD || h === HASH_PAGE_PUBLICACION) {
-            goToStep(3, { skipUrl: true });
-            if (h === HASH_PAGE_PUBLICACION && typeof history.replaceState === 'function') {
-                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_VISIBILIDAD);
+        } else if (isAjustesStepHash(h)) {
+            var configPanel =
+                typeof window.crearRutaConfigPanelFromHash === 'function'
+                    ? window.crearRutaConfigPanelFromHash(h) || 'hub'
+                    : 'hub';
+            goToStep(3, { skipUrl: true, configPanel: configPanel });
+            if (
+                (h === HASH_PAGE_VISIBILIDAD || h === HASH_PAGE_PUBLICACION) &&
+                typeof history.replaceState === 'function'
+            ) {
+                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_AJUSTES);
             }
         } else if (h === HASH_PAGE_PORTADA || h === '') {
             goToStep(0, { skipUrl: true });
@@ -714,8 +738,16 @@
         if (idx === 2 && typeof window.initCrearRutaCertificadoStepOnce === 'function') {
             window.initCrearRutaCertificadoStepOnce();
         }
-        if (idx === 3 && typeof window.initCrearRutaPublicacionStepOnce === 'function') {
-            window.initCrearRutaPublicacionStepOnce();
+        if (idx === 3) {
+            if (typeof window.initCrearRutaPublicacionStepOnce === 'function') {
+                window.initCrearRutaPublicacionStepOnce();
+            }
+            if (typeof window.initCrearRutaConfiguracionHub === 'function') {
+                window.initCrearRutaConfiguracionHub({
+                    skipUrl: true,
+                    panel: opts.configPanel || 'hub'
+                });
+            }
         }
         updateFooterNav(idx);
         if (typeof window.initTooltip === 'function') {
@@ -807,6 +839,10 @@
                 typeof window.getCrearRutaVisibilidad === 'function'
                     ? window.getCrearRutaVisibilidad()
                     : 'borrador';
+            var tipoNavegacion =
+                typeof window.getCrearRutaTipoNavegacion === 'function'
+                    ? window.getCrearRutaTipoNavegacion()
+                    : 'lineal';
             var categoriaFiqshaId = getCrearRutaCategoriaFiqshaIdFromForm() || CR_DEMO_CATEGORIA_ID;
             sessionStorage.setItem(
                 'ubits-toast-pending',
@@ -817,12 +853,16 @@
                 JSON.stringify({
                     id: CR_PUBLISH_CARD_ID,
                     visibilidad: visibilidad,
+                    tipoNavegacion: tipoNavegacion,
                     titulo: titulo,
                     imagen: CR_PUBLISH_COVER_PATH,
                     tiempoValor: getRutaDurationMinutesForPublish(),
                     categoriaFiqshaId: categoriaFiqshaId
                 })
             );
+            try {
+                sessionStorage.setItem('ubits-crear-ruta-tipo-navegacion', tipoNavegacion);
+            } catch (e2) {}
         } catch (e) {}
         window.location.href = 'contenidos.html';
     }

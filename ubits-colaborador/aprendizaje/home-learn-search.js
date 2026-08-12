@@ -153,7 +153,11 @@
 
     function goToExpEstudio(id, contentType) {
         if (!id) return;
-        if (contentType === 'Ruta de aprendizaje') return;
+        if (contentType === 'Ruta de aprendizaje') {
+            window.location.href =
+                'exp-ruta/exp-ruta.html?id=' + encodeURIComponent(String(id));
+            return;
+        }
         window.location.href =
             'exp-estudio/exp-estudio.html?id=' + encodeURIComponent(String(id));
     }

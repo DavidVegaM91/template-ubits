@@ -1,0 +1,330 @@
+/**
+ * Experiencia de ruta — portada learner
+ * body.page-exp-ruta
+ * Layout y fichas alineados a exp-estudio portada: hero | aside / meta | aside
+ */
+
+/* Cadena full-width (paridad exp-estudio) */
+body.page-exp-ruta .content-area {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding-bottom: var(--padding-2xl);
+}
+
+body.page-exp-ruta .content-sections,
+body.page-exp-ruta .content-sections > .section-single,
+body.page-exp-ruta .widget--transparent,
+body.page-exp-ruta .exp-ruta-stage {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Desktop dos columnas: 65% hero/meta | 35% aside (lista).
+ * Gap entre columnas = --gap-2xl (24px). Entre bloques = --gap-xl (20px).
+ */
+body.page-exp-ruta .exp-ruta-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+body.page-exp-ruta .exp-ruta-stage--portada {
+  display: grid;
+  grid-template-columns: minmax(0, 65fr) minmax(280px, 35fr);
+  grid-template-areas:
+    'hero aside'
+    'meta aside';
+  gap: var(--gap-xl) var(--gap-2xl);
+  align-items: start;
+}
+
+body.page-exp-ruta .exp-ruta-hero {
+  grid-area: hero;
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+}
+
+body.page-exp-ruta .exp-ruta-hero img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+body.page-exp-ruta .exp-ruta-col--aside {
+  grid-area: aside;
+  min-width: 0;
+  position: static;
+  align-self: stretch;
+  width: 100%;
+  justify-self: stretch;
+}
+
+body.page-exp-ruta .exp-ruta-portada-meta {
+  grid-area: meta;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  min-width: 0;
+}
+
+body.page-exp-ruta .exp-ruta-aside-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  position: sticky;
+  top: var(--padding-lg);
+}
+
+/* Fichas blancas (paridad .exp-estudio-ficha) */
+body.page-exp-ruta .exp-ruta-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--padding-lg);
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+}
+
+body.page-exp-ruta .exp-ruta-ficha__title {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+body.page-exp-ruta .exp-ruta-ficha__label {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+body.page-exp-ruta .exp-ruta-ficha__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-items: center;
+}
+
+body.page-exp-ruta .exp-ruta-ficha__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+body.page-exp-ruta .exp-ruta-ficha__block + .exp-ruta-ficha__block {
+  margin-top: var(--gap-md);
+}
+
+body.page-exp-ruta .exp-ruta-desc {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+  line-height: 1.5;
+}
+
+/* Competencias: en fila, una al lado de la otra */
+body.page-exp-ruta .exp-ruta-competencias-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-items: flex-start;
+}
+
+body.page-exp-ruta .exp-ruta-competencia-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xs);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  background: var(--ubits-bg-1);
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+body.page-exp-ruta .exp-ruta-competencia-chip:hover {
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-ruta a.exp-ruta-meta-chip-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+body.page-exp-ruta a.exp-ruta-meta-chip-link:hover {
+  background: var(--ubits-bg-gray-subtle-hover);
+}
+
+body.page-exp-ruta .exp-ruta-competencia-chip .ubits-avatar {
+  flex-shrink: 0;
+}
+
+body.page-exp-ruta .exp-ruta-competencia-chip__name {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+/* Aliado / Expertos — media 96px (Figma / exp-estudio) */
+body.page-exp-ruta .exp-ruta-media-stack,
+body.page-exp-ruta .exp-ruta-expertos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+body.page-exp-ruta .exp-ruta-media-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  width: 100%;
+  min-width: 0;
+}
+
+body.page-exp-ruta .exp-ruta-media-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+}
+
+body.page-exp-ruta .exp-ruta-media-avatar__img {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-ruta .exp-ruta-media-avatar__linkedin {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-1);
+  color: var(--ubits-fg-1-high);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body.page-exp-ruta .exp-ruta-media-avatar__linkedin:hover {
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-ruta .exp-ruta-media-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+  flex: 1;
+}
+
+body.page-exp-ruta .exp-ruta-media-name {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body.page-exp-ruta a.exp-ruta-media-name:hover {
+  color: var(--ubits-fg-1-high);
+}
+
+body.page-exp-ruta .exp-ruta-media-role {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+body.page-exp-ruta .exp-ruta-media-bio {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+  line-height: 1.5;
+}
+
+body.page-exp-ruta .exp-ruta-expertos-list > .exp-ruta-media-row + .exp-ruta-media-row {
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--ubits-border-1);
+}
+
+body.page-exp-ruta .exp-ruta-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+body.page-exp-ruta .exp-ruta-lista__title {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+body.page-exp-ruta .exp-ruta-lista__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+body.page-exp-ruta .exp-ruta-lista__cards .course-card-compact {
+  width: 100%;
+}
+
+/* Antes de Comenzar / bloqueados en lineal */
+body.page-exp-ruta .course-card-compact.exp-ruta-card--locked {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: default;
+}
+
+body.page-exp-ruta .course-card-compact.exp-ruta-card--unlocked {
+  cursor: pointer;
+}
+
+body.page-exp-ruta .course-card-compact.exp-ruta-card--unlocked:hover {
+  border-color: var(--ubits-accent-brand);
+}
+
+@media (max-width: 1023px) {
+  body.page-exp-ruta .exp-ruta-stage--portada {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'hero'
+      'aside'
+      'meta';
+  }
+
+  body.page-exp-ruta .exp-ruta-col--aside {
+    position: static;
+    align-self: start;
+  }
+
+  body.page-exp-ruta .exp-ruta-aside-stack {
+    position: static;
+  }
+}

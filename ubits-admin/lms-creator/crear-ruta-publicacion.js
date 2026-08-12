@@ -78,6 +78,10 @@
             lockBorradorSelection();
         }
         syncPrivadoColabButton();
+        var visDesc = document.getElementById('cr-config-card-visibilidad-desc');
+        if (visDesc) {
+            visDesc.textContent = (VISIBILIDAD_META[value] && VISIBILIDAD_META[value].label) || 'Borrador';
+        }
     }
 
     function getPrivadoColabButton() {

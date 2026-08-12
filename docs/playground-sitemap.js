@@ -114,6 +114,7 @@
       zona: 'ubits-colaborador/aprendizaje/zona-estudio.html',
       progreso: 'ubits-colaborador/aprendizaje/progreso.html',
       exp: 'ubits-colaborador/aprendizaje/exp-estudio/exp-estudio.html',
+      expRuta: 'ubits-colaborador/aprendizaje/exp-ruta/exp-ruta.html',
       modoIa: 'ubits-colaborador/aprendizaje/modo-estudio-ia.html',
       iaHr: 'ubits-colaborador/ia-para-hr/ia-para-hr.html',
       tareas: 'ubits-colaborador/tareas/tareas.html',
@@ -245,7 +246,7 @@
       {
         id: 'colaborador-aprendizaje',
         title: 'Colaborador · Aprendizaje',
-        description: 'Catálogo, zona de estudio, progreso y experiencia de estudio (deep links).',
+        description: 'Catálogo, zona de estudio, progreso, experiencia de estudio y de ruta (deep links).',
         audience: 'colaborador',
         groups: [
           {
@@ -323,6 +324,54 @@
                 C.exp + '?id=' + expId + '#portada-completado',
                 'variant',
                 '100 % · Ver más + Descargar certificado',
+              ),
+            ],
+          },
+          {
+            id: 'exp-ruta-portada',
+            title: 'Experiencia de ruta · Portada',
+            links: [
+              link(
+                'er-lineal-sin',
+                'Lineal · Sin iniciar',
+                C.expRuta + '?id=u007&nav=lineal#portada-sin-iniciar',
+                'default',
+                'Cards bloqueadas · Comenzar ahora',
+              ),
+              link(
+                'er-lineal-prog',
+                'Lineal · En progreso',
+                C.expRuta + '?id=u007&nav=lineal#portada-en-progreso',
+                'variant',
+                '2/5 finalizados (40 %) · siguiente desbloqueado',
+              ),
+              link(
+                'er-lineal-done',
+                'Lineal · Completado',
+                C.expRuta + '?id=u007&nav=lineal#portada-completado',
+                'variant',
+                '100 % · Ver más contenidos',
+              ),
+              link(
+                'er-libre-sin',
+                'Libre · Sin iniciar',
+                C.expRuta + '?id=u007&nav=libre#portada-sin-iniciar',
+                'variant',
+                'Cards bloqueadas hasta Comenzar',
+              ),
+              link(
+                'er-libre-prog',
+                'Libre · En progreso',
+                C.expRuta + '?id=u007&nav=libre#portada-en-progreso',
+                'variant',
+                '2/5 finalizados · todos desbloqueados',
+              ),
+              link(
+                'er-libre-done',
+                'Libre · Completado',
+                C.expRuta + '?id=u007&nav=libre#portada-completado',
+                'variant',
+                '100 %',
               ),
             ],
           },
@@ -508,6 +557,19 @@
             links: [
               link('cr-portada', 'Crear ruta · Portada', C.crearRuta + '#portada', 'step'),
               link('cr-cert', 'Crear ruta · Certificado', C.crearRuta + '#certificado', 'step'),
+              link('cr-ajustes', 'Crear ruta · Ajustes', C.crearRuta + '#ajustes', 'step'),
+              link(
+                'cr-ajustes-vis',
+                'Ajustes · Visibilidad',
+                C.crearRuta + '#ajustes-visibilidad',
+                'step',
+              ),
+              link(
+                'cr-ajustes-nav',
+                'Ajustes · Tipo de navegación',
+                C.crearRuta + '#ajustes-navegacion',
+                'step',
+              ),
             ],
           },
           { id: 'lms-planes', title: 'Planes de formación', links: lmsPlanes },

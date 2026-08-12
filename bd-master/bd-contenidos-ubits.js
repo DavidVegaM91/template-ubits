@@ -225,11 +225,11 @@ window.BDS_CONTENIDOS_UBITS = {
     {
       "id": "u007",
       "origen": "catalogo_ubits",
-      "titulo": "Apps para acelerar tu productividad con ia",
-      "descripcion": "Ruta de aprendizaje que agrupa contenidos de varios aliados para dominar herramientas tecnológicas con práctica aplicada.",
+      "titulo": "Ruta de liderazgo para equipos de alto rendimiento",
+      "descripcion": "Secuencia formativa para desarrollar habilidades de liderazgo inclusivo, estratégico y adaptativo. Ideal para mandos medios y líderes de equipo que buscan impacto sostenible en la organización.",
       "imagen": "images/cards-learn/apps-para-acelerar-tu-productividad-con-ia.jpeg",
       "tipoContenido": "Ruta de aprendizaje",
-      "tiempoValor": 180,
+      "tiempoValor": 255,
       "unidadTiempo": "minutos",
       "idioma": "Español",
       "competenciaPrincipalId": "comp-019",
@@ -245,7 +245,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "aliadoId": "aly-001",
       "nivelIngles": null,
       "fileName": "apps-para-acelerar-tu-productividad-con-ia.jpeg",
-      "title": "Apps para acelerar tu productividad con ia",
+      "title": "Ruta de liderazgo para equipos de alto rendimiento",
       "imagePath": "cards-learn/apps-para-acelerar-tu-productividad-con-ia.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
@@ -253,6 +253,14 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-006",
         "aly-002"
       ],
+      "contenidosIds": [
+        "u014",
+        "u009",
+        "u040",
+        "u063",
+        "u069"
+      ],
+      "tipoNavegacion": "lineal",
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true,
       "plantillaCertificadoId": "tpl-ubits",
