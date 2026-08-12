@@ -23,7 +23,7 @@
   ];
 
   var EMPRESA_COMPANIES = [
-    { id: 'fiqsha', name: 'Fiqsha', mark: 'F', logoSrc: 'images/Client-logo.png', bg: '#FFFFFF', licenses: [940, 1000], credits: [25000, 45000] },
+    { id: 'fiqsha', name: 'Fiqsha', mark: 'F', logoSrc: 'images/Client-logo.png', avatarSrc: 'images/Favicons/Fiqsha Smart Consulting.jpg', bg: '#FFFFFF', licenses: [940, 1000], credits: [25000, 45000] },
     { id: 'alpha', name: 'Alpha', mark: 'A', bg: '#2E6BFF', licenses: [128, 150], credits: [4200, 10000] },
     { id: 'beta', name: 'Beta', mark: 'B', bg: '#7A5AF8', licenses: [312, 400], credits: [18500, 20000] },
     { id: 'omega', name: 'Omega', mark: 'O', bg: '#E0457B', licenses: [76, 100], credits: [1900, 5000] },
@@ -97,15 +97,15 @@
     var initials = company.mark || (company.name ? company.name.charAt(0) : '');
     if (typeof global.renderAvatar === 'function') {
       return global.renderAvatar(
-        { nombre: company.name, initials: initials },
-        { size: 'xs', initials: initials, alt: company.name },
+        { nombre: company.name, initials: initials, avatar: company.avatarSrc || null },
+        { size: 'sm', initials: initials, alt: company.name },
       );
     }
     var letter = typeof global.formatAvatarInitials === 'function'
       ? global.formatAvatarInitials(initials)
       : String(initials || '').slice(0, 2).toUpperCase();
     return (
-      '<span class="ubits-avatar ubits-avatar--xs" aria-label="' +
+      '<span class="ubits-avatar ubits-avatar--sm" aria-label="' +
       esc(company.name) +
       '"><span class="ubits-avatar__initials" aria-hidden="true">' +
       esc(letter) +

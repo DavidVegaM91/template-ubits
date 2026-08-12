@@ -1178,8 +1178,8 @@
       '<img class="exp-estudio-eval__icon" src="' +
       ICONS.info +
       '" alt="" />' +
-      '<h2 class="exp-estudio-eval__heading ubits-heading-h2">Evaluación de conocimientos</h2>' +
-      '<p class="exp-estudio-eval__lead ubits-body-md-regular">Dejaste en pausa la evaluación, te invitamos a retomarla desde nuestro sitio web.</p>' +
+      '<h2 class="exp-estudio-eval__heading ubits-heading-h2">Continúa tu evaluación</h2>' +
+      '<p class="exp-estudio-eval__lead ubits-body-md-regular">Puedes retomarla desde donde la dejaste; todas tus respuestas se guardaron automáticamente.</p>' +
       '</div>';
   }
 
