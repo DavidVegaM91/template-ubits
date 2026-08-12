@@ -1,0 +1,98 @@
+/* ========================================
+   System Error Page — pantallas a pantalla completa
+   (404, sin acceso, offline, licencia, servidor)
+   Tokens: --ubits-* (vanilla)
+   ======================================== */
+
+.ubits-system-error {
+  box-sizing: border-box;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 40px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ubits-bg-1);
+}
+
+.ubits-system-error__content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 757px;
+}
+
+.ubits-system-error__illustration {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.ubits-system-error__illustration img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ubits-system-error__copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.ubits-system-error__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
+}
+
+.ubits-system-error__title {
+  margin: 0;
+  width: 100%;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-system-error__description {
+  margin: 0;
+  width: 100%;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-system-error__description strong {
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-system-error__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .ubits-system-error {
+    padding: 32px 20px;
+  }
+
+  .ubits-system-error__content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .ubits-system-error__illustration {
+    margin-inline: auto;
+  }
+}

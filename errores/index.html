@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../images/playground-favicon.svg">
+  <title>Errores de sistema — UBITS</title>
+  <link rel="stylesheet" href="../general-styles/ubits-colors.css">
+  <link rel="stylesheet" href="../general-styles/styles.css">
+  <link rel="stylesheet" href="../general-styles/ubits-typography.css">
+  <link rel="stylesheet" href="../general-styles/ubits-spacing-tokens.css">
+  <style>
+    .errores-hub {
+      box-sizing: border-box;
+      min-height: 100vh;
+      padding: 48px 24px;
+      background: var(--ubits-bg-2);
+    }
+    .errores-hub__inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .errores-hub__title { margin: 0; }
+    .errores-hub__lead {
+      margin: 0;
+      color: var(--ubits-fg-1-medium);
+    }
+    .errores-hub__list {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .errores-hub__card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px 18px;
+      border-radius: var(--border-radius-md);
+      background: var(--ubits-bg-1);
+      border: 1px solid var(--ubits-border-1);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s ease;
+    }
+    .errores-hub__card:hover {
+      border-color: var(--ubits-accent-brand);
+    }
+    .errores-hub__card-title { color: var(--ubits-fg-1-high); }
+    .errores-hub__card-desc { color: var(--ubits-fg-1-medium); }
+    .errores-hub__href {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--ubits-fg-1-medium);
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <main class="errores-hub">
+    <div class="errores-hub__inner">
+      <h1 class="ubits-heading-h1 errores-hub__title">Errores de sistema</h1>
+      <p class="ubits-body-md-regular errores-hub__lead">
+        Pantallas de error a pantalla completa (Figma Errores / LXP New Learning).
+      </p>
+      <ul class="errores-hub__list">
+        <li>
+          <a class="errores-hub__card" href="404.html">
+            <span class="ubits-body-md-semibold errores-hub__card-title">Error 404</span>
+            <span class="ubits-body-sm-regular errores-hub__card-desc">Página no encontrada con CTA al inicio.</span>
+            <code class="errores-hub__href">errores/404.html</code>
+          </a>
+        </li>
+        <li>
+          <a class="errores-hub__card" href="sin-acceso.html">
+            <span class="ubits-body-md-semibold errores-hub__card-title">Sin acceso al contenido</span>
+            <span class="ubits-body-sm-regular errores-hub__card-desc">Contenido existente sin matrícula/acceso; CTA al inicio.</span>
+            <code class="errores-hub__href">errores/sin-acceso.html</code>
+          </a>
+        </li>
+        <li>
+          <a class="errores-hub__card" href="sin-conexion.html">
+            <span class="ubits-body-md-semibold errores-hub__card-title">Sin conexión a internet</span>
+            <span class="ubits-body-sm-regular errores-hub__card-desc">Estado offline con CTA para reintentar.</span>
+            <code class="errores-hub__href">errores/sin-conexion.html</code>
+          </a>
+        </li>
+        <li>
+          <a class="errores-hub__card" href="licencia-vencida.html">
+            <span class="ubits-body-md-semibold errores-hub__card-title">Licencia vencida</span>
+            <span class="ubits-body-sm-regular errores-hub__card-desc">Acceso terminado; CTA cerrar sesión.</span>
+            <code class="errores-hub__href">errores/licencia-vencida.html</code>
+          </a>
+        </li>
+        <li>
+          <a class="errores-hub__card" href="error-servidor.html">
+            <span class="ubits-body-md-semibold errores-hub__card-title">Error 500 / 503 / 504</span>
+            <span class="ubits-body-sm-regular errores-hub__card-desc">Error inesperado del servidor (sin CTA).</span>
+            <code class="errores-hub__href">errores/error-servidor.html</code>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
