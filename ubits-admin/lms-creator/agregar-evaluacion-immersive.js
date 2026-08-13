@@ -42,7 +42,7 @@
             '      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="cc-agregar-eval-close" aria-label="Cerrar" data-tooltip="Cerrar"><i class="far fa-times" aria-hidden="true"></i></button>' +
             '    </div>' +
             '  </header>' +
-            '  <main class="ubits-layout-immersive__main" id="cc-agregar-eval-main" tabindex="-1">' +
+            '  <main class="ubits-layout-immersive__main ubits-layout-immersive__main--tone-bg-2" id="cc-agregar-eval-main" tabindex="-1">' +
             '    <div class="cc-agregar-eval-immersive__stage ubits-layout-immersive__stage">' +
             '      <div id="cc-agregar-eval-mount" class="cc-agregar-eval-immersive__mount"></div>' +
             '    </div>' +

@@ -47,6 +47,94 @@
     max-width: min(1200px, calc(100vw - 32px));
 }
 
+/* Pantalla completa: shell a viewport; header / body / footer acotan contenido a 1440 (como inmersivo). */
+.ubits-modal-content--full {
+    --ubits-modal-full-max-width: var(--ubits-layout-immersive-max-width, 1440px);
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+}
+
+.ubits-modal-overlay--full {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.ubits-modal-content--full.ubits-modal-content--ia {
+    max-height: none;
+    height: 100%;
+}
+
+.ubits-modal-full-inner {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--ubits-modal-full-max-width, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
+}
+
+.ubits-modal-content--full > .ubits-modal-header {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ubits-modal-content--full > .ubits-modal-header > .ubits-modal-full-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+.ubits-modal-content--full > .ubits-modal-header:has(.ubits-modal-description) > .ubits-modal-full-inner {
+    align-items: flex-start;
+}
+
+.ubits-modal-content--full > .ubits-modal-body {
+    padding-left: 0;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.ubits-modal-content--full > .ubits-modal-body > .ubits-modal-full-inner {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-modal-content--full > .ubits-modal-footer {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ubits-modal-content--full > .ubits-modal-footer > .ubits-modal-full-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+    width: 100%;
+}
+
+@media (max-width: 639px) {
+    .ubits-modal-full-inner {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+}
+
 .ubits-modal-header {
     padding: var(--padding-lg) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
@@ -253,5 +341,10 @@
     /* No aplicar al cuerpo promo (lleva padding 0; el aire va en .ubits-modal-promo-media y .ubits-modal-promo-copy) */
     .ubits-modal-body:not(.ubits-modal-body--promo) {
         padding: var(--padding-lg);
+    }
+
+    .ubits-modal-content--full > .ubits-modal-body:not(.ubits-modal-body--promo) {
+        padding-left: 0;
+        padding-right: 0;
     }
 }

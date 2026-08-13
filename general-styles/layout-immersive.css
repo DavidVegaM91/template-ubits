@@ -118,7 +118,11 @@ body.page-layout-immersive {
     }
 }
 
-/* Área central: un solo scrollport vertical. */
+/* Área central: un solo scrollport vertical.
+ * Default de producto: bg-2 full-bleed (bandas laterales fuera del max-width del stage).
+ * Opt-in bg-1: .ubits-layout-immersive__main--tone-bg-1
+ * Superficie IA: .ubits-layout-immersive--ia en la raíz (orbes + main transparente).
+ */
 .ubits-layout-immersive__main {
     flex: 1 1 0;
     min-height: 0;
@@ -128,6 +132,42 @@ body.page-layout-immersive {
     display: flex;
     flex-direction: column;
     background: var(--ubits-bg-2);
+}
+
+.ubits-layout-immersive__main--tone-bg-1 {
+    background: var(--ubits-bg-1);
+}
+
+.ubits-layout-immersive__main--tone-bg-2 {
+    background: var(--ubits-bg-2);
+}
+
+/* Superficie IA: orbes en todo el layout (header incluido), base bg-1 */
+.ubits-layout-immersive--ia {
+    background-color: var(--ubits-bg-1);
+    background-image:
+        radial-gradient(
+            ellipse 100% 80% at 10% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)),
+            rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px))
+                calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)),
+            rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%,
+            transparent 48%
+        ),
+        radial-gradient(
+            ellipse 95% 75% at 90% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)),
+            rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%,
+            transparent 50%
+        );
+}
+
+.ubits-layout-immersive--ia > .ubits-layout-immersive__header,
+.ubits-layout-immersive--ia > .ubits-layout-immersive__main,
+.ubits-layout-immersive--ia > .ubits-layout-immersive__footer {
+    background: transparent;
 }
 
 /* Escenario dentro del main: max-width centrado; `main` en selector gana a reglas solo `.crear-contenido-editor-workspace` de contenidos.css. */

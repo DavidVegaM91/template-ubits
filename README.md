@@ -32,6 +32,20 @@ Elige **una** familia por pantalla. En producto solo hay **Workspace** e **Inmer
 | **2** | **Inmersivo** | [`ubits-admin/lms-creator/crear-contenido.html`](ubits-admin/lms-creator/crear-contenido.html) | Sin Sidebar ni AppHeader de producto: raíz **`.ubits-layout-immersive`**, cabecera **`.ubits-layout-immersive__header`**, **`main.ubits-layout-immersive__main`**, pie **`.ubits-layout-immersive__footer`**. Stage: **`.ubits-layout-immersive__stage`**. | **`body.page-layout-immersive`** (+ **`no-subnav`**). **`general-styles/layout-immersive.css`**. |
 | **—** | **Documentación** | [`documentacion/documentacion.html`](documentacion/documentacion.html) | **Workspace** `audience: 'docs'`: mismo shell que admin (sidebar flotante + AppHeader + pie). Nav extra de vanilla: **Inicio** y **Guía de prompts** (público menos técnico). Footer del sidebar: **Sitemap**. | `initWorkspaceLayout({ audience: 'docs' })` / `bootDocsWorkspace()`. Sitemap: [`documentacion/sitemap.html`](documentacion/sitemap.html). |
 
+### Inmersivo — variantes de fondo del canvas (obligatorio al implementar)
+
+El **contenido** del stage puede ir acotado (`--ubits-layout-immersive-max-width`, default **1440px**), pero el **fondo del `<main>`** es full-bleed (incluye bandas laterales en pantallas anchas). Hay que elegir la variante al montar la pantalla:
+
+| Variante | Markup | Fondo del `<main>` | Cuándo usarla |
+|----------|--------|--------------------|---------------|
+| **Producto (Creator / tareas / 360)** | Default **o** `main.ubits-layout-immersive__main--tone-bg-2` | `--ubits-bg-2` a **todo el ancho** | Flujos inmersivos de producto: crear/editar contenido, crear ruta, detalle de tarea, 360, evaluación inmersiva. Preferir la clase explícita (paridad React `mainTone="bg-2"`). |
+| **Exploración / limpio** | `main.ubits-layout-immersive__main--tone-bg-1` | `--ubits-bg-1` | Solo si el flujo debe verse “limpio” a propósito. |
+| **Superficie IA** | `.ubits-layout-immersive--ia` en la raíz | Transparente sobre root `bg-1` + orbes | Flujos tipo Video con IA. Tiene prioridad sobre el tono del main. |
+
+**Reglas:** no pintes `bg-2` solo en un hijo del stage (en pantallas grandes se verán franjas). Header y footer del shell siguen en `bg-1`.
+
+**Modales `size: 'full'`:** mismo criterio — el shell ocupa el viewport; header / body / footer acotan su contenido a **1440px** centrado (`.ubits-modal-full-inner` vía `openModal`). Ver `components/modal.css` + `modal.js`.
+
 **LMS Creator (listas):** Workspace admin (`initWorkspaceLayout({ audience: 'admin' })`) en `ubits-admin/lms-creator/`. Las URLs viejas `ubits-colaborador/lms-creator/*` redirigen a admin. Flujos crear/editar contenido → Inmersivo.
 
 **Modo oscuro en documentación de componentes (`documentacion/componentes/*.html`):** Cada página **debe** incluir `<script src="../../script.js"></script>` (mismo patrón que `documentacion/componentes/button.html` y `component-doc-template.html`). Ese script registra `loadSavedTheme()` en `DOMContentLoaded` y aplica en `<body>` la preferencia guardada en `localStorage` (`theme`). Sin `script.js`, el atributo fijo `data-theme="light"` del HTML deja la doc siempre en claro aunque el usuario haya puesto toda la plataforma en modo oscuro.
@@ -756,7 +770,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 | **`ubits-spacing-tokens.css`** | Tokens de espaciado: `--space-*` (0–96px), `--padding-xs/sm/md/lg/…`, `--gap-*`, `--border-radius-*`, `--size-*`. Usado por `styles.css` y componentes. |
 | **`fontawesome-icons.css`** | Definición de iconos FontAwesome (clases `far`, `fas`, etc.). **Obligatorio** cuando uses componentes con iconos. |
 | **`styles.css`** | Estilos globales: reset, body, scrollbar, layout (dashboard-container, content-area), `body.no-subnav` + `.main-content`, import de `ubits-spacing-tokens.css`. Cargar en todas las páginas. |
-| **`layout-immersive.css`** | **Solo layout 3 (inmersivo):** viewport fijo en `body.page-layout-immersive`, columna **`.ubits-layout-immersive`**, header/main/footer, **`.ubits-layout-immersive__stage`** (max-width centrado; variable `--ubits-layout-immersive-max-width`). No enlazar en páginas estándar con Sidebar. |
+| **`layout-immersive.css`** | **Solo layout 3 (inmersivo):** viewport fijo en `body.page-layout-immersive`, columna **`.ubits-layout-immersive`**, header/main/footer, **`.ubits-layout-immersive__stage`** (max-width centrado; variable `--ubits-layout-immersive-max-width`). Fondo del main: default **`bg-2`** full-bleed; opt-in **`--tone-bg-1`** o raíz **`--ia`** (orbes). No enlazar en páginas estándar con Sidebar. |
 
 ### **📁 `bd-master/` — datos de simulación (playground)**
 

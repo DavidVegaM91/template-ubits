@@ -18,7 +18,8 @@
  *     footerTertiary: { text: 'Eliminar', onClick: function() { } },  // opcional: botón a la izquierda
  *     footerLeftHtml: '<label class="ubits-checkbox">…</label>',  // opcional: control libre a la izquierda
  *     showFooter: true,  // false = modal sin pie
- *     size: 'sm',  // 'xs' | 'sm' | 'md' | 'lg' | null (default 560px)
+ *     size: 'sm',  // 'xs' | 'sm' | 'md' | 'lg' | 'full' | null (default 560px)
+ *                  // full = viewport; header/body/footer acotan contenido a 1440px (como inmersivo)
  *     closeOnOverlayClick: true,
  *     onClose: function() { }
  *   });
@@ -124,19 +125,27 @@
         );
     }
 
+    function wrapFullInner(isFull, html) {
+        if (!isFull) return html;
+        return '<div class="ubits-modal-full-inner">' + html + '</div>';
+    }
+
     function buildModalHeaderHtml(overlayId, title, options) {
         if (options && options.variant === 'promo') {
             return '';
         }
         var description = options && options.description != null ? options.description : '';
         var isIa = options && options.variant === 'ia';
+        var isFull = options && options.size === 'full';
         if (!isIa) {
             return (
                 '  <div class="ubits-modal-header">' +
-                buildModalHeaderTextHtml(overlayId, title, description) +
-                '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
-                '      <i class="far fa-times"></i>' +
-                '    </button>' +
+                wrapFullInner(isFull,
+                    buildModalHeaderTextHtml(overlayId, title, description) +
+                    '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
+                    '      <i class="far fa-times"></i>' +
+                    '    </button>'
+                ) +
                 '  </div>'
             );
         }
@@ -151,13 +160,15 @@
         }
         return (
             '  <div class="ubits-modal-header ubits-modal-header--ia">' +
-            buildModalHeaderTextHtml(overlayId, title, description) +
-            '    <div class="ubits-modal-header__actions">' +
-            badge +
-            '      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
-            '        <i class="far fa-times"></i>' +
-            '      </button>' +
-            '    </div>' +
+            wrapFullInner(isFull,
+                buildModalHeaderTextHtml(overlayId, title, description) +
+                '    <div class="ubits-modal-header__actions">' +
+                badge +
+                '      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
+                '        <i class="far fa-times"></i>' +
+                '      </button>' +
+                '    </div>'
+            ) +
             '  </div>'
         );
     }
@@ -182,7 +193,7 @@
      * @param {boolean} [options.showFooter=true] - Si false, no se renderiza el pie aunque haya footerHtml (modal sin footer).
      * @param {Object} [options.footerTertiary] - Botón terciario a la izquierda. { text: string, onClick: function }. Opcional.
      * @param {string} [options.footerLeftHtml] - HTML libre en la zona izquierda del pie (ej. checkbox de confirmación). Opcional.
-     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
+     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg' | 'full'. Ancho del contenido. `full` = viewport; header/body/footer acotan a 1440px.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
      * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional. 'promo' para modal sin cabecera ni pie ni botón X (cierre: overlay, Escape, CTA en body); tamaños solo xs | sm.
@@ -207,15 +218,17 @@
         var isPromo = options.variant === 'promo';
         var promoSize = isPromo && (size === 'xs' || size === 'sm') ? size : (isPromo ? 'sm' : null);
 
+        var isFull = !isPromo && size === 'full';
         var sizeClass = '';
         if (isPromo) {
             sizeClass = ' ubits-modal-content--' + promoSize;
-        } else if (size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0) {
+        } else if (size && ['xs', 'sm', 'md', 'lg', 'full'].indexOf(size) >= 0) {
             sizeClass = ' ubits-modal-content--' + size;
         }
 
         var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
         var contentPromoClass = isPromo ? ' ubits-modal-content--promo' : '';
+        var overlayFullClass = isFull ? ' ubits-modal-overlay--full' : '';
 
         var overlay = document.getElementById(overlayId);
         if (overlay) {
@@ -228,7 +241,7 @@
 
         overlay = document.createElement('div');
         overlay.id = overlayId;
-        overlay.className = 'ubits-modal-overlay';
+        overlay.className = 'ubits-modal-overlay' + overlayFullClass;
         overlay.setAttribute('aria-hidden', 'false');
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
@@ -257,13 +270,15 @@
             innerContent =
                 '<div class="ubits-modal-content' + sizeClass + contentIaClass + '" onclick="event.stopPropagation();">' +
                 buildModalHeaderHtml(overlayId, title, options) +
-                '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
+                '  <div class="ubits-modal-body">' + wrapFullInner(isFull, bodyHtml) + '</div>' +
                 (showFooter && footerHtml ? ('  <div class="ubits-modal-footer">' +
+                    wrapFullInner(isFull,
                     '<div class="ubits-modal-footer__left">' +
                     (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
                     footerLeftHtml +
                     '</div>' +
-                    '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
+                    '<div class="ubits-modal-footer__right">' + footerHtml + '</div>'
+                    ) +
                     '</div>') : '') +
                 '</div>';
         }
@@ -361,7 +376,7 @@
      * @param {string} [options.footerHtml] - HTML del pie (botones derecha). Opcional.
      * @param {Object} [options.footerTertiary] - Botón terciario izquierda. { text: string }. Opcional (onClick se asocia por id en la página).
      * @param {string} [options.footerLeftHtml] - HTML libre en la zona izquierda del pie (ej. checkbox). Opcional.
-     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'.
+     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg' | 'full'.
      * @param {string} [options.contentId] - ID opcional del div .ubits-modal-content (para date-picker-modal, etc.).
      * @param {string} [options.titleId] - ID opcional del span del título (ej. reabrir-plan-title).
      * @param {string} [options.closeButtonId] - ID opcional del botón cerrar (ej. filtros-modal-close).
@@ -412,7 +427,8 @@
                 '</div></div>';
         }
 
-        var sizeClass = size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0
+        var isFullHtml = size === 'full';
+        var sizeClass = size && ['xs', 'sm', 'md', 'lg', 'full'].indexOf(size) >= 0
             ? ' ubits-modal-content--' + size
             : '';
 
@@ -449,32 +465,41 @@
             }
             headerInner =
                 '<div class="ubits-modal-header ubits-modal-header--ia' + headerClassAttr + '">' +
+                wrapFullInner(isFullHtml,
                 headerTextHtml +
                 '<div class="ubits-modal-header__actions">' +
                 badge +
                 '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
                 '<i class="far fa-times"></i></button>' +
-                '</div></div>';
+                '</div>'
+                ) +
+                '</div>';
         } else {
             headerInner =
                 '<div class="ubits-modal-header' + headerClassAttr + '">' +
+                wrapFullInner(isFullHtml,
                 headerTextHtml +
                 '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
                 '<i class="far fa-times"></i>' +
-                '</button>' +
+                '</button>'
+                ) +
                 '</div>';
         }
 
-        return '<div class="ubits-modal-overlay' + overlayClassAttr + '" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
+        var overlayFullClassHtml = isFullHtml ? ' ubits-modal-overlay--full' : '';
+
+        return '<div class="ubits-modal-overlay' + overlayClassAttr + overlayFullClassHtml + '" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
             '<div class="ubits-modal-content' + sizeClass + contentIaClass + contentClassAttr + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
             headerInner +
-            '<div class="ubits-modal-body' + bodyClassAttr + '">' + bodyHtml + '</div>' +
+            '<div class="ubits-modal-body' + bodyClassAttr + '">' + wrapFullInner(isFullHtml, bodyHtml) + '</div>' +
             (showFooter && footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
+            wrapFullInner(isFullHtml,
             '<div class="ubits-modal-footer__left">' +
             (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
             footerLeftHtml +
             '</div>' +
-            '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
+            '<div class="ubits-modal-footer__right">' + footerHtml + '</div>'
+            ) +
             '</div>') : '') +
             '</div>' +
             '</div>';
