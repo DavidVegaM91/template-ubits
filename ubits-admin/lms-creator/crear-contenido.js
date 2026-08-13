@@ -1480,6 +1480,50 @@
         ];
     }
 
+    /** Índice admin (drawer Progreso): incluye páginas ocultas. */
+    function recursosGetIndiceBlueprintForAdminProgress() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return [];
+
+        function mapPages(pages) {
+            return (pages || []).map(function (p) {
+                return {
+                    id: String(p.pageKey || ''),
+                    title: String(p.label || 'Página'),
+                    tipo: p.tipo || 'blank-page',
+                    hidden: !!p.hidden
+                };
+            });
+        }
+
+        if (recursosSectionsEnabled) {
+            return recursosSerializeSectionsFromDom()
+                .map(function (s) {
+                    var meta = recursosSectionMeta[s.key] || {};
+                    return {
+                        id: String(s.key || ''),
+                        title: String(s.title || 'Sección'),
+                        descriptionHtml: meta.descriptionHtml || '',
+                        pages: mapPages(s.pages)
+                    };
+                })
+                .filter(function (s) {
+                    return (s.pages || []).length > 0;
+                });
+        }
+
+        var singlePages = mapPages(recursosSerializeSingleSectionFromDom());
+        if (!singlePages.length) return [];
+        return [
+            {
+                id: 'default',
+                title: 'Contenido',
+                descriptionHtml: '',
+                pages: singlePages
+            }
+        ];
+    }
+
     function recursosRefreshIndiceFromDom() {
         if (!recursosSectionsEnabled) return;
         var preferredPageKey = CC_RECURSOS_CURRENT_PAGE_KEY;
@@ -4833,10 +4877,12 @@
         goToCrearContenidoPageStep: goToCrearContenidoPageStep,
         seedCrearContenidoDemo: seedCrearContenidoDemo,
         hydrateFromContentRecord: hydrateFromContentRecord,
-        getRecursosIndiceBlueprintForLearner: recursosGetIndiceBlueprintForLearner
+        getRecursosIndiceBlueprintForLearner: recursosGetIndiceBlueprintForLearner,
+        getRecursosIndiceBlueprintForAdminProgress: recursosGetIndiceBlueprintForAdminProgress
     };
 
     window.ccGetRecursosIndiceBlueprintForLearner = recursosGetIndiceBlueprintForLearner;
+    window.ccGetRecursosIndiceBlueprintForAdminProgress = recursosGetIndiceBlueprintForAdminProgress;
 
     window.ccBuildCrearContenidoResourceFooterHtml = buildCrearContenidoResourceFooterHtml;
 

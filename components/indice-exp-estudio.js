@@ -188,6 +188,12 @@
         if (typeof handlers.onPageClick === 'function') handlers.onPageClick(pageId, pageItem);
       }
     });
+    wireIndiceTooltips(overlay || body);
+  }
+
+  function wireIndiceTooltips(root) {
+    if (!root || typeof global.initTooltip !== 'function') return;
+    global.initTooltip(root.querySelectorAll('[data-tooltip]'));
   }
 
   function initIndiceExpEstudio(root, handlers) {
@@ -196,6 +202,7 @@
 
     var desktop = root.querySelector('.ubits-indice-exp__desktop') || root;
     var desktopApi = bindIndiceInteractions(desktop, handlers);
+    wireIndiceTooltips(root);
 
     function onRootClick(e) {
       var trigger = e.target.closest('[data-action="open-indice-modal"]');

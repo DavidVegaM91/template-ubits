@@ -370,7 +370,9 @@
                 {
                     id: 'cc-demo-pg-2',
                     title: 'Conversaciones difíciles según Thomas-Kilmann',
-                    tipo: 'scorm'
+                    tipo: 'scorm',
+                    hidden: true,
+                    hiddenSinceIso: '2026-08-12'
                 },
                 { id: 'cc-demo-pg-3', title: 'Evaluación Sección 1', tipo: 'evaluacion' }
             ]
@@ -388,12 +390,38 @@
         }
     ];
 
+    var DEMO_HIDDEN_SINCE_ISO = '2026-08-12';
+
+    var DEMO_PROGRESS_OVERRIDES = {
+        p2: { hidden: true, hiddenSinceIso: DEMO_HIDDEN_SINCE_ISO },
+        'cc-demo-pg-2': { hidden: true, hiddenSinceIso: DEMO_HIDDEN_SINCE_ISO }
+    };
+
+    function applyDemoProgressOverlay(blueprint) {
+        return (blueprint || []).map(function (section) {
+            return Object.assign({}, section, {
+                pages: (section.pages || []).map(function (page) {
+                    var ov = DEMO_PROGRESS_OVERRIDES[page.id];
+                    if (!ov) return page;
+                    return Object.assign({}, page, {
+                        hidden: ov.hidden != null ? ov.hidden : page.hidden,
+                        hiddenSinceIso: ov.hiddenSinceIso != null ? ov.hiddenSinceIso : page.hiddenSinceIso
+                    });
+                })
+            });
+        });
+    }
+
     function getCourseIndiceBlueprint() {
+        if (typeof window.ccGetRecursosIndiceBlueprintForAdminProgress === 'function') {
+            var fromAdmin = window.ccGetRecursosIndiceBlueprintForAdminProgress();
+            if (fromAdmin && fromAdmin.length) return applyDemoProgressOverlay(fromAdmin);
+        }
         if (typeof window.ccGetRecursosIndiceBlueprintForLearner === 'function') {
             var fromEditor = window.ccGetRecursosIndiceBlueprintForLearner();
-            if (fromEditor && fromEditor.length) return fromEditor;
+            if (fromEditor && fromEditor.length) return applyDemoProgressOverlay(fromEditor);
         }
-        return DEMO_INDICE_BLUEPRINT;
+        return applyDemoProgressOverlay(DEMO_INDICE_BLUEPRINT);
     }
 
     function completedPagesForPercent(progresoPercent, totalPages) {
@@ -413,13 +441,22 @@
         return 'bloqueada';
     }
 
+    function resolveHiddenSinceLabel(page) {
+        if (!page.hidden) return '';
+        var iso = page.hiddenSinceIso || DEMO_HIDDEN_SINCE_ISO;
+        if (typeof window.formatDateDDMmmAAAA === 'function') {
+            return window.formatDateDDMmmAAAA(iso) || '';
+        }
+        return iso ? String(iso) : '';
+    }
+
     function buildIndiceSectionsForStudentProgress(row) {
         var progresoPercent = row && row.progresoPercent != null ? row.progresoPercent : 0;
         var blueprint = getCourseIndiceBlueprint();
         var flat = [];
         blueprint.forEach(function (section, si) {
             (section.pages || []).forEach(function (page, pi) {
-                flat.push({ si: si, pi: pi });
+                flat.push({ si: si, pi: pi, hidden: !!page.hidden });
             });
         });
         var total = flat.length;
@@ -440,6 +477,7 @@
         flat.forEach(function (ref, i) {
             var key = ref.si + ':' + ref.pi;
             var st = pageStateAt(i, done, total, pct);
+            if (ref.hidden && st !== 'completada' && st !== 'completada-activa') st = 'bloqueada';
             stateMap[key] = st;
             if (st === 'completada' || st === 'completada-activa') {
                 if (labels[completedOrdinal]) labelMap[key] = labels[completedOrdinal];
@@ -453,12 +491,15 @@
                 descriptionHtml: section.descriptionHtml,
                 pages: (section.pages || []).map(function (page, pi) {
                     var key = si + ':' + pi;
+                    var st = stateMap[key] || 'bloqueada';
                     return {
                         id: page.id,
                         title: page.title,
                         tipo: page.tipo || 'blank-page',
-                        state: stateMap[key] || 'bloqueada',
-                        completedAtLabel: labelMap[key] || ''
+                        state: st,
+                        completedAtLabel: labelMap[key] || '',
+                        visible: !page.hidden,
+                        hiddenSinceLabel: resolveHiddenSinceLabel(page)
                     };
                 })
             };

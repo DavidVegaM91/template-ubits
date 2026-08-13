@@ -92,11 +92,16 @@
     if (clickable) itemCls.push('is-clickable');
     if (opts.className) itemCls.push(opts.className);
 
+    var feedbackType = feedbackTypeForState(state);
+    var feedbackLabel =
+      feedbackType === 'check' ? 'Visto' : feedbackType === 'progress' ? 'Pendiente' : 'Bloqueado';
     var feedbackHtml =
-      feedbackTypeForState(state) && typeof global.feedbackExpEstudioHtml === 'function'
+      feedbackType && typeof global.feedbackExpEstudioHtml === 'function'
         ? global.feedbackExpEstudioHtml({
-            type: feedbackTypeForState(state),
-            className: 'ubits-paginas-exp__feedback'
+            type: feedbackType,
+            className: 'ubits-paginas-exp__feedback',
+            ariaLabel: feedbackLabel,
+            tooltip: feedbackLabel
           })
         : '';
 

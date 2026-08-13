@@ -11,6 +11,7 @@
     variant: 'Variante',
     empty: 'Empty',
     step: 'Paso',
+    tab: 'Tab',
   };
 
   var KIND_STATUS = {
@@ -18,6 +19,7 @@
     variant: 'info',
     empty: 'warning',
     step: 'success',
+    tab: 'info',
   };
 
   function sitemapKindLabel(kind) {
@@ -193,7 +195,7 @@
 
     var lmsPlanes = [
       link('pf-planes', 'Planes (contenidos)', C.planesC, 'default'),
-      link('pf-comp', 'Planes (competencias)', C.planesK, 'variant'),
+      link('pf-comp', 'Planes (competencias)', C.planesK, 'tab'),
       link('pf-grupos', 'Grupos', C.grupos, 'default'),
       link('pf-crear-c', 'Crear plan contenidos', C.crearPC, 'default'),
       link('pf-crear-k', 'Crear plan competencias', C.crearPK, 'default'),
@@ -274,9 +276,9 @@
             title: 'Zona de estudio',
             links: [
               link('ze-contenidos', 'Plan de contenidos', C.zona + '#contenidos', 'default'),
-              link('ze-competencias', 'Plan de competencias', C.zona + '#competencias', 'variant'),
-              link('ze-exclusivo', 'Exclusivo para mi', C.zona + '#exclusivo', 'variant'),
-              link('ze-historial', 'Historial y certificados', C.zona + '#historial', 'variant'),
+              link('ze-competencias', 'Plan de competencias', C.zona + '#competencias', 'tab'),
+              link('ze-exclusivo', 'Exclusivo para mi', C.zona + '#exclusivo', 'tab'),
+              link('ze-historial', 'Historial y certificados', C.zona + '#historial', 'tab'),
             ],
           },
           {
@@ -537,6 +539,30 @@
             links: [
               link('ec-base', 'Editar contenido', C.editar + '?id=' + editContentId, 'default', 'Demo ' + editContentId),
               link(
+                'ec-res-progreso',
+                'Editar · Resultados · Progreso',
+                C.editar + '?id=' + editContentId + '#resultados-progreso',
+                'tab',
+              ),
+              link(
+                'ec-res-eval',
+                'Editar · Resultados · Evaluaciones',
+                C.editar + '?id=' + editContentId + '#resultados-evaluaciones',
+                'tab',
+              ),
+              link(
+                'ec-res-intentos',
+                'Editar · Resultados · Gestión de intentos',
+                C.editar + '?id=' + editContentId + '#resultados-gestion-intentos',
+                'tab',
+              ),
+              link(
+                'ec-res-descargas',
+                'Editar · Resultados · Descargas',
+                C.editar + '?id=' + editContentId + '#resultados-descargas',
+                'tab',
+              ),
+              link(
                 'ec-recursos',
                 'Editar · Recursos',
                 C.editar + '?id=' + editContentId + '&seccion=recursos',
@@ -548,6 +574,37 @@
                 'Editar · Certificado',
                 C.editar + '?id=' + editContentId + '#certificado',
                 'step',
+              ),
+              link(
+                'ec-ajustes',
+                'Editar · Ajustes',
+                C.editar + '?id=' + editContentId + '#ajustes',
+                'step',
+              ),
+              link(
+                'ec-ajustes-vis',
+                'Editar · Ajustes · Visibilidad',
+                C.editar + '?id=' + editContentId + '#ajustes-visibilidad',
+                'step',
+              ),
+              link(
+                'ec-ajustes-pesos',
+                'Editar · Ajustes · Pesos de evaluación',
+                C.editar + '?id=' + editContentId + '#ajustes-pesos',
+                'step',
+              ),
+              link(
+                'ec-ajustes-nav',
+                'Editar · Ajustes · Tipo de navegación',
+                C.editar + '?id=' + editContentId + '#ajustes-navegacion',
+                'step',
+              ),
+              link(
+                'ec-ajustes-impacto',
+                'Editar · Ajustes · Impacto en el progreso',
+                C.editar + '?id=' + editContentId + '#ajustes-impacto',
+                'step',
+                'Solo en edición publicada',
               ),
             ],
           },

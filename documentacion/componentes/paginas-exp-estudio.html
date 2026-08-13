@@ -40,7 +40,7 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Páginas Exp Estudio</h1>
-                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Fila del índice learner con la misma base visual que Páginas Creator (sin drag ni menú). A la derecha, Feedback Locked/Progress/Check.</p>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Fila del índice learner con la misma base visual que Páginas Creator (sin drag ni menú). A la derecha, Feedback Locked/Progress/Check con tooltip Visto / Pendiente / Bloqueado.</p>
                         </div>
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -94,6 +94,7 @@
                 state: peState,
                 clickable: peState !== 'bloqueada'
             });
+            if (typeof initTooltip === 'function') initTooltip(mount.querySelectorAll('[data-tooltip]'));
         }
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[data-state]').forEach(function (btn) {

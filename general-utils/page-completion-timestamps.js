@@ -128,6 +128,14 @@
     return buildPageCompletionDates(opts).map(formatCompletedAtLabel);
   }
 
+  function addDaysToDateStr(dateStr, days) {
+    var d = parseDateOnly(dateStr);
+    if (!d) return null;
+    d.setDate(d.getDate() + (Number(days) || 0));
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
   global.ubitsBuildPageCompletionLabels = buildPageCompletionLabels;
   global.ubitsFormatCompletedAtLabel = formatCompletedAtLabel;
+  global.ubitsAddDaysToDateStr = addDaysToDateStr;
 })(typeof window !== 'undefined' ? window : this);

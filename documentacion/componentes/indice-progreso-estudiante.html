@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/feedback-exp-estudio.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/paginas-progreso-estudiante.css">
     <link rel="stylesheet" href="../../components/seccion-exp-estudio.css">
     <link rel="stylesheet" href="../../components/indice-progreso-estudiante.css">
@@ -35,7 +36,7 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Índice Progreso Estudiante</h1>
-                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Índice de solo lectura para el drawer «Progreso del estudiante» (Resultados LMS Creator). Stack de secciones con filas Páginas Progreso Estudiante; no es el Índice Exp Estudio del learner.</p>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Índice de solo lectura para el drawer «Progreso del estudiante» (Resultados LMS Creator). Sin botón de descripción de sección. Incluye páginas ocultas; el tag Oculta · fecha solo aparece si está oculta; las páginas Visto muestran fecha de finalización.</p>
                         </div>
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -76,6 +77,7 @@
                         title: 'Comunicación para desescalar un conflicto',
                         tipo: 'video',
                         state: 'completada',
+                        visible: true,
                         completedAtLabel: '21 jun 2026 · 10:24'
                     },
                     {
@@ -83,6 +85,8 @@
                         title: 'Conversaciones difíciles según Thomas-Kilmann',
                         tipo: 'scorm',
                         state: 'completada',
+                        visible: false,
+                        hiddenSinceLabel: '12 ago 2026',
                         completedAtLabel: '21 jun 2026 · 10:32'
                     },
                     {
@@ -90,6 +94,7 @@
                         title: 'Evaluación Sección 1',
                         tipo: 'evaluacion',
                         state: 'completada',
+                        visible: true,
                         completedAtLabel: '21 jun 2026 · 10:41'
                     }
                 ]
@@ -104,10 +109,23 @@
                         id: 'p-4',
                         title: 'Simulador de conversación difícil',
                         tipo: 'scorm',
-                        state: 'activa'
+                        state: 'activa',
+                        visible: true
                     },
-                    { id: 'p-5', title: 'Guía mapa de conflicto', tipo: 'pdf', state: 'bloqueada' },
-                    { id: 'p-6', title: 'Evaluación Sección 2', tipo: 'evaluacion', state: 'bloqueada' }
+                    {
+                        id: 'p-5',
+                        title: 'Guía mapa de conflicto',
+                        tipo: 'pdf',
+                        state: 'bloqueada',
+                        visible: true
+                    },
+                    {
+                        id: 'p-6',
+                        title: 'Evaluación Sección 2',
+                        tipo: 'evaluacion',
+                        state: 'bloqueada',
+                        visible: true
+                    }
                 ]
             }
         ];

@@ -1,6 +1,7 @@
 /**
  * IndiceProgresoEstudiante — índice admin drawer Resultados.
  * Stack de secciones (chrome Seccion Exp) + Paginas Progreso Estudiante.
+ * Sin botón de descripción de sección (eso es Exp Estudio / Creator).
  *
  * createIndiceProgresoEstudiante({ container, sections, collapsedIds })
  */
@@ -13,13 +14,6 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  }
-
-  function hasDescription(html) {
-    if (!html) return false;
-    return String(html)
-      .replace(/<[^>]*>/g, '')
-      .trim().length > 0;
   }
 
   function pagesHtml(pages) {
@@ -38,16 +32,7 @@
   function sectionHtml(section, collapsed) {
     var id = String(section.id || '');
     var expanded = !collapsed;
-    var showInfo = hasDescription(section.descriptionHtml);
     var cls = 'ubits-seccion-exp' + (expanded ? '' : ' is-collapsed');
-
-    var infoBtn = showInfo
-      ? '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-seccion-exp__info-btn"' +
-        ' data-action="section-info"' +
-        ' data-tooltip="Sección con descripción" data-tooltip-delay="1000"' +
-        ' aria-label="Sección con descripción">' +
-        '<i class="far fa-circle-info" aria-hidden="true"></i></button>'
-      : '';
 
     return (
       '<section class="' +
@@ -62,7 +47,6 @@
       escapeHtml(section.title || '') +
       '</span>' +
       '<span class="ubits-seccion-exp__actions">' +
-      infoBtn +
       '<span class="ubits-seccion-exp__chevron" aria-hidden="true">' +
       '<i class="far fa-chevron-down"></i>' +
       '</span>' +
@@ -98,14 +82,6 @@
     );
   }
 
-  function buildSectionMap(sections) {
-    var map = {};
-    (sections || []).forEach(function (s) {
-      if (s && s.id != null) map[String(s.id)] = s;
-    });
-    return map;
-  }
-
   function toggleSection(section, header) {
     var willExpand = section.classList.contains('is-collapsed');
     section.classList.toggle('is-collapsed', !willExpand);
@@ -116,23 +92,8 @@
   function initIndiceProgresoEstudiante(root, handlers) {
     if (!root) return null;
     handlers = handlers || {};
-    var sectionMap = buildSectionMap(handlers.sections);
 
     function onClick(e) {
-      var infoBtn = e.target.closest('[data-action="section-info"]');
-      if (infoBtn && root.contains(infoBtn)) {
-        e.preventDefault();
-        e.stopPropagation();
-        var sectionEl = infoBtn.closest('.ubits-seccion-exp');
-        if (!sectionEl) return;
-        var sid = sectionEl.getAttribute('data-section-id') || '';
-        var meta = sectionMap[sid] || {};
-        if (typeof global.openSeccionExpEstudioInfoModal === 'function') {
-          global.openSeccionExpEstudioInfoModal(meta.title || '', meta.descriptionHtml || '');
-        }
-        return;
-      }
-
       var headerEl = e.target.closest('.ubits-seccion-exp__header');
       if (headerEl && root.contains(headerEl)) {
         var section = headerEl.closest('.ubits-seccion-exp');
@@ -146,7 +107,6 @@
 
     function onKeyDown(e) {
       if (e.key !== 'Enter' && e.key !== ' ') return;
-      if (e.target.closest('[data-action="section-info"]')) return;
       var headerEl = e.target.closest('.ubits-seccion-exp__header');
       if (!headerEl || !root.contains(headerEl)) return;
       e.preventDefault();
@@ -178,7 +138,6 @@
     container.innerHTML = indiceProgresoEstudianteHtml(opts);
     var root = container.querySelector('.ubits-indice-progreso') || container;
     var api = initIndiceProgresoEstudiante(root, {
-      sections: opts.sections,
       onSectionToggle: opts.onSectionToggle
     });
     if (typeof global.initTooltip === 'function') {

@@ -1,8 +1,10 @@
 /**
  * PaginasProgresoEstudiante — fila admin (drawer Resultados).
- * Solo lectura; meta de fecha de finalización. No es Paginas Exp Estudio.
+ * Solo lectura; tag Oculta si aplica y fecha de finalización.
  *
- * paginasProgresoEstudianteHtml({ id, title, tipo, state, completedAtLabel })
+ * paginasProgresoEstudianteHtml({
+ *   id, title, tipo, state, completedAtLabel, visible, hiddenSinceLabel
+ * })
  */
 (function (global) {
   'use strict';
@@ -50,8 +52,7 @@
 
   function feedbackTypeForState(state) {
     if (state === 'completada' || state === 'completada-activa') return 'check';
-    if (state === 'activa') return 'progress';
-    if (state === 'disponible') return null;
+    if (state === 'activa' || state === 'disponible') return 'progress';
     return 'locked';
   }
 
@@ -63,14 +64,38 @@
       .replace(/"/g, '&quot;');
   }
 
+  function ocultaTagHtml(hiddenSinceLabel) {
+    var label = hiddenSinceLabel ? 'Oculta · ' + hiddenSinceLabel : 'Oculta';
+    return (
+      '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left">' +
+      '<i class="far fa-eye-slash" aria-hidden="true"></i>' +
+      '<span class="ubits-status-tag__text">' +
+      escapeHtml(label) +
+      '</span></span>'
+    );
+  }
+
   function paginasProgresoEstudianteHtml(opts) {
     opts = opts || {};
     var state = normalizeState(opts.state);
     var title = opts.title != null ? String(opts.title) : '';
     var completedAtLabel =
       opts.completedAtLabel != null ? String(opts.completedAtLabel).trim() : '';
-    var showMeta =
-      !!completedAtLabel && (state === 'completada' || state === 'completada-activa');
+    var visible = opts.visible !== false && opts.visible !== 'false';
+    var hiddenSinceLabel =
+      opts.hiddenSinceLabel != null ? String(opts.hiddenSinceLabel).trim() : '';
+    var isCompleted = state === 'completada' || state === 'completada-activa';
+    var showCompleted = !!completedAtLabel && isCompleted;
+    var ocultaHtml = !visible ? ocultaTagHtml(hiddenSinceLabel) : '';
+    var metaInner =
+      (showCompleted
+        ? '<span class="ubits-paginas-progreso__meta ubits-body-xs-regular">Completada: ' +
+          escapeHtml(completedAtLabel) +
+          '</span>'
+        : '') + ocultaHtml;
+    var metaHtml = metaInner
+      ? '<div class="ubits-paginas-progreso__meta-block">' + metaInner + '</div>'
+      : '';
 
     var itemCls = ['ubits-paginas-progreso__item'];
     if (state === 'completada-activa') {
@@ -78,13 +103,19 @@
     } else {
       itemCls.push('is-' + state);
     }
+    if (!visible) itemCls.push('is-hidden-page');
     if (opts.className) itemCls.push(opts.className);
 
+    var feedbackType = feedbackTypeForState(state);
+    var feedbackLabel =
+      feedbackType === 'check' ? 'Visto' : feedbackType === 'progress' ? 'Pendiente' : 'Bloqueado';
     var feedbackHtml =
-      feedbackTypeForState(state) && typeof global.feedbackExpEstudioHtml === 'function'
+      feedbackType && typeof global.feedbackExpEstudioHtml === 'function'
         ? global.feedbackExpEstudioHtml({
-            type: feedbackTypeForState(state),
-            className: 'ubits-paginas-progreso__feedback'
+            type: feedbackType,
+            className: 'ubits-paginas-progreso__feedback',
+            ariaLabel: feedbackLabel,
+            tooltip: feedbackLabel
           })
         : '';
 
@@ -111,11 +142,7 @@
       '<span class="ubits-paginas-progreso__label ubits-body-sm-semibold">' +
       escapeHtml(title) +
       '</span>' +
-      (showMeta
-        ? '<span class="ubits-paginas-progreso__meta ubits-body-xs-regular">' +
-          escapeHtml(completedAtLabel) +
-          '</span>'
-        : '') +
+      metaHtml +
       '</div></div>' +
       feedbackHtml +
       '</div>'

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/feedback-exp-estudio.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/paginas-progreso-estudiante.css">
     <style>
         .preview-control-btn.active {
@@ -40,7 +41,7 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Páginas Progreso Estudiante</h1>
-                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Fila de solo lectura para el drawer «Progreso del estudiante» (Resultados LMS Creator). Misma base visual que Páginas Exp Estudio, sin clic ni hover; en páginas completadas muestra fecha y hora de finalización bajo el título.</p>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">Fila de solo lectura para el drawer «Progreso del estudiante» (Resultados LMS Creator). Misma base visual que Páginas Exp Estudio, sin clic ni hover; feedback con tooltip Visto / Pendiente / Bloqueado; tag Oculta · fecha solo si está oculta (mismo ícono que Ocultar en Páginas Creator); fecha de finalización si aplica. La fecha de publicación del contenido vive en la cabecera de Resultados, no en la fila.</p>
                         </div>
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -91,8 +92,11 @@
                 title: titles[peState],
                 tipo: tipos[peState],
                 state: peState,
+                visible: peState !== 'bloqueada',
+                hiddenSinceLabel: peState === 'bloqueada' ? '12 ago 2026' : '',
                 completedAtLabel: peState === 'completada' ? '21 jun 2026 · 10:24' : ''
             });
+            if (typeof initTooltip === 'function') initTooltip(mount.querySelectorAll('[data-tooltip]'));
         }
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[data-state]').forEach(function (btn) {
