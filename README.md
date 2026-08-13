@@ -241,7 +241,7 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
   - `creator-personalizacion` - LMS Creator: Universidad corporativa, Seguimiento
 - **Sidebar** - Navegación lateral con **3 variantes** (`components/sidebar.js`):
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
-  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
+  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño) → Herramientas (Tareas, Avisos). **Diagnóstico** vive dentro de Aprendizaje, debajo de Reportes. Selección: Dashboard, Vacantes, Plantillas (sin Créditos). Desempeño incluye PDI entre Matriz de talento y Encuestas. Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú; Diagnóstico va dentro de Aprendizaje, debajo de Progreso. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
   - **Variante creator (deprecada):** el rail oscuro ya no se usa en LMS Creator. Las listas van en Workspace admin. Ver [LMS Creator](#lms-creator-producto-de-admin).
 - **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-admin/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
@@ -538,7 +538,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`mi-equipo/crear-plan-competencias.html`**, **`editar-plan-competencias.html`**, **`detalle-plan-competencias.html`** - Flujo planes por competencias (líder)
 
 #### **📊 Módulo de Diagnóstico (ubits-colaborador/diagnostico/):**
-- **`diagnostico.html`** - Página de diagnóstico (1 sección)
+- **`diagnostico.html`** - Página de diagnóstico (sidenav: dentro de Aprendizaje, debajo de Progreso)
 
 #### **📈 Módulo de Desempeño (ubits-colaborador/desempeno/):**
 - **`evaluaciones-360.html`** - Evaluaciones 360 (1 sección)
@@ -582,9 +582,10 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`admin-360.html`** - Evaluaciones 360 (con header-product)
 - **`admin-objetivos.html`** - Objetivos (con header-product)
 - **`admin-matriz-talento.html`** - Matriz de Talento (con header-product)
+- **`admin-pdi.html`** - PDI (placeholder; sidenav bajo Desempeño)
 
 **Otros módulos admin:**
-- **`diagnostico/admin-diagnostico.html`** - Administración de diagnóstico (SubNav: `admin-diagnostico`)
+- **`diagnostico/admin-diagnostico.html`** - Administración de diagnóstico (sidenav: dentro de Aprendizaje, debajo de Reportes)
 - **`encuestas/admin-encuestas.html`** - Administración de encuestas (SubNav: `admin-encuestas`)
 - **`otros/admin-api.html`** - Gestión de API (sin SubNav, con header-product)
 - **`otros/admin-help-center.html`** - Centro de ayuda (sin SubNav, con header-product)

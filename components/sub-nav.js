@@ -131,7 +131,8 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/360/admin-360.html' },
             { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
-            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
+            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' },
+            { id: 'pdi', label: 'PDI', icon: 'far fa-route', url: '../../ubits-admin/desempeno/admin-pdi.html' }
         ]
     },
     diagnostico: {
@@ -537,6 +538,7 @@ const PAGE_TO_TAB = {
     'admin-360.html': 'evaluations',
     'admin-objetivos.html': 'objectives',
     'admin-matriz-talento.html': 'matriz-talento',
+    'admin-pdi.html': 'pdi',
     // Admin diagnóstico
     'admin-diagnostico.html': 'diagnostico',
     // Admin encuestas

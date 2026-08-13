@@ -16,6 +16,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
             { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
             { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' },
             { id: 'progreso', title: 'Progreso', icon: 'far fa-chart-line', url: '../../ubits-colaborador/aprendizaje/progreso.html' },
+            { id: 'diagnostico', title: 'Diagnóstico', icon: 'far fa-chart-mixed', url: '../../ubits-colaborador/diagnostico/diagnostico.html' },
             { id: 'mi-equipo', title: 'Mi equipo', icon: 'far fa-users', url: '../../ubits-colaborador/aprendizaje/mi-equipo/planes.html' }
         ]
     },
@@ -49,23 +50,14 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         ]
     },
     {
-        id: 'diagnostico',
-        title: 'Diagnóstico',
-        icon: 'far fa-chart-mixed',
-        accent: '#ec4899',
-        url: '../../ubits-colaborador/diagnostico/diagnostico.html',
+        id: 'encuestas',
+        title: 'Encuestas',
+        icon: 'far fa-clipboard-list-check',
+        accent: '#14b8a6',
+        url: '../../ubits-colaborador/encuestas/encuestas.html',
         isLink: true,
-        clickable: true
+        clickable: false
     },
-            {
-                id: 'encuestas',
-                title: 'Encuestas',
-                icon: 'far fa-clipboard-list-check',
-                accent: '#14b8a6',
-                url: '../../ubits-colaborador/encuestas/encuestas.html',
-                isLink: true,
-                clickable: false
-            },
     {
         id: 'tareas',
         title: 'Tareas',
@@ -138,16 +130,9 @@ const FLOATING_MENU_SECTIONS_ADMIN = [
             { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/lms-creator/planes-formacion/planes-contenidos.html' },
             { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
             { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/lms-creator/certificados/certificados.html' },
-            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' }
+            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/lms-creator/personalizacion/personalizacion-seguimiento.html' },
+            { id: 'admin-diagnostico', title: 'Diagnóstico', icon: 'far fa-chart-mixed', url: '../../ubits-admin/diagnostico/admin-diagnostico.html' }
         ]
-    },
-    {
-        id: 'admin-diagnostico',
-        title: 'Diagnóstico',
-        icon: 'far fa-chart-mixed',
-        url: '../../ubits-admin/diagnostico/admin-diagnostico.html',
-        isLink: true,
-        clickable: true
     },
     {
         id: 'admin-desempeno',
@@ -156,7 +141,8 @@ const FLOATING_MENU_SECTIONS_ADMIN = [
         subitems: [
             { id: 'admin-eval-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/360/admin-360.html' },
             { id: 'admin-objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
-            { id: 'admin-matriz-talento', title: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
+            { id: 'admin-matriz-talento', title: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' },
+            { id: 'admin-pdi', title: 'PDI', icon: 'far fa-route', url: '../../ubits-admin/desempeno/admin-pdi.html' }
         ]
     },
     {
@@ -669,6 +655,7 @@ function setActiveItemByCurrentPage() {
         'admin-360.html': 'admin-eval-360',
         'admin-objetivos.html': 'admin-objetivos',
         'admin-matriz-talento.html': 'admin-matriz-talento',
+        'admin-pdi.html': 'admin-pdi',
         'admin-encuestas.html': 'admin-encuestas',
         'admin-api.html': 'admin-api',
         'admin-help-center.html': 'admin-help'

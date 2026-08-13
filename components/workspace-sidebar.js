@@ -311,7 +311,6 @@
           { id: 'seldash', label: 'Dashboard', href: '#' },
           { id: 'vacantes', label: 'Vacantes', href: '#' },
           { id: 'plantillasrecl', label: 'Plantillas', href: '#' },
-          { id: 'creditos', label: 'Créditos', href: '#' },
         ],
       },
       {
@@ -366,6 +365,11 @@
             ],
           },
           { id: 'reportes', label: 'Reportes', href: '#' },
+          {
+            id: 'diagnostico',
+            label: 'Diagnóstico',
+            href: 'ubits-admin/diagnostico/admin-diagnostico.html',
+          },
         ],
       },
       {
@@ -385,17 +389,16 @@
             href: 'ubits-admin/desempeno/admin-matriz-talento.html',
           },
           {
+            id: 'pdi',
+            label: 'PDI',
+            href: 'ubits-admin/desempeno/admin-pdi.html',
+          },
+          {
             id: 'encuestas',
             label: 'Encuestas',
             href: 'ubits-admin/encuestas/admin-encuestas.html',
           },
         ],
-      },
-      {
-        id: 'diagnostico',
-        label: 'Diagnóstico',
-        icon: 'fa-chart-mixed',
-        href: 'ubits-admin/diagnostico/admin-diagnostico.html',
       },
       { type: 'group', id: 'group-herramientas', label: 'Herramientas' },
       {
@@ -438,6 +441,11 @@
             href: 'ubits-colaborador/aprendizaje/zona-estudio.html',
           },
           { id: 'progreso', label: 'Progreso', href: 'ubits-colaborador/aprendizaje/progreso.html' },
+          {
+            id: 'diagnostico',
+            label: 'Diagnóstico',
+            href: 'ubits-colaborador/diagnostico/diagnostico.html',
+          },
         ],
       },
       {
@@ -454,12 +462,6 @@
           { id: 'metricas', label: 'Métricas', href: 'ubits-colaborador/desempeno/metricas.html' },
           { id: 'reportes', label: 'Reportes', href: 'ubits-colaborador/desempeno/reportes.html' },
         ],
-      },
-      {
-        id: 'diagnostico',
-        label: 'Diagnóstico',
-        icon: 'fa-chart-mixed',
-        href: 'ubits-colaborador/diagnostico/diagnostico.html',
       },
       {
         id: 'encuestas',
@@ -616,6 +618,7 @@
     objetivos: 'objetivos',
     metricas: 'metricas',
     matriztalento: 'matriztalento',
+    pdi: 'pdi',
     encuestas: 'encuestas',
     seleccion: 'seleccion',
     reclutamiento: 'seleccion',
@@ -623,7 +626,6 @@
     seldash: 'seldash',
     vacantes: 'vacantes',
     plantillasrecl: 'plantillasrecl',
-    creditos: 'creditos',
     tareas: 'tareas',
     avisos: 'avisos',
     comunicaciones: 'avisos',
@@ -651,6 +653,7 @@
     'admin-360.html': 'eval360',
     'admin-objetivos.html': 'objetivos',
     'admin-matriz-talento.html': 'matriztalento',
+    'admin-pdi.html': 'pdi',
     'admin-encuestas.html': 'encuestas',
     'home-learn.html': 'home',
     'home-learn-legacy.html': 'home',

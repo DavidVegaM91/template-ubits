@@ -294,7 +294,7 @@ openModal({
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
 - **Sidebar** (Left navigation) - 3 variantes (default, admin, creator) → `components-sidebar.css` + `components/sidebar.js`  
   - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`) + Footer (Modo oscuro, Perfil)
-  - **Variante Admin (Workspace):** Inicio → Productos (Selección, Aprendizaje, Desempeño, Diagnóstico) → Herramientas (Tareas, Avisos). Configuración en el menú del logo de empresa (tres puntos; ex Empresa / ex AppHeader).
+  - **Variante Admin (Workspace):** Inicio → Productos (Selección, Aprendizaje, Desempeño) → Herramientas (Tareas, Avisos). Diagnóstico va dentro de Aprendizaje (debajo de Reportes). Selección sin Créditos. Desempeño incluye PDI. Configuración en el menú del logo de empresa (tres puntos; ex Empresa / ex AppHeader). Colaborador: Diagnóstico dentro de Aprendizaje, debajo de Progreso.
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`

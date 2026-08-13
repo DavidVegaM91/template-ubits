@@ -32,6 +32,7 @@
     'metricas.html': 'Métricas',
     'reportes.html': 'Reportes',
     'admin-matriz-talento.html': 'Matriz de talento',
+    'admin-pdi.html': 'PDI',
     'encuestas.html': 'Encuestas',
     'admin-encuestas.html': 'Encuestas',
     'reclutamiento.html': 'Reclutamiento',
@@ -76,13 +77,13 @@
     encuestas: { audience: 'colaborador', module: 'Encuestas' },
     tareas: { audience: 'colaborador', module: 'Tareas' },
     reclutamiento: { audience: 'colaborador', module: 'Reclutamiento' },
-    diagnostico: { audience: 'colaborador', module: 'Diagnóstico' },
-    'diagnóstico': { audience: 'colaborador', module: 'Diagnóstico' },
+    diagnostico: { audience: 'colaborador', module: 'Aprendizaje' },
+    'diagnóstico': { audience: 'colaborador', module: 'Aprendizaje' },
     'admin-aprendizaje': { audience: 'admin', module: 'Aprendizaje' },
     'admin-desempeño': { audience: 'admin', module: 'Desempeño' },
     'admin-desempeno': { audience: 'admin', module: 'Desempeño' },
     'admin-encuestas': { audience: 'admin', module: 'Encuestas' },
-    'admin-diagnostico': { audience: 'admin', module: 'Diagnóstico' },
+    'admin-diagnostico': { audience: 'admin', module: 'Aprendizaje' },
     'admin-empresa': { audience: 'admin', module: 'Empresa' },
     'creator-lms': { audience: 'admin', module: 'LMS Creator' },
     'creator-planes': { audience: 'admin', module: 'Planes de formación' },
@@ -292,7 +293,7 @@
       profileExtras =
         '<button type="button" class="ubits-app-header__menu-item" data-ah-nav="' +
         esc(href('ubits-admin/inicio/admin.html')) +
-        '"><i class="far fa-user-shield" aria-hidden="true"></i>Ver como admin</button>' +
+        '"><i class="far fa-right-left" aria-hidden="true"></i>Ver como admin</button>' +
         '<button type="button" class="ubits-app-header__menu-item" data-ah-action="design-system"><i class="far fa-book" aria-hidden="true"></i>Design system</button>' +
         '<button type="button" class="ubits-app-header__menu-item" data-ah-action="password"><i class="far fa-key" aria-hidden="true"></i>Cambio de contraseña</button>' +
         '<button type="button" class="ubits-app-header__menu-item" data-ah-action="conectores"><i class="far fa-plug" aria-hidden="true"></i>Conectores</button>';
@@ -300,7 +301,7 @@
       profileExtras =
         '<button type="button" class="ubits-app-header__menu-item" data-ah-nav="' +
         esc(href('ubits-colaborador/aprendizaje/home-learn.html')) +
-        '"><i class="far fa-user-gear" aria-hidden="true"></i>Ver como colaborador</button>' +
+        '"><i class="far fa-right-left" aria-hidden="true"></i>Ver como colaborador</button>' +
         '<button type="button" class="ubits-app-header__menu-item" data-ah-action="design-system"><i class="far fa-book" aria-hidden="true"></i>Design system</button>';
     }
 
