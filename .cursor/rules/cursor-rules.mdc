@@ -290,14 +290,11 @@ openModal({
 ### **CRITICAL: CHECK THIS LIST BEFORE CREATING ANYTHING**
 
 #### **1. 🧭 NAVIGATION COMPONENTS:**
-- **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
-  - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
+- **SubNav** — **eliminado.** Las pestañas de módulo viven en los acordeones del sidebar Workspace. No uses `loadSubNav`, `sub-nav.js` ni `sub-nav.css`.
 - **Sidebar** (Left navigation) - 3 variantes (default, admin, creator) → `components-sidebar.css` + `components/sidebar.js`  
   - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`) + Footer (Modo oscuro, Perfil)
   - **Variante Admin (Workspace):** Inicio → Productos (Selección, Aprendizaje, Desempeño) → Herramientas (Tareas, Avisos). Diagnóstico va dentro de Aprendizaje (debajo de Reportes). Selección sin Créditos. Desempeño incluye PDI. Configuración en el menú del logo de empresa (tres puntos; ex Empresa / ex AppHeader). Colaborador: Diagnóstico dentro de Aprendizaje, debajo de Progreso.
-- **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
-  - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
-- **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
+- **TabBar / Floating Menu** — **eliminados.** En móvil la hamburguesa del AppHeader abre el sidebar Workspace a pantalla completa. No uses `loadTabBar`, `tab-bar.js`, `loadFloatingMenu` ni `floating-menu.js`.
 
 #### **2. 🎨 UI COMPONENTS:**
 - **Button** (All actions) → `components/button.css`
@@ -1061,30 +1058,8 @@ border: 1px solid var(--ubits-border-1);
 
 ### **AVAILABLE COMPONENTS & HOW TO USE THEM**
 
-#### **1. SUB-NAV (Top Navigation)**
-```html
-<!-- Container for SubNav -->
-<div id="top-nav-container"></div>
-
-<!-- JavaScript to load SubNav -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadSubNav('top-nav-container', 'VARIANT');
-});
-</script>
-```
-
-**Available variants:**
-- `template` - Plantilla (personalizable)
-- `aprendizaje` - Aprendizaje (cursos, catálogos)
-- `desempeno` - Desempeño (evaluaciones, métricas)
-- `encuestas` - Encuestas (gestión de encuestas)
-- `tareas` - Tareas (planes, proyectos)
-- `documentacion` - Solo para documentación (reservada)
-
-**Required files:**
-- `components/sub-nav.css`
-- `components/sub-nav.js`
+#### **1. SUB-NAV**
+**Eliminado.** No existe `loadSubNav`, `sub-nav.js` ni `sub-nav.css`. El contenedor `#top-nav-container` monta **AppHeader** vía `initWorkspaceLayout` / `loadAppHeader`. Las pestañas de módulo van en el sidebar Workspace.
 
 #### **2. SIDEBAR (Left Navigation) - 3 Variantes**
 
@@ -1632,7 +1607,6 @@ Before creating ANY UI element, you MUST:
 ```html
 <!-- ALWAYS load components in this order -->
 <script src="components/sidebar.js"></script>
-<script src="components/sub-nav.js"></script>
 <script src="components/tab-bar.js"></script>
 <script src="components/alert.js"></script>
 <script src="docs/docs-sidebar.js"></script>
@@ -1641,7 +1615,6 @@ Before creating ANY UI element, you MUST:
 document.addEventListener('DOMContentLoaded', function() {
     // Load components
     loadSidebar('ninguno');
-    loadSubNav('top-nav-container', 'template');
     loadTabBar('tab-bar-container');
     loadDocsSidebar('introduccion');
 });
@@ -1769,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **Variante Creator (LMS Creator / planes / certificados / UC):**
 - **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion` (universidad corporativa en LMS Creator: `lms-creator/personalizacion-u-corporativa.html`; la vista colaborador sigue en `aprendizaje/u-corporativa.html`)
 - **Footer:** Modo oscuro, Perfil (menú: Modo Colaborador + Modo Administrador sin divisor; Documentación; contraseña y sesión).
-- **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes de formación + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
+- **Navegación por módulo:** acordeones del sidebar Workspace (LMS Creator, Planes, Certificados, Personalización). No hay SubNav.
 - **Ejemplo (listas LMS Creator = Workspace admin):**
   ```html
   <script>

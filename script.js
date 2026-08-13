@@ -5,7 +5,7 @@
 
 /**
  * Alterna entre modo oscuro y claro
- * Usada por: sidebar.js, tab-bar.js
+ * Usada por: sidebar.js, AppHeader / workspace-sidebar
  */
 function toggleDarkMode() {
     const body = document.body;

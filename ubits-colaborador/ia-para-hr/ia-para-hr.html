@@ -13,9 +13,7 @@
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../perfil/profile.css">
     <link rel="stylesheet" href="./ia-para-hr.css">
@@ -70,23 +68,17 @@
         </main>
     </div>
 
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'ia-para-hr', headerVariant: 'aprendizaje' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             setTimeout(function() {
                 setActiveDirectLink('ia-para-hr');

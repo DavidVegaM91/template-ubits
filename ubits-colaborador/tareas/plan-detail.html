@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/inline-edit.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
@@ -178,17 +175,12 @@
     <div id="plan-detail-modals-container"></div>
     <div id="ubits-toast-container"></div>
 
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/avatar.js"></script>
@@ -209,9 +201,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'planes', headerVariant: 'tareas' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             loadHeaderProduct('header-product-container', {
                 productName: 'Detalle del plan',

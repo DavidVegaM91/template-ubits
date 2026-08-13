@@ -12,9 +12,7 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/button.css">
@@ -58,9 +56,7 @@
         </main>
     </div>
 
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
     <div id="ubits-toast-container"></div>
 
     <script src="../../components/tooltip.js"></script>
@@ -69,17 +65,13 @@
     <script src="./lms-creator-admin-migration-tour.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             initWorkspaceLayout({ audience: 'admin', activeSidebar: 'contenidos', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
-            loadTabBar('tab-bar-container', 'admin');
-            loadFloatingMenu('floating-menu-container', 'admin');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             setTimeout(function () {
                 var sidebarBtn = document.querySelector('.nav-button[data-section="lms-creator"]');

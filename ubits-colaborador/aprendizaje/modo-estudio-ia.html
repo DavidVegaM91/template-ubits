@@ -13,11 +13,8 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/input.css">
@@ -127,13 +124,7 @@
 
     <div class="ia-chat-mobile-drawer-backdrop" id="ia-chat-mobile-drawer-backdrop" aria-hidden="true"></div>
 
-    <!-- Tab Bar Container -->
-    <div id="tab-bar-container"></div>
-
-    <!-- Floating Menu Container -->
-    <div id="floating-menu-container"></div>
-
-    <!-- Profile Menu Container -->
+<!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
     <!-- Contenedor para Toast UBITS -->
@@ -145,10 +136,7 @@
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/calendar.js"></script>
     <script src="../../components/input.js?v=cachebust1"></script>
     <script src="../../components/header-product.js"></script>
@@ -176,9 +164,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'modo-estudio-ia', headerVariant: 'aprendizaje' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             // Modal de confirmación eliminar chat (getModalHtml)
             var modalsContainer = document.getElementById('modo-estudio-ia-modals-container');

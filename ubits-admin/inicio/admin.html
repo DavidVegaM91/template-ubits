@@ -13,9 +13,7 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="./admin.css">
 </head>
@@ -44,29 +42,19 @@
         </main>
     </div>
 
-    <!-- Tab Bar Container -->
-    <div id="tab-bar-container"></div>
-
-    <!-- Floating Menu Container -->
-    <div id="floating-menu-container"></div>
-    
-    <!-- Profile Menu Container -->
+<!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
         <script src="../../components/tooltip.js"></script>
 <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../script.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'admin', activeSidebar: 'inicio', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
-            loadTabBar('tab-bar-container', 'admin');
-            loadFloatingMenu('floating-menu-container', 'admin');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
         });
     </script>
 </body>

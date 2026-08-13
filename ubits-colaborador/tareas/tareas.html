@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -217,13 +214,7 @@
         </main>
     </div>
 
-    <!-- Tab Bar Container -->
-    <div id="tab-bar-container"></div>
-
-    <!-- Floating Menu Container -->
-    <div id="floating-menu-container"></div>
-    
-    <!-- Profile Menu Container -->
+<!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
     <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
@@ -232,10 +223,7 @@
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../script.js"></script>
@@ -261,9 +249,7 @@
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'tareas', headerVariant: 'tareas' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             // Cargar header-product con variante solo botón primario
             if (typeof loadHeaderProduct === 'function') {
@@ -283,7 +269,7 @@
             }
 
             // Activar el tab "Tareas" específicamente después de cargar el SubNav
-            // NOTA: El reordenamiento de tabs, eliminación de logo e icono se maneja en sub-nav.js
+            // Navegación de módulo: acordeones del sidebar Workspace (sin SubNav).
             setTimeout(() => {
                 // Remover active de todos los tabs (desktop y móvil)
                 document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {

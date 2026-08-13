@@ -243,8 +243,7 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
   - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño) → Herramientas (Tareas, Avisos). **Diagnóstico** vive dentro de Aprendizaje, debajo de Reportes. Selección: Dashboard, Vacantes, Plantillas (sin Créditos). Desempeño incluye PDI entre Matriz de talento y Encuestas. Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú; Diagnóstico va dentro de Aprendizaje, debajo de Progreso. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
   - **Variante creator (deprecada):** el rail oscuro ya no se usa en LMS Creator. Las listas van en Workspace admin. Ver [LMS Creator](#lms-creator-producto-de-admin).
-- **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-admin/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
-- **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
+- **Navegación móvil** — hamburguesa del AppHeader abre el sidebar Workspace a pantalla completa (encima del header). Cerrar con el botón X o Escape. **TabBar y Floating Menu de producto están eliminados.**
 - **Profile Menu** - Menú desplegable del perfil de usuario
 
 **Páginas sin SubNav (layout 2):** Ver [Layouts de página (cuatro experiencias)](#layouts-de-página-cuatro-experiencias). Referencias rápidas: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
@@ -424,11 +423,9 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/paginator.css">
 <link rel="stylesheet" href="../../components/popover.css">
 <link rel="stylesheet" href="../../components/study-chat.css">
-<link rel="stylesheet" href="../../components/floating-menu.css">
 <link rel="stylesheet" href="../../components/profile-menu.css">
 <link rel="stylesheet" href="../../components/sidebar.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
-<link rel="stylesheet" href="../../components/tab-bar.css">
 <link rel="stylesheet" href="../../components/avatar.css">
 <link rel="stylesheet" href="../../components/calendar.css">
 <link rel="stylesheet" href="../../components/drawer.css">
@@ -454,11 +451,9 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/paginator.js"></script>
 <script src="../../components/popover.js"></script>
 <script src="../../components/study-chat.js"></script>
-<script src="../../components/floating-menu.js"></script>
 <script src="../../components/profile-menu.js"></script>
 <script src="../../components/sidebar.js"></script>
 <script src="../../components/sub-nav.js"></script>
-<script src="../../components/tab-bar.js"></script>
 <script src="../../components/calendar.js"></script>
 <script src="../../components/dropdown-menu.js"></script>
 <script src="../../components/drawer.js"></script>
@@ -598,8 +593,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 #### **📖 Documentación de Componentes (documentacion/componentes/):**
 - **`documentacion/componentes.html`** - Introducción y bienvenida a los componentes UBITS
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
-- **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
 - **`documentacion/componentes/ia-panel.html`** - Documentación del componente IA panel (panel lateral de chat IA)
@@ -690,7 +683,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   └── bd-master-tipos-contenido.js
 ├── 📁 components/             # Componentes reutilizables UBITS (~65 bloques; ver catálogo doc abajo)
 │   ├── Navegación
-│   │   ├── sub-nav, sidebar, tab-bar, floating-menu, profile-menu, submenu
+│   │   ├── sidebar, profile-menu, submenu
 │   ├── UI general (documentados en documentacion/componentes/)
 │   │   ├── accordion, ia-panel, alert, attention-badge, avatar, badge-tag, button, calendar
 │   │   ├── carousel-indicators, checkbox, chip, coachmark, color-picker, date-picker-modal
@@ -1127,8 +1120,6 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
-- **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
 - **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
 - **`documentacion/componentes/date-picker-modal.html`** - Documentación del componente Date picker modal (modal + rango o fecha única + createCalendar)

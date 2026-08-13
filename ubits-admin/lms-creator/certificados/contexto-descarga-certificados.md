@@ -39,8 +39,6 @@ ubits-admin/lms-creator/certificados/
 ## Shell de página (sin `header-product`)
 
 - `initWorkspaceLayout({ audience: 'admin', activeSidebar: 'cert-descarga' })`
-- `loadSubNav(..., 'creator-certificados')` → **Descarga** (activa) / **Configuración**
-- `loadTabBar` + `loadFloatingMenu` variante `creator`
 - `content-sections` → `section-single` > `widget--transparent` + selection cards + `.certificados-form-card`
 
 **React equivalente:** `ColaboradorLayout` o `ProductLayout` con sidebar `variant="creator"`, SubNav manual con pestañas Descarga/Configuración, `SectionSingle` + `Widget transparent`.

@@ -7,11 +7,7 @@
  *     activeSidebar: 'aprendizaje',
  *     headerVariant: 'aprendizaje',      // legacy SubNav key → título AppHeader
  *     title: 'Catálogo',                 // opcional
- *     tabBar: true,
- *     floatingMenu: true,
  *     profileMenu: true,
- *     tabBarVariant: 'default' | 'admin',
- *     floatingMenuVariant: 'default' | 'admin',
  *   })
  *
  * También se activa al llamar loadSidebar('admin'|'default'|legacy active).
@@ -172,24 +168,10 @@
         }
         headerOpts.variant = headerAudience;
         global.loadAppHeader(headerMount, headerOpts);
-      } else if (headerMount && typeof global.loadSubNav === 'function' && opts.headerVariant) {
-        global.loadSubNav('top-nav-container', opts.headerVariant);
       }
 
-      var tabBar = audience === 'docs' ? opts.tabBar === true : opts.tabBar !== false;
-      var floating =
-        audience === 'docs' ? opts.floatingMenu === true : opts.floatingMenu !== false;
       var profile =
         audience === 'docs' ? opts.profileMenu === true : opts.profileMenu !== false;
-      var tabVar = opts.tabBarVariant || (audience === 'admin' ? 'admin' : 'default');
-      var floatVar = opts.floatingMenuVariant || (audience === 'admin' ? 'admin' : 'default');
-
-      if (tabBar && typeof global.loadTabBar === 'function' && document.getElementById('tab-bar-container')) {
-        global.loadTabBar('tab-bar-container', tabVar);
-      }
-      if (floating && typeof global.loadFloatingMenu === 'function' && document.getElementById('floating-menu-container')) {
-        global.loadFloatingMenu('floating-menu-container', floatVar);
-      }
       if (profile && typeof global.loadProfileMenu === 'function' && document.getElementById('profile-menu-container')) {
         global.loadProfileMenu('profile-menu-container');
       }

@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/progress-bar.css">
     <link rel="stylesheet" href="../../components/card-plan-formacion.css">
     <link rel="stylesheet" href="../../components/carousel-contents.css">
@@ -140,9 +137,7 @@
         </main>
     </div>
 
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
@@ -150,10 +145,7 @@
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/progress-bar.js"></script>
     <script src="../../components/carousel-indicators.js"></script>
     <script src="../../components/card-plan-formacion.js"></script>
@@ -177,9 +169,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'aprendizaje', headerVariant: 'aprendizaje' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             setTimeout(function () {
                 var homeTab = document.querySelector('.nav-tab[data-tab="home"]');

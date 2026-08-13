@@ -136,35 +136,51 @@
     document.head.appendChild(s);
   }
 
+  function mobileCloseBtnHtml() {
+    return (
+      '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only ws-sidebar__mobile-close" data-ws-action="close-mobile-nav" aria-label="Cerrar menú" data-tooltip="Cerrar menú">' +
+      '<i class="far fa-xmark" aria-hidden="true"></i></button>'
+    );
+  }
+
   function logoRowHtml() {
     if (state.audience === 'docs') {
       return (
+        '<div class="ws-sidebar__logo-cluster">' +
         '<div class="ws-sidebar__logo-row">' +
         '<div class="ws-sidebar__logo" aria-label="UBITS" role="img">' +
         LOGO_FULL +
         LOGO_MARK +
-        '</div></div>'
+        '</div></div>' +
+        mobileCloseBtnHtml() +
+        '</div>'
       );
     }
     if (state.audience === 'colaborador') {
       return (
+        '<div class="ws-sidebar__logo-cluster">' +
         '<div class="ws-sidebar__logo-row">' +
         '<div class="ws-sidebar__logo ws-sidebar__logo--company" aria-label="Fiqsha">' +
         '<img class="ws-sidebar__company-logo" src="' +
         href('images/Client-logo.png') +
         '" alt="Fiqsha" draggable="false" />' +
-        '</div></div>'
+        '</div></div>' +
+        mobileCloseBtnHtml() +
+        '</div>'
       );
     }
     var company = getActiveEmpresa();
     return (
+      '<div class="ws-sidebar__logo-cluster">' +
       '<button type="button" class="ws-sidebar__logo-row ws-sidebar__logo-row--empresa" data-ws-action="empresa-menu" aria-label="Menú de empresa" data-tooltip="Menú de empresa" aria-haspopup="menu">' +
       '<span class="ws-sidebar__logo ws-sidebar__logo--company" data-ws-empresa-logo aria-hidden="true">' +
       companyMarkHtml(company) +
       '</span>' +
       '<span class="ws-sidebar__meatball" aria-hidden="true">' +
       '<i class="far fa-ellipsis-vertical"></i></span>' +
-      '</button>'
+      '</button>' +
+      mobileCloseBtnHtml() +
+      '</div>'
     );
   }
 
@@ -489,9 +505,7 @@
     ];
   }
 
-  var DOCS_COMPONENT_FILE = {
-    'sub-nav': 'subnav.html',
-  };
+  var DOCS_COMPONENT_FILE = {};
 
   function docsComponentHref(sectionId) {
     var file = DOCS_COMPONENT_FILE[sectionId] || sectionId + '.html';
@@ -835,6 +849,7 @@
     document.body.classList.remove(
       'workspace-layout',
       'workspace-sidebar-collapsed',
+      'workspace-mobile-nav-open',
       'page-layout-workspace',
     );
   }
@@ -1091,7 +1106,33 @@
     }
   }
 
+  function isCompactViewport() {
+    return window.matchMedia('(max-width: 1023px)').matches;
+  }
+
+  function syncHeaderToggle() {
+    if (typeof global.syncAppHeaderSidebarToggle === 'function') {
+      global.syncAppHeaderSidebarToggle();
+    }
+  }
+
+  function setMobileNavOpen(open) {
+    var next = !!open;
+    document.body.classList.toggle('workspace-mobile-nav-open', next);
+    var el = document.getElementById('sidebar');
+    if (el && el.classList.contains('ws-sidebar')) {
+      el.classList.toggle('is-mobile-open', next);
+      if (next) el.classList.remove('is-collapsed');
+    }
+    if (next) {
+      closeFlyout();
+      closeEmpresaMenu();
+    }
+    syncHeaderToggle();
+  }
+
   function setCollapsed(collapsed) {
+    if (isCompactViewport()) return;
     state.collapsed = !!collapsed;
     writeCollapsed(state.collapsed);
     if (state.collapsed) state.drillStack = [];
@@ -1103,20 +1144,21 @@
     if (state.collapsed) closeFlyout();
     closeEmpresaMenu();
     paintNav();
-    /* Sync AppHeader toggle label */
-    document.querySelectorAll('[data-ah-action="toggle-sidebar"]').forEach(function (btn) {
-      var label = state.collapsed ? 'Expandir sidebar' : 'Colapsar sidebar';
-      btn.setAttribute('aria-label', label);
-      btn.setAttribute('aria-pressed', state.collapsed ? 'true' : 'false');
-      btn.setAttribute('data-tooltip', label);
-    });
+    syncHeaderToggle();
   }
 
   function toggleCollapse() {
+    if (isCompactViewport()) {
+      setMobileNavOpen(!document.body.classList.contains('workspace-mobile-nav-open'));
+      return;
+    }
     setCollapsed(!state.collapsed);
   }
 
   function setMode(mode) {
+    if (document.body.classList.contains('workspace-mobile-nav-open')) {
+      setMobileNavOpen(false);
+    }
     state.mode = mode === 'agente-ia' ? 'agente-ia' : 'workspace';
     document.body.classList.toggle('workspace-agent-mode', state.mode === 'agente-ia');
     var tabs = document.querySelector('.ws-sidebar__mode-tabs');
@@ -1243,6 +1285,10 @@
         if (act === 'new-chat') {
           state.activeChat = 'Nuevo chat';
           paintNav();
+        }
+        if (act === 'close-mobile-nav') {
+          setMobileNavOpen(false);
+          return;
         }
         if (act === 'empresa-menu') {
           openEmpresaMenu(action);
@@ -1372,6 +1418,7 @@
     applyBodyLayoutClasses();
     paintNav();
     bindEvents(container);
+    bindMobileNavChrome();
     ensureWorkspaceAppHeader(audience);
 
     global._ubitsSidebarVariant =
@@ -1388,7 +1435,7 @@
       mount.id = 'top-nav-container';
       main.insertBefore(mount, main.firstChild);
     }
-    /* Si la página llama loadSubNav después, reemplazará este mount con el mismo AppHeader. */
+    /* AppHeader: si la página vuelve a montar el header, usa loadAppHeader en el mismo contenedor. */
     function mountHeader() {
       if (typeof global.loadAppHeader !== 'function') return;
       if (mount.querySelector('.ubits-app-header')) return;
@@ -1424,6 +1471,28 @@
     }
   }
 
+  function bindMobileNavChrome() {
+    if (global._ubitsWsMobileNavBound) return;
+    global._ubitsWsMobileNavBound = true;
+    var mq = window.matchMedia('(max-width: 1023px)');
+    mq.addEventListener('change', function (ev) {
+      if (!ev.matches) {
+        setMobileNavOpen(false);
+        var el = document.getElementById('sidebar');
+        if (el && el.classList.contains('ws-sidebar')) {
+          el.classList.toggle('is-collapsed', state.collapsed);
+        }
+        applyBodyLayoutClasses();
+      }
+      syncHeaderToggle();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!document.body.classList.contains('workspace-mobile-nav-open')) return;
+      setMobileNavOpen(false);
+    });
+  }
+
   function unloadWorkspaceLayoutHints() {
     clearBodyLayoutClasses();
     global._ubitsSidebarKind = 'rail';
@@ -1432,5 +1501,6 @@
   global.loadWorkspaceSidebar = loadWorkspaceSidebar;
   global.toggleWorkspaceSidebarCollapsed = toggleCollapse;
   global.setWorkspaceSidebarCollapsed = setCollapsed;
+  global.setWorkspaceMobileNavOpen = setMobileNavOpen;
   global.unloadWorkspaceLayoutHints = unloadWorkspaceLayoutHints;
 })(typeof window !== 'undefined' ? window : this);

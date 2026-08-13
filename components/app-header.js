@@ -215,6 +215,50 @@
     };
   }
 
+  function isCompactViewport() {
+    return window.matchMedia('(max-width: 1023px)').matches;
+  }
+
+  function sidebarToggleState() {
+    var compact = isCompactViewport();
+    var mobileOpen = document.body.classList.contains('workspace-mobile-nav-open');
+    var collapsed =
+      typeof global.readWorkspaceSidebarCollapsed === 'function'
+        ? global.readWorkspaceSidebarCollapsed()
+        : document.body.classList.contains('workspace-sidebar-collapsed');
+    if (compact) {
+      return {
+        label: 'Abrir menú',
+        icon: 'far fa-bars',
+        pressed: null,
+        expanded: mobileOpen,
+      };
+    }
+    return {
+      label: collapsed ? 'Expandir sidebar' : 'Colapsar sidebar',
+      icon: 'far fa-sidebar',
+      pressed: collapsed,
+      expanded: null,
+    };
+  }
+
+  function syncSidebarToggleButton(btn) {
+    if (!btn) return;
+    var st = sidebarToggleState();
+    btn.setAttribute('aria-label', st.label);
+    btn.setAttribute('data-tooltip', st.label);
+    if (st.pressed == null) btn.removeAttribute('aria-pressed');
+    else btn.setAttribute('aria-pressed', st.pressed ? 'true' : 'false');
+    if (st.expanded == null) btn.removeAttribute('aria-expanded');
+    else btn.setAttribute('aria-expanded', st.expanded ? 'true' : 'false');
+    var icon = btn.querySelector('i');
+    if (icon) icon.className = st.icon;
+  }
+
+  function syncAllSidebarToggleButtons() {
+    document.querySelectorAll('[data-ah-action="toggle-sidebar"]').forEach(syncSidebarToggleButton);
+  }
+
   function breadcrumbHtml(crumbs) {
     return crumbs
       .map(function (item, i) {
@@ -251,11 +295,7 @@
     var variant = opts.variant || 'admin';
     var isColab = variant === 'colaborador';
     var isDocs = variant === 'docs';
-    var collapsed =
-      typeof global.readWorkspaceSidebarCollapsed === 'function'
-        ? global.readWorkspaceSidebarCollapsed()
-        : document.body.classList.contains('workspace-sidebar-collapsed');
-    var toggleLabel = collapsed ? 'Expandir sidebar' : 'Colapsar sidebar';
+    var toggle = sidebarToggleState();
     var crumbs =
       opts.breadcrumb && opts.breadcrumb.length
         ? opts.breadcrumb
@@ -313,12 +353,15 @@
       '">' +
       '<div class="ubits-app-header__left">' +
       '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only" data-ah-action="toggle-sidebar" aria-label="' +
-      esc(toggleLabel) +
-      '" aria-pressed="' +
-      (collapsed ? 'true' : 'false') +
-      '" data-tooltip="' +
-      esc(toggleLabel) +
-      '"><i class="far fa-sidebar" aria-hidden="true"></i></button>' +
+      esc(toggle.label) +
+      '"' +
+      (toggle.pressed == null ? '' : ' aria-pressed="' + (toggle.pressed ? 'true' : 'false') + '"') +
+      (toggle.expanded == null ? '' : ' aria-expanded="' + (toggle.expanded ? 'true' : 'false') + '"') +
+      ' data-tooltip="' +
+      esc(toggle.label) +
+      '"><i class="' +
+      esc(toggle.icon) +
+      '" aria-hidden="true"></i></button>' +
       '<nav class="ubits-app-header__breadcrumb" aria-label="Breadcrumb">' +
       breadcrumbHtml(crumbs) +
       '</nav></div>' +
@@ -420,11 +463,7 @@
         if (typeof global.toggleWorkspaceSidebarCollapsed === 'function') {
           global.toggleWorkspaceSidebarCollapsed();
         }
-        var collapsed = document.body.classList.contains('workspace-sidebar-collapsed');
-        var label = collapsed ? 'Expandir sidebar' : 'Colapsar sidebar';
-        actionEl.setAttribute('aria-label', label);
-        actionEl.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
-        actionEl.setAttribute('data-tooltip', label);
+        syncSidebarToggleButton(actionEl);
         return;
       }
 
@@ -516,4 +555,5 @@
   global.loadAppHeader = loadAppHeader;
   global.resolveAppHeaderFromSubNavVariant = resolveAppHeaderFromSubNavVariant;
   global.readWorkspaceSidebarCollapsed = readWorkspaceSidebarCollapsed;
+  global.syncAppHeaderSidebarToggle = syncAllSidebarToggleButtons;
 })(typeof window !== 'undefined' ? window : this);

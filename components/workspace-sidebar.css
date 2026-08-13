@@ -73,6 +73,32 @@
   gap: var(--gap-lg);
 }
 
+.ws-sidebar__logo-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-width: 0;
+  height: var(--size-2xl);
+}
+
+.ws-sidebar__logo-cluster .ws-sidebar__logo-row,
+.ws-sidebar__logo-cluster .ws-sidebar__logo-row--empresa {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.ws-sidebar__mobile-close {
+  display: none;
+  flex-shrink: 0;
+}
+
+.ws-sidebar.is-mobile-open .ws-sidebar__mobile-close,
+body.workspace-mobile-nav-open .ws-sidebar__mobile-close {
+  display: inline-flex;
+}
+
 .ws-sidebar__logo-row {
   display: flex;
   align-items: center;
@@ -199,6 +225,10 @@ button.ws-sidebar__logo-row--empresa:hover {
   box-shadow: var(--ubits-elevation-overlay);
   padding: 8px;
   box-sizing: border-box;
+}
+
+body.workspace-mobile-nav-open .ws-empresa-menu {
+  z-index: 2110;
 }
 
 .ws-empresa-menu__head {
@@ -709,6 +739,10 @@ button.ws-sidebar__logo-row--empresa:hover {
 @media (max-width: 1023px) {
   .ws-sidebar:not(.ws-sidebar--embedded) {
     display: none;
+  }
+
+  .ws-sidebar.is-mobile-open:not(.ws-sidebar--embedded) {
+    display: flex;
   }
 }
 

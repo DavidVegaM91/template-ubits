@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../general-styles/ubits-spacing-tokens.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
@@ -74,7 +73,6 @@
     </div>
 
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../components/button.js"></script>
@@ -83,7 +81,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             bootDocsWorkspace();
-            if (typeof loadSubNav === 'function') loadSubNav(document.getElementById('subnav-container'), 'documentacion');
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 
             var mount = document.getElementById('notifications-menu-preview');

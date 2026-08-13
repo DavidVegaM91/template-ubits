@@ -143,31 +143,7 @@ function ensureSidebarHoverAssets(basePath, callback) {
         document.head.appendChild(s);
     }
 
-    function ensureTopNavThenSubmenu() {
-        if (window.TOP_NAV_VARIANTS) {
-            loadSubmenuJsThenCb();
-            return;
-        }
-        const existing = document.querySelector('script[src*="components/sub-nav.js"]');
-        if (existing) {
-            if (window.TOP_NAV_VARIANTS) {
-                loadSubmenuJsThenCb();
-            } else {
-                existing.addEventListener('load', function onSubNavLoad() {
-                    existing.removeEventListener('load', onSubNavLoad);
-                    loadSubmenuJsThenCb();
-                });
-            }
-            return;
-        }
-        const sn = document.createElement('script');
-        sn.src = basePath + 'components/sub-nav.js';
-        sn.onload = function () { loadSubmenuJsThenCb(); };
-        sn.onerror = function () { loadSubmenuJsThenCb(); };
-        document.head.appendChild(sn);
-    }
-
-    ensureTopNavThenSubmenu();
+    loadSubmenuJsThenCb();
 }
 
 function cleanupSidebarHoverBindings(root) {

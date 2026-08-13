@@ -11,11 +11,8 @@
     <link rel="stylesheet" href="../../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../../components/sub-nav.css">
     <link rel="stylesheet" href="../../../components/sidebar.css">
-    <link rel="stylesheet" href="../../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../../components/profile-menu.css">
+<link rel="stylesheet" href="../../../components/profile-menu.css">
     <link rel="stylesheet" href="../../../components/button.css">
     <link rel="stylesheet" href="../../../components/radio-button.css">
     <link rel="stylesheet" href="../../../components/selection-card.css">
@@ -134,9 +131,7 @@
         </main>
     </div>
 
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
     <div id="ubits-toast-container"></div>
 
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
@@ -151,18 +146,13 @@
     <script src="../../../components/alert.js"></script>
     <script src="../../../components/layout-workspace.js"></script>
     <script src="../../../components/sidebar.js"></script>
-    <script src="../../../components/sub-nav.js"></script>
-    <script src="../../../components/tab-bar.js"></script>
-    <script src="../../../components/floating-menu.js"></script>
-    <script src="../../../components/profile-menu.js"></script>
+<script src="../../../components/profile-menu.js"></script>
     <script src="../../../script.js"></script>
     <script src="./certificados.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'admin', activeSidebar: 'cert-descarga', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
-            loadTabBar('tab-bar-container', 'admin');
-            loadFloatingMenu('floating-menu-container', 'admin');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             setTimeout(function() {
                 var descargaTab = document.querySelector('.nav-tab[data-tab="descarga"]');

@@ -11,11 +11,8 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/button.css">
@@ -103,17 +100,12 @@
             </div>
         </main>
     </div>
-    <div id="tab-bar-container"></div>
-    <div id="floating-menu-container"></div>
-    <div id="profile-menu-container"></div>
+<div id="profile-menu-container"></div>
 
     <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
     <script src="../../components/input.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/card-content.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/ia-button.js"></script>
@@ -127,9 +119,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'aprendizaje', headerVariant: 'aprendizaje' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
 
             function compIdPorNombre(nombre) {
                 var arr = window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias;

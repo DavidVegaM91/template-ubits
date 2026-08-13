@@ -324,8 +324,6 @@
 <div id="crear360-cancel-modal-overlay"   style="display:none;"></div>
 <div id="crear360-activate-modal-overlay" style="display:none;"></div>
 
-<div id="tab-bar-container"></div>
-<div id="floating-menu-container"></div>
 <div id="profile-menu-container"></div>
 <div id="ubits-toast-container"></div>
 
@@ -334,8 +332,6 @@
 <script src="../../../components/tooltip.js"></script>
 <script src="../../../components/stepper.js"></script>
 <script src="../../../components/sidebar.js"></script>
-<script src="../../../components/tab-bar.js"></script>
-<script src="../../../components/floating-menu.js"></script>
 <script src="../../../components/profile-menu.js"></script>
 <script src="../../../components/calendar.js"></script>
     <script src="../../../components/input.js"></script>
@@ -4099,20 +4095,7 @@
        ══════════════════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function () {
         loadSidebar('admin', 'desempeño');
-        loadTabBar('tab-bar-container', 'admin');
-        loadFloatingMenu('floating-menu-container', 'admin');
         loadProfileMenu('profile-menu-container');
-        /* Corregir rutas del floating menu: página 3 niveles de profundidad */
-        (function fixFloatingMenuPaths() {
-            var container = document.getElementById('floating-menu-container');
-            if (!container) return;
-            container.querySelectorAll('a[href]').forEach(function (a) {
-                var h = a.getAttribute('href');
-                if (h && h.startsWith('../../')) {
-                    a.setAttribute('href', '../' + h);
-                }
-            });
-        })();
 
         /* Botones estáticos del hub */
         document.getElementById('crear360-btn-save-inline').addEventListener('click', function () {

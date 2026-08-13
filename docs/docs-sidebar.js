@@ -8,10 +8,8 @@
 var DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
-    { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
     { id: 'submenu', title: 'Submenu', group: 'navegacion' },
     { id: 'tab', title: 'Tab', group: 'navegacion' },
-    { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
     { id: 'header-product', title: 'Header Product', group: 'navegacion' },
     { id: 'stepper', title: 'Stepper', group: 'navegacion' },
     { id: 'paginator', title: 'Paginator', group: 'navegacion' },
@@ -317,8 +315,6 @@ function initDocsSidebar(activeSection) {
         const sectionToFile = {
             'introduccion': 'componentes.html',
             'sidebar': 'sidebar.html',
-            'sub-nav': 'subnav.html',
-            'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',
             'ia-panel': 'ia-panel.html',
             'button': 'button.html',

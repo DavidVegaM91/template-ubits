@@ -1,7 +1,7 @@
 /* ========================================
-   PROFILE MENU (tab-bar)
-   En móvil el menú de cuenta va en el mismo panel flotante que Módulos (floating-menu.js → #floating-menu-profile).
-   Este archivo solo mantiene compatibilidad con loadProfileMenu / hideProfileMenu en las páginas.
+   PROFILE MENU
+   Stub de compatibilidad: loadProfileMenu / hideProfileMenu.
+   La cuenta en móvil vive en el AppHeader (avatar).
    ======================================== */
 
 function loadProfileMenu(containerId) {

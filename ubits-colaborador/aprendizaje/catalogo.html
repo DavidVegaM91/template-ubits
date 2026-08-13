@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/input.css">
     <!-- Select del Input usa panel tipo Dropdown Menu (ubits-dropdown-menu__*) -->
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
@@ -91,23 +88,14 @@
         </main>
     </div>
 
-    <!-- Tab Bar Container -->
-    <div id="tab-bar-container"></div>
-
-    <!-- Floating Menu Container -->
-    <div id="floating-menu-container"></div>
-    
-    <!-- Profile Menu Container -->
+<!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
 
         <script src="../../components/tooltip.js"></script>
 <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
     <script src="../../components/input.js"></script>
     <script src="../../components/carousel-indicators.js"></script>
     <script src="../../components/carousel-contents.js"></script>
@@ -248,9 +236,7 @@
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'catalogo', headerVariant: 'aprendizaje' });
-            loadTabBar('tab-bar-container');
-            loadFloatingMenu('floating-menu-container');
-            loadProfileMenu('profile-menu-container');
+loadProfileMenu('profile-menu-container');
             
             // Base de datos de sugerencias
             const searchSuggestions = {
