@@ -832,12 +832,22 @@
     }
 
     /* ── Tab switching ── */
+    function syncVideoModalIaChrome(tab) {
+        var overlay = document.getElementById(OVERLAY_ID);
+        if (!overlay) return;
+        var isIaTab = tab === 'ia';
+        overlay.classList.toggle('cc-vm--compact', !isIaTab);
+        var modalContent = overlay.querySelector('.ubits-modal-content');
+        if (modalContent) modalContent.classList.toggle('ubits-modal-content--ia', isIaTab);
+        var modalHeader = overlay.querySelector('.ubits-modal-header');
+        if (modalHeader) modalHeader.classList.toggle('ubits-modal-header--ia', isIaTab);
+    }
+
     function switchToTab(tab) {
         _currentTab = tab;
         // Si sales de Video IA, detener el preview para que no siga sonando en background.
         if (tab !== 'ia') stopAvatarPreviewPlayback();
-        var overlay = document.getElementById(OVERLAY_ID);
-        if (overlay) overlay.classList.toggle('cc-vm--compact', tab !== 'ia');
+        syncVideoModalIaChrome(tab);
         var bar = document.getElementById('cc-vmodal-tabbar');
         if (bar) {
             bar.querySelectorAll('[data-cc-vtab]').forEach(function (btn) {
