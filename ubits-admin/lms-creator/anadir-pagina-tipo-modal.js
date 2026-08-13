@@ -4,7 +4,7 @@
  *
  * API:
  *   openAnadirPaginaTipoModal({ onSelect(type), onCancel? })
- *     - onSelect(type): callback al elegir tipo; recibe 'video' | 'pdf' | 'texto' | 'embebido' | 'scorm' | 'evaluacion-final' | 'encuesta-libre' | 'encuesta'
+ *     - onSelect(type): callback al elegir tipo; recibe 'video' | 'pdf' | 'texto' | 'embebido' | 'scorm' | 'evaluacion-final' | 'asistencia' | 'encuesta-libre' | 'encuesta'
  *     - onCancel: callback opcional al cancelar (botón o overlay)
  *
  * Depende: modal.js, resources-card.js, tooltip.js
@@ -25,6 +25,7 @@
         'embebido',
         'scorm',
         'evaluacion-final',
+        'asistencia',
         'encuesta-libre',
         'encuesta'
     ];

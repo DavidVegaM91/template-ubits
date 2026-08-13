@@ -13,10 +13,30 @@
  * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {
-  "version": "2.3",
+  "version": "2.4",
   "source": "catálogo Fiqsha/empresa; categorías por id en bd-master-categorias-fiqsha.js",
-  "total": 20,
+  "total": 21,
   "contents": [
+    {
+      "id": "f021",
+      "origen": "empresa_fiqsha",
+      "titulo": "Protocolos de Supervivencia y Seguridad ante Sismos",
+      "descripcion": "Aprende los protocolos esenciales para actuar antes, durante y después de un sismo en el entorno laboral: protección personal, evacuación segura y prevención de riesgos.",
+      "imagen": "images/cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg",
+      "tipoContenido": "Curso",
+      "tiempoValor": 30,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Protocolos de Supervivencia y Seguridad ante Sismos",
+      "imagePath": "cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg",
+      "nivelId": "niv-001",
+      "categoriaFiqshaId": "cfq-003",
+      "fechaCreacion": "2026-08-12",
+      "catalogoId": "catalogo_fiqsha",
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
+    },
     {
       "id": "f001",
       "legacyLms": true,

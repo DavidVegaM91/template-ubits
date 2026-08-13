@@ -21,6 +21,7 @@
         'embebido',
         'scorm',
         'evaluacion-final',
+        'asistencia',
         'encuesta-libre',
         'encuesta'
     ];

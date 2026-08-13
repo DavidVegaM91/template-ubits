@@ -5,7 +5,7 @@
  * API: resourcesCardHtml({ type, disabled?, className?, hoverClass? })
  *   Video y Evaluación muestran distintivo IA (Badge Tag outlined IA, solo icono xs).
  *   Tras montar HTML en el DOM, initResourcesBlockFields (resources-block.js) cablea tooltip y stopPropagation en el distintivo.
- *   type: video | pdf | texto | embebido | scorm | evaluacion-final |
+ *   type: video | pdf | texto | embebido | scorm | evaluacion-final | asistencia |
  *         encuesta-libre | encuesta | archivo-descargable | certificado | imagen
  *   hoverClass: si true, añade .is-hover (preview doc sin puntero).
  *
@@ -24,6 +24,7 @@
         embebido: { icon: 'fa-code', label: 'Embebido' },
         scorm: { icon: 'fa-cube', label: 'SCORM' },
         'evaluacion-final': { icon: 'fa-clipboard-check', label: 'Evaluación', aiAssist: true },
+        asistencia: { icon: 'fa-clipboard-user', label: 'Asistencia' },
         'encuesta-libre': { icon: 'fa-list', label: 'Encuesta libre' },
         encuesta: { icon: 'fa-star', label: 'Encuesta de satisfacción' },
         /* Tipo reservado (no en selector por defecto); modal video v2 en video-recurso-modal.js para uso futuro */
@@ -41,6 +42,7 @@
         'embebido',
         'scorm',
         'evaluacion-final',
+        'asistencia',
         'encuesta-libre',
         'encuesta',
         'archivo-descargable',
