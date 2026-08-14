@@ -199,7 +199,7 @@
     justify-content: space-between;
     gap: var(--gap-lg);
     padding: var(--padding-sm) var(--padding-lg);
-    background: var(--ubits-bg-2);
+    background: var(--ubits-bg-1);
     border-bottom: 1px solid var(--ubits-border-1);
     color: var(--ubits-fg-1-medium);
 }
