@@ -528,7 +528,7 @@
                 'cc-pesos-empty',
                 'Ajustes · Pesos · Sin evaluaciones',
                 C.crear + '#ajustes-pesos-empty',
-                'variant',
+                'empty',
                 'Empty state del panel de pesos',
               ),
               link(
@@ -604,7 +604,7 @@
                 'ec-ajustes-pesos-empty',
                 'Editar · Ajustes · Pesos · Sin evaluaciones',
                 C.editar + '?id=' + editContentId + '#ajustes-pesos-empty',
-                'variant',
+                'empty',
                 'Empty state del panel de pesos',
               ),
               link(
