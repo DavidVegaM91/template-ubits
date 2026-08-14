@@ -14,6 +14,9 @@
     align-items: center;
     gap: var(--gap-sm, 8px);
     cursor: pointer;
+    /* Ancla el input oculto: sin esto se posiciona contra el scroll root y
+       escapa de contenedores colapsados (acordeón cerrado), creando scroll vacío. */
+    position: relative;
     font-family: var(--ubits-font-family-sans);
     color: var(--ubits-fg-1-high);
     user-select: none;

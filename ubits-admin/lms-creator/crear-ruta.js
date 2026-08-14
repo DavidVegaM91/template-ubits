@@ -915,11 +915,6 @@
         }
         wirePortadaCta();
         initFichaInputs();
-        var frame = document.getElementById('crear-ruta-stepper-frame');
-        var toggle = document.getElementById('crear-ruta-stepper-toggle');
-        if (frame && toggle && typeof window.wireStepperVerticalCollapse === 'function') {
-            window.wireStepperVerticalCollapse(frame, toggle, { creatorRail: true });
-        }
         var portadaStep = document.getElementById('crear-ruta-step-portada');
         if (portadaStep) {
             portadaStep.addEventListener('input', refreshSiguienteState);

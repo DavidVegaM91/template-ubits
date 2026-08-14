@@ -525,6 +525,13 @@
               link('cc-vis', 'Ajustes · Visibilidad', C.crear + '#ajustes-visibilidad', 'step'),
               link('cc-pesos', 'Ajustes · Pesos de evaluación', C.crear + '#ajustes-pesos', 'step'),
               link(
+                'cc-pesos-empty',
+                'Ajustes · Pesos · Sin evaluaciones',
+                C.crear + '#ajustes-pesos-empty',
+                'variant',
+                'Empty state del panel de pesos',
+              ),
+              link(
                 'cc-nav',
                 'Ajustes · Tipo de navegación',
                 C.crear + '#ajustes-navegacion',
@@ -592,6 +599,13 @@
                 'Editar · Ajustes · Pesos de evaluación',
                 C.editar + '?id=' + editContentId + '#ajustes-pesos',
                 'step',
+              ),
+              link(
+                'ec-ajustes-pesos-empty',
+                'Editar · Ajustes · Pesos · Sin evaluaciones',
+                C.editar + '?id=' + editContentId + '#ajustes-pesos-empty',
+                'variant',
+                'Empty state del panel de pesos',
               ),
               link(
                 'ec-ajustes-nav',

@@ -516,7 +516,7 @@
  *   - **tel**: Input de teléfono con validación manual
  *   - **url**: Input de URL con validación manual
  *   - **select**: Dropdown personalizado con opciones (scroll infinito automático para 50+ opciones)
- *   - **textarea**: Área de texto multilínea con redimensionamiento vertical
+ *   - **textarea**: Área de texto multilínea sin control nativo de redimensionamiento
  *   - **search**: Input de búsqueda con botón limpiar (X) que aparece al escribir
  *   - **autocomplete**: Input con sugerencias automáticas y botón limpiar
  *   - **calendar**: Input con date picker personalizado con navegación por mes/año
@@ -1598,8 +1598,8 @@ function createInput(options = {}) {
             finalHasRightIcon = true;
     } else if (type === 'textarea') {
         console.log('Rendering TEXTAREA');
-        // TEXTAREA - campo multilínea con redimensionamiento
-        let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}`;
+        // TEXTAREA - campo multilínea sin control nativo de redimensionamiento
+        let textareaStyle = `width: 100%; min-height: 80px; resize: none; ${paddingLeft} ${paddingRight}`;
         if (state === 'disabled') {
             textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }

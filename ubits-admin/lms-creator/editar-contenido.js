@@ -141,6 +141,11 @@
             hash = window.resolveEditarContenidoHashForSection(sectionId, window.location.hash);
         } else if (sectionId === 'visibilidad') {
             if (
+                typeof window.isPesosEmptyDemoHash === 'function' &&
+                window.isPesosEmptyDemoHash(location.hash)
+            ) {
+                hash = '#ajustes-pesos-empty';
+            } else if (
                 typeof window.panelFromCrearContenidoConfigHash === 'function' &&
                 window.panelFromCrearContenidoConfigHash(location.hash)
             ) {
@@ -591,6 +596,7 @@
             h === 'ajustes' ||
             h === 'ajustes-visibilidad' ||
             h === 'ajustes-pesos' ||
+            h === 'ajustes-pesos-empty' ||
             h === 'ajustes-impacto' ||
             h === 'configuracion' ||
             h === 'configuracion-visibilidad' ||

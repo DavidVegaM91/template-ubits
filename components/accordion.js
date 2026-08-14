@@ -6,7 +6,7 @@
     'use strict';
 
     var VALID_SIZES = ['sm', 'md', 'lg'];
-    var VALID_VARIANTS = ['filled', 'line'];
+    var VALID_VARIANTS = ['filled', 'line', 'plain'];
 
     function resolveSize(size) {
         return VALID_SIZES.indexOf(size) >= 0 ? size : 'md';

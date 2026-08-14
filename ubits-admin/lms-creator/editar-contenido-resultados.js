@@ -41,7 +41,13 @@
         var resultadosTab = parseResultadosTabFromHash(hash);
         var configPanel = 'hub';
         if (h === 'ajustes-visibilidad' || h === 'configuracion-visibilidad') configPanel = 'visibilidad';
-        else if (h === 'ajustes-pesos' || h === 'configuracion-pesos') configPanel = 'pesos';
+        else if (
+            h === 'ajustes-pesos' ||
+            h === 'configuracion-pesos' ||
+            h === 'ajustes-pesos-empty'
+        ) {
+            configPanel = 'pesos';
+        }
         else if (h === 'ajustes-navegacion' || h === 'configuracion-navegacion') configPanel = 'navegacion';
         else if (h === 'ajustes-impacto') configPanel = 'impacto';
         else if (
@@ -62,6 +68,7 @@
             h === 'ajustes' ||
             h === 'ajustes-visibilidad' ||
             h === 'ajustes-pesos' ||
+            h === 'ajustes-pesos-empty' ||
             h === 'ajustes-navegacion' ||
             h === 'ajustes-impacto' ||
             h === 'configuracion' ||
@@ -90,7 +97,11 @@
         if (section === 'visibilidad') {
             if (parsed.section === 'visibilidad') {
                 if (parsed.configPanel === 'visibilidad') return '#ajustes-visibilidad';
-                if (parsed.configPanel === 'pesos') return '#ajustes-pesos';
+                if (parsed.configPanel === 'pesos') {
+                    return String(currentHash || '').replace(/^#/, '') === 'ajustes-pesos-empty'
+                        ? '#ajustes-pesos-empty'
+                        : '#ajustes-pesos';
+                }
                 if (parsed.configPanel === 'navegacion') return '#ajustes-navegacion';
                 if (parsed.configPanel === 'impacto') return '#ajustes-impacto';
             }

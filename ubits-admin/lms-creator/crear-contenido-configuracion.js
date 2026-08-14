@@ -6,6 +6,7 @@
     'use strict';
 
     var PANEL = 'hub'; // hub | visibilidad | pesos | navegacion | impacto
+    var FORCE_PESOS_EMPTY = false;
     var PESOS = {}; // pageKey -> number
     var TIPO_NAVEGACION = 'lineal'; // lineal | libre
     var READONLY = false;
@@ -167,10 +168,20 @@
         return '#ajustes';
     }
 
+    function isPesosEmptyDemoHash(hash) {
+        return String(hash || '').replace(/^#/, '') === 'ajustes-pesos-empty';
+    }
+
     function panelFromConfigHash(hash) {
         var h = String(hash || '').replace(/^#/, '');
         if (h === 'ajustes-visibilidad' || h === 'configuracion-visibilidad') return 'visibilidad';
-        if (h === 'ajustes-pesos' || h === 'configuracion-pesos') return 'pesos';
+        if (
+            h === 'ajustes-pesos' ||
+            h === 'configuracion-pesos' ||
+            h === 'ajustes-pesos-empty'
+        ) {
+            return 'pesos';
+        }
         if (h === 'ajustes-navegacion' || h === 'configuracion-navegacion') return 'navegacion';
         if (h === 'ajustes-impacto') return 'impacto';
         if (
@@ -216,6 +227,13 @@
         if (next === 'impacto' && !pImpacto) next = 'hub';
         if (next === 'navegacion' && !pNav) next = 'hub';
         PANEL = next;
+        if (next === 'pesos') {
+            FORCE_PESOS_EMPTY =
+                opts.forcePesosEmpty === true ||
+                (!!opts.skipUrl && isPesosEmptyDemoHash(location.hash));
+        } else {
+            FORCE_PESOS_EMPTY = false;
+        }
         if (hub) hub.hidden = next !== 'hub';
         if (pVis) pVis.hidden = next !== 'visibilidad';
         if (pPesos) pPesos.hidden = next !== 'pesos';
@@ -270,7 +288,7 @@
     function renderPesosPanel() {
         var mount = document.getElementById('cc-config-pesos-mount');
         if (!mount) return;
-        var items = listEvalPages();
+        var items = FORCE_PESOS_EMPTY ? [] : listEvalPages();
         syncPesosForIds(
             items.map(function (i) {
                 return i.id;
@@ -309,7 +327,7 @@
         var totalHtml =
             items.length >= 2
                 ? '<div class="cc-config-pesos-total-block" aria-live="polite">' +
-                  '<span class="ubits-body-md-regular">El total debe ser 100%. Llevas</span>' +
+                  '<span class="ubits-body-sm-regular">El total debe ser 100%. Llevas</span>' +
                   '<strong class="ubits-heading-h2 cc-config-pesos-total-num' +
                   (totalTone === 'ok' ? ' cc-config-pesos-total-num--ok' : '') +
                   (totalTone === 'error' ? ' cc-config-pesos-total-num--error' : '') +
@@ -319,16 +337,18 @@
                   '<span class="ubits-heading-h2">/100</span>' +
                   '</div>'
                 : '';
-        var barHtml =
-            items.length >= 2
-                ? '<div class="cc-config-pesos-bar" aria-hidden="true">' +
-                  '<div class="cc-config-pesos-bar__fill' +
-                  (totalTone === 'ok' ? ' cc-config-pesos-bar__fill--ok' : '') +
-                  (totalTone === 'error' ? ' cc-config-pesos-bar__fill--error' : '') +
-                  '" style="width:' +
-                  barWidth +
-                  '%"></div></div>'
-                : '';
+        var barHtml = '';
+        if (items.length >= 2 && typeof global.progressBarHtml === 'function') {
+            barHtml = global.progressBarHtml({
+                value: barWidth,
+                size: 'lg',
+                rounded: true,
+                track: 'subtle',
+                ariaLabel: 'Total de pesos de evaluación',
+                autoComplete: totalTone === 'ok',
+                className: totalTone === 'error' ? 'cc-config-pesos-bar--error' : ''
+            });
+        }
         var rows = items
             .map(function (it, index) {
                 var val = parseInt(PESOS[it.id], 10) || 0;
@@ -359,7 +379,7 @@
         mount.innerHTML =
             '<div class="cc-config-pesos-body">' +
             '<div class="cc-config-pesos-header">' +
-            '<p class="ubits-body-md-regular cc-config-pesos-intro">' +
+            '<p class="ubits-body-sm-regular cc-config-pesos-intro">' +
             escapeHtml(intro) +
             '</p>' +
             totalHtml +
@@ -480,7 +500,12 @@
             options.panel != null
                 ? options.panel
                 : panelFromConfigHash(location.hash) || 'hub';
-        setPanel(panel, { skipUrl: !!options.skipUrl });
+        var forceEmpty =
+            options.forcePesosEmpty === true || isPesosEmptyDemoHash(location.hash);
+        setPanel(panel, {
+            skipUrl: !!options.skipUrl || forceEmpty,
+            forcePesosEmpty: forceEmpty,
+        });
         refreshHubCards();
     }
 
@@ -544,6 +569,7 @@
     global.refreshCrearContenidoConfigHub = refreshHubCards;
     global.hashForCrearContenidoConfigPanel = hashForConfigPanel;
     global.panelFromCrearContenidoConfigHash = panelFromConfigHash;
+    global.isPesosEmptyDemoHash = isPesosEmptyDemoHash;
     global.isLegacyCrearContenidoConfigHash = isLegacyConfigHash;
     global.setCrearContenidoConfigPanel = setPanel;
     global.getCrearContenidoTipoNavegacion = getTipoNavegacion;

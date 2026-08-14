@@ -4115,6 +4115,7 @@
     var HASH_PAGE_CONFIGURACION = '#ajustes';
     var HASH_PAGE_CONFIG_VISIBILIDAD = '#ajustes-visibilidad';
     var HASH_PAGE_CONFIG_PESOS = '#ajustes-pesos';
+    var HASH_PAGE_CONFIG_PESOS_EMPTY = '#ajustes-pesos-empty';
     var HASH_PAGE_CONFIG_NAVEGACION = '#ajustes-navegacion';
     var HASH_PAGE_CONFIG_IMPACTO = '#ajustes-impacto';
     /** Alias legacy del paso 4 / hub (incl. #configuracion*) */
@@ -4139,6 +4140,7 @@
             h === HASH_PAGE_CONFIGURACION ||
             h === HASH_PAGE_CONFIG_VISIBILIDAD ||
             h === HASH_PAGE_CONFIG_PESOS ||
+            h === HASH_PAGE_CONFIG_PESOS_EMPTY ||
             h === HASH_PAGE_CONFIG_NAVEGACION ||
             h === HASH_PAGE_CONFIG_IMPACTO ||
             h === HASH_PAGE_CONFIG_LEGACY ||
@@ -4155,7 +4157,7 @@
             return window.panelFromCrearContenidoConfigHash(h);
         }
         if (h === HASH_PAGE_CONFIG_VISIBILIDAD) return 'visibilidad';
-        if (h === HASH_PAGE_CONFIG_PESOS) return 'pesos';
+        if (h === HASH_PAGE_CONFIG_PESOS || h === HASH_PAGE_CONFIG_PESOS_EMPTY) return 'pesos';
         if (h === HASH_PAGE_CONFIG_NAVEGACION) return 'navegacion';
         if (h === HASH_PAGE_CONFIG_IMPACTO) return 'impacto';
         if (isConfiguracionUrlHash(h)) return 'hub';

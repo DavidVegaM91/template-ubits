@@ -16,6 +16,13 @@
     background: transparent;
 }
 
+.ubits-accordion--plain {
+    border: none;
+    border-radius: var(--border-radius-none);
+    background: transparent;
+    overflow: visible;
+}
+
 .ubits-accordion__header {
     width: 100%;
     border: none;
@@ -34,11 +41,20 @@
     background: transparent;
 }
 
+.ubits-accordion--plain .ubits-accordion__header {
+    padding: var(--padding-sm) 0;
+    background: transparent;
+}
+
 .ubits-accordion__header:hover {
     background: var(--ubits-bg-2);
 }
 
 .ubits-accordion--line .ubits-accordion__header:hover {
+    background: transparent;
+}
+
+.ubits-accordion--plain .ubits-accordion__header:hover {
     background: transparent;
 }
 
@@ -97,6 +113,12 @@
 
 .ubits-accordion--line .ubits-accordion__content {
     border-top: none;
+}
+
+.ubits-accordion--plain .ubits-accordion__content {
+    border-top: none;
+    margin-top: var(--gap-md);
+    padding: 0;
 }
 
 .ubits-accordion__description {
