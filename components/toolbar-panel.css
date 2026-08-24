@@ -161,25 +161,59 @@
         padding: var(--padding-sm) var(--padding-md);
     }
 
+    /* Título arriba; acciones debajo. Evita que lupa/filtro se monten sobre el texto. */
     .ubits-toolbar-panel__bar {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: stretch;
+        flex-wrap: nowrap;
+        gap: var(--gap-sm);
+    }
+
+    .ubits-toolbar-panel__title-block {
+        width: 100%;
+        min-width: 0;
+        flex-wrap: wrap;
+        row-gap: var(--gap-xs);
+    }
+
+    .ubits-toolbar-panel__title {
+        min-width: 0;
     }
 
     .ubits-toolbar-panel__actions {
         width: 100%;
-        justify-content: space-between;
+        min-width: 0;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--gap-sm);
     }
 
     .ubits-toolbar-panel__search-group {
+        flex: 1 1 auto;
         flex-wrap: nowrap;
+        min-width: 0;
         max-width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        overflow: visible;
     }
 
     .ubits-toolbar-panel__search-inline {
-        max-width: min(240px, 55vw);
-        flex: 0 0 auto;
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .ubits-toolbar-panel__control-label {
+        display: none;
+    }
+
+    /* «Tabla / Cuadrícula» en su propia fila */
+    .ubits-toolbar-panel__control-group {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        order: 10;
     }
 }

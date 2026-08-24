@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
@@ -24,8 +25,20 @@
             border-color: var(--ubits-accent-brand) !important;
         }
         .preview-control-btn.active span { color: white !important; }
-        #button-group-preview { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
-        #button-group-preview .preview-row { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .bg-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--gap-md);
+            align-items: center;
+            margin-bottom: var(--gap-md);
+        }
+        .bg-switches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            align-items: center;
+            margin-bottom: var(--gap-lg);
+        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -46,7 +59,7 @@
                                 Button group
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Grupo clásico de botones secondary unidos: bordes compartidos, esquinas redondeadas solo en los extremos. Variante neutral o selectable (ítem activo con estilo active).
+                                Grupo clásico de botones secondary unidos: bordes compartidos, esquinas redondeadas solo en los extremos. Variantes neutral, selectable y multi; propiedades de tamaño, orientación, contenido y separado.
                             </p>
                         </div>
 
@@ -56,60 +69,47 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-md); line-height: 1.6;">
-                                Patrón btn-group clásico sobre Button secondary — sin contenedor tipo segmented control.
+                                Elige una variante (composición). Debajo combina propiedades: tamaño, orientación, contenido, separado.
                             </p>
-                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño:</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="xs" onclick="setButtonGroupPreviewSize('xs')"><span>XS</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn active" data-bg-size="sm" onclick="setButtonGroupPreviewSize('sm')"><span>SM</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="md" onclick="setButtonGroupPreviewSize('md')"><span>MD</span></button>
+
+                            <div class="bg-controls-row">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Variante:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-bg-variant="neutral" onclick="setBgVariant('neutral')"><span>Neutral</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-bg-variant="selectable" onclick="setBgVariant('selectable')"><span>Selectable</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-bg-variant="multi" onclick="setBgVariant('multi')"><span>Multi</span></button>
                             </div>
+                            <div class="bg-controls-row">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="xs" onclick="setBgSize('xs')"><span>XS</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn active" data-bg-size="sm" onclick="setBgSize('sm')"><span>SM</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="md" onclick="setBgSize('md')"><span>MD</span></button>
+                            </div>
+                            <div class="bg-controls-row">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Orientación:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-bg-orient="horizontal" onclick="setBgOrient('horizontal')"><span>Horizontal</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-bg-orient="vertical" onclick="setBgOrient('vertical')"><span>Vertical</span></button>
+                            </div>
+                            <div class="bg-controls-row">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenido:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-bg-content="texto" onclick="setBgContent('texto')"><span>Texto</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-bg-content="icono-texto" onclick="setBgContent('icono-texto')"><span>Icono + texto</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-bg-content="solo-icono" onclick="setBgContent('solo-icono')"><span>Solo icono</span></button>
+                            </div>
+                            <div class="bg-switches">
+                                <label class="ubits-switch ubits-switch--sm" style="display:inline-flex;align-items:center;gap:8px;">
+                                    <span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);">Separado</span>
+                                    <input type="checkbox" id="bg-separated" onchange="setBgSeparated(this.checked)">
+                                    <span class="ubits-switch__track" aria-hidden="true"></span>
+                                </label>
+                                <label class="ubits-switch ubits-switch--sm" style="display:inline-flex;align-items:center;gap:8px;">
+                                    <span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);">Ítem deshabilitado</span>
+                                    <input type="checkbox" id="bg-disabled" onchange="setBgDisabled(this.checked)">
+                                    <span class="ubits-switch__track" aria-hidden="true"></span>
+                                </label>
+                            </div>
+
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
-                                <div id="button-group-preview">
-                                    <div class="preview-row">
-                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Neutral — acciones agrupadas sin selección</span>
-                                        <div class="ubits-button-group" role="group" aria-label="Acciones de exportación" data-bg-group="neutral">
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="export">
-                                                <i class="far fa-download"></i>
-                                                <span>Exportar</span>
-                                            </button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="refresh">
-                                                <i class="far fa-arrows-rotate"></i>
-                                                <span>Refrescar</span>
-                                            </button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="filter">
-                                                <i class="far fa-filter"></i>
-                                                <span>Filtrar</span>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="preview-row">
-                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selectable — un ítem activo</span>
-                                        <div class="ubits-button-group" role="group" aria-label="Vista de contenidos" data-variant="selectable" data-value="list" data-bg-group="view" id="button-group-doc-view">
-                                            <button type="button" class="ubits-button ubits-button--active ubits-button--sm" data-value="list" aria-pressed="true">
-                                                <i class="far fa-list"></i>
-                                                <span>Lista</span>
-                                            </button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="grid" aria-pressed="false">
-                                                <i class="far fa-th"></i>
-                                                <span>Cuadrícula</span>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="preview-row">
-                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selectable — solo iconos</span>
-                                        <div class="ubits-button-group" role="group" aria-label="Vista de pantalla" data-variant="selectable" data-value="desktop" data-bg-group="screen" id="button-group-doc-screen">
-                                            <button type="button" class="ubits-button ubits-button--active ubits-button--sm ubits-button--icon-only" data-value="desktop" data-tooltip="Vista de escritorio" data-tooltip-delay="1000" aria-label="Vista de escritorio" aria-pressed="true">
-                                                <i class="far fa-desktop"></i>
-                                            </button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" data-value="mobile" data-tooltip="Vista móvil" data-tooltip-delay="1000" aria-label="Vista móvil" aria-pressed="false">
-                                                <i class="far fa-mobile-android"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div id="button-group-live-root"></div>
                             </div>
                         </div>
 
@@ -120,29 +120,24 @@
                             </h2>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">Neutral (acciones), selectable (uno activo) y multi (varios activos)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
+                                    <div class="ubits-body-sm-bold">Propiedades</div>
+                                    <div class="ubits-body-sm-regular">Tamaño, orientación, contenido, separado y deshabilitado</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-object-group"></i></div>
                                     <div class="ubits-body-sm-bold">Unidos</div>
-                                    <div class="ubits-body-sm-regular">Bordes compartidos, margin -1px y radius solo en el primer/último botón</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
-                                    <div class="ubits-body-sm-bold">Dos variantes</div>
-                                    <div class="ubits-body-sm-regular">neutral: todos secondary; selectable: activo con variante active (outline brand)</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
-                                    <div class="ubits-body-sm-bold">Tamaños</div>
-                                    <div class="ubits-body-sm-regular">xs (28px), sm (32px) y md (40px), alineados con Button</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
-                                    <div class="ubits-body-sm-bold">Icono + texto</div>
-                                    <div class="ubits-body-sm-regular">Cada ítem admite icono FontAwesome; icon-only incluye tooltip con data-tooltip</div>
+                                    <div class="ubits-body-sm-regular">Bordes compartidos, margin -1px y radius solo en extremos</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-keyboard"></i></div>
                                     <div class="ubits-body-sm-bold">Teclado</div>
-                                    <div class="ubits-body-sm-regular">En selectable, flechas ← → cambian el ítem activo</div>
+                                    <div class="ubits-body-sm-regular">En selectable/multi, flechas navegan entre ítems</div>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +179,34 @@
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
-        var buttonGroupPreviewSize = 'sm';
+        var bgState = {
+            variant: 'selectable',
+            size: 'sm',
+            orientation: 'horizontal',
+            content: 'icono-texto',
+            separated: false,
+            disabled: false,
+            value: 'list',
+            values: ['pending', 'active']
+        };
+
+        var BG_SETS = {
+            neutral: [
+                { value: 'export', icon: 'far fa-download', label: 'Exportar', aria: 'Exportar' },
+                { value: 'refresh', icon: 'far fa-arrows-rotate', label: 'Refrescar', aria: 'Refrescar' },
+                { value: 'filter', icon: 'far fa-filter', label: 'Filtrar', aria: 'Filtrar' }
+            ],
+            selectable: [
+                { value: 'list', icon: 'far fa-list', label: 'Lista', aria: 'Vista de lista' },
+                { value: 'grid', icon: 'far fa-th', label: 'Cuadrícula', aria: 'Vista de cuadrícula' },
+                { value: 'kanban', icon: 'far fa-columns', label: 'Kanban', aria: 'Vista kanban' }
+            ],
+            multi: [
+                { value: 'pending', icon: 'far fa-clock', label: 'Pendiente', aria: 'Filtro pendiente' },
+                { value: 'active', icon: 'far fa-play', label: 'Activo', aria: 'Filtro activo' },
+                { value: 'done', icon: 'far fa-check', label: 'Hecho', aria: 'Filtro hecho' }
+            ]
+        };
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
@@ -204,28 +226,68 @@
             });
         }
 
-        function applyButtonGroupPreviewSize(size) {
-            buttonGroupPreviewSize = size;
-            document.querySelectorAll('#button-group-preview [data-bg-group] .ubits-button').forEach(function(btn) {
-                btn.classList.remove('ubits-button--xs', 'ubits-button--sm', 'ubits-button--md');
-                btn.classList.add('ubits-button--' + size);
-            });
-            document.querySelectorAll('[data-bg-size]').forEach(function(ctrl) {
-                ctrl.classList.toggle('active', ctrl.getAttribute('data-bg-size') === size);
+        function syncActive(attr, value) {
+            document.querySelectorAll('[' + attr + ']').forEach(function(ctrl) {
+                ctrl.classList.toggle('active', ctrl.getAttribute(attr) === value);
             });
         }
 
-        function setButtonGroupPreviewSize(size) {
-            applyButtonGroupPreviewSize(size);
-        }
+        function setBgVariant(v) { bgState.variant = v; syncActive('data-bg-variant', v); renderBgPreview(); }
+        function setBgSize(s) { bgState.size = s; syncActive('data-bg-size', s); renderBgPreview(); }
+        function setBgOrient(o) { bgState.orientation = o; syncActive('data-bg-orient', o); renderBgPreview(); }
+        function setBgContent(c) { bgState.content = c; syncActive('data-bg-content', c); renderBgPreview(); }
+        function setBgSeparated(on) { bgState.separated = !!on; renderBgPreview(); }
+        function setBgDisabled(on) { bgState.disabled = !!on; renderBgPreview(); }
 
-        function initButtonGroupDocPreview() {
-            applyButtonGroupPreviewSize(buttonGroupPreviewSize);
+        function renderBgPreview() {
+            var root = document.getElementById('button-group-live-root');
+            if (!root) return;
+            var items = BG_SETS[bgState.variant] || BG_SETS.selectable;
+            var aria =
+                bgState.variant === 'neutral' ? 'Acciones de exportación' :
+                bgState.variant === 'multi' ? 'Filtros de estado' :
+                'Vista de contenidos';
+
+            var cls = 'ubits-button-group';
+            if (bgState.orientation === 'vertical') cls += ' ubits-button-group--vertical';
+            if (bgState.separated) cls += ' ubits-button-group--separated';
+
+            var html = '<div id="button-group-live" class="' + cls + '" role="group" aria-label="' + aria + '" data-variant="' + bgState.variant + '"';
+            if (bgState.variant === 'selectable') html += ' data-value="' + bgState.value + '"';
+            if (bgState.variant === 'multi') html += ' data-values="' + bgState.values.join(',') + '"';
+            html += ' data-orientation="' + bgState.orientation + '">';
+
+            items.forEach(function(item, index) {
+                var disabled = bgState.disabled && index === items.length - 1;
+                var iconOnly = bgState.content === 'solo-icono';
+                var showIcon = bgState.content !== 'texto';
+                var showLabel = bgState.content !== 'solo-icono';
+                var btnCls = 'ubits-button ubits-button--secondary ubits-button--' + bgState.size;
+                if (iconOnly) btnCls += ' ubits-button--icon-only';
+
+                html += '<button type="button" class="' + btnCls + '" data-value="' + item.value + '"';
+                if (iconOnly) html += ' data-tooltip="' + item.aria + '" aria-label="' + item.aria + '"';
+                if (disabled) html += ' disabled';
+                html += '>';
+                if (showIcon) html += '<i class="' + item.icon + '"></i>';
+                if (showLabel) html += '<span>' + item.label + '</span>';
+                html += '</button>';
+            });
+            html += '</div>';
+            root.innerHTML = html;
+
             if (typeof initButtonGroup === 'function') {
-                initButtonGroup('#button-group-doc-view', { variant: 'selectable', value: 'list' });
-                initButtonGroup('#button-group-doc-screen', { variant: 'selectable', value: 'desktop' });
+                initButtonGroup('#button-group-live', {
+                    variant: bgState.variant,
+                    orientation: bgState.orientation,
+                    separated: bgState.separated,
+                    value: bgState.value,
+                    values: bgState.values.slice(),
+                    onChange: function(v) { bgState.value = v; },
+                    onValuesChange: function(vs) { bgState.values = vs; }
+                });
             }
-            if (typeof initTooltip === 'function') initTooltip('#button-group-preview [data-tooltip]');
+            if (typeof initTooltip === 'function') initTooltip('#button-group-live-root [data-tooltip]');
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -233,7 +295,7 @@
             if (typeof showAlert === 'function') {
                 showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'button-group-warning-alert', noClose: true });
             }
-            initButtonGroupDocPreview();
+            renderBgPreview();
         });
     </script>
 </body>

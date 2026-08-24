@@ -58,7 +58,7 @@ Empresa
 
 ## 4. Dónde vive en el producto
 
-**No** vive en Aprendizaje / LMS Creator / LMS AI / Modo estudio IA.  
+**No** vive en Aprendizaje / LMS Creator / Recursos IA / Modo estudio IA.  
 Es **transversal** (políticas, operaciones, compliance, ventas…), no formación de catálogo.
 
 | Rol | Ubicación | Qué hace ahí |

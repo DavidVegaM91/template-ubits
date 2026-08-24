@@ -118,32 +118,6 @@
 }
 
 /* ========================================
-   Variante Modo: avatar con badge de rol (Admin / LMS Creator)
-   Úsalo cuando el usuario está en modo Admin o LMS Creator.
-   En modo Colaborador (por defecto) no se usa este wrapper.
-   Requiere: badge-tag.css para el badge de rol.
-   ======================================== */
-
-.ubits-avatar-modo {
-    position: relative;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-/* Badge de rol posicionado en la esquina inferior derecha del avatar */
-.ubits-avatar-modo__badge {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    pointer-events: none;
-    z-index: 1;
-    padding-left: 6px !important;
-    padding-right: 6px !important;
-}
-
-/* ========================================
    Profile list: varios avatares superpuestos (+N)
    ======================================== */
 
@@ -247,6 +221,12 @@
     line-height: 1;
 }
 
+.ubits-profile-list__count-icon {
+    line-height: 1;
+    font-size: 0.85em;
+    color: var(--ubits-fg-1-medium);
+}
+
 .ubits-profile-list__count-btn {
     cursor: pointer;
     appearance: none;
@@ -304,4 +284,257 @@
 
 .ubits-profile-list-overflow-popover-item[data-profile-list-overflow-item-key] {
     cursor: pointer;
+}
+
+
+/* ── Anillos / loading / hoverLift / social proof (paridad React) ── */
+
+.ubits-avatar--ring {
+    box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px var(--ubits-accent-brand);
+}
+
+.ubits-avatar--ring-pulse {
+    box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px var(--ubits-accent-brand);
+    animation: ubits-avatar-ring-pulse 1.6s ease-out infinite;
+}
+
+@keyframes ubits-avatar-ring-pulse {
+    0% { box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px var(--ubits-accent-brand); }
+    70% { box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 10px transparent; }
+    100% { box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px transparent; }
+}
+
+.ubits-avatar-shell {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.ubits-avatar--ring-spin,
+.ubits-avatar--ring-gradient {
+    overflow: visible;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.ubits-avatar--ring-spin::before,
+.ubits-avatar--ring-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    animation: ubits-avatar-ring-spin 0.9s linear infinite;
+}
+
+.ubits-avatar--ring-spin::before {
+    border: 2px solid transparent;
+    border-top-color: var(--ubits-accent-brand);
+    border-right-color: var(--ubits-accent-brand);
+}
+
+.ubits-avatar--ring-gradient::before {
+    background: conic-gradient(from 0deg, #ff8a4c, #ff4d9a, #8b5cf6, #3b82f6, #ff8a4c);
+    animation-duration: 2s;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 2px;
+}
+
+@keyframes ubits-avatar-ring-spin {
+    to { transform: rotate(360deg); }
+}
+
+.ubits-avatar--loading .ubits-avatar__img,
+.ubits-avatar--loading .ubits-avatar__initials,
+.ubits-avatar--loading .ubits-avatar__fallback {
+    opacity: 0.35;
+}
+
+.ubits-avatar__loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.ubits-avatar__loading-spinner {
+    width: 40%;
+    height: 40%;
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-border-1);
+    border-top-color: var(--ubits-accent-brand);
+    animation: ubits-avatar-ring-spin 0.7s linear infinite;
+    box-sizing: border-box;
+}
+
+.ubits-avatar__status {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-bg-1);
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 2;
+}
+.ubits-avatar__status--bottom-right { right: 0; bottom: 0; }
+.ubits-avatar__status--top-right { right: 0; top: 0; }
+.ubits-avatar__status--bottom-left { left: 0; bottom: 0; }
+.ubits-avatar__status--top-left { left: 0; top: 0; }
+.ubits-avatar__status--online { background: var(--ubits-feedback-accent-success, #22c55e); }
+.ubits-avatar__status--offline { background: var(--ubits-fg-1-medium); }
+.ubits-avatar__status--busy { background: var(--ubits-feedback-accent-error, #ef4444); }
+.ubits-avatar__status--away { background: var(--ubits-feedback-accent-warning, #f59e0b); }
+.ubits-avatar--xs .ubits-avatar__status { width: 8px; height: 8px; border-width: 1.5px; }
+.ubits-avatar--sm .ubits-avatar__status,
+.ubits-avatar--md .ubits-avatar__status { width: 10px; height: 10px; }
+.ubits-avatar--lg .ubits-avatar__status { width: 12px; height: 12px; }
+.ubits-avatar--xl .ubits-avatar__status { width: 14px; height: 14px; }
+
+.ubits-avatar__badge {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+    pointer-events: none;
+    z-index: 2;
+    box-sizing: border-box;
+}
+.ubits-avatar__badge--bottom-right { right: -2px; bottom: -2px; }
+.ubits-avatar__badge--top-right { right: -2px; top: -2px; }
+.ubits-avatar__badge--bottom-left { left: -2px; bottom: -2px; }
+.ubits-avatar__badge--top-left { left: -2px; top: -2px; }
+.ubits-avatar--xs .ubits-avatar__badge { width: 12px; height: 12px; font-size: 7px; }
+.ubits-avatar--sm .ubits-avatar__badge { width: 14px; height: 14px; font-size: 8px; }
+.ubits-avatar--md .ubits-avatar__badge { width: 16px; height: 16px; font-size: 9px; }
+.ubits-avatar--lg .ubits-avatar__badge { width: 18px; height: 18px; font-size: 10px; }
+.ubits-avatar--xl .ubits-avatar__badge { width: 20px; height: 20px; font-size: 11px; }
+
+.ubits-profile-list--hover-lift {
+    overflow: visible;
+    padding-top: 4px;
+    margin-top: -4px;
+}
+.ubits-profile-list--hover-lift .ubits-profile-list__avatar {
+    transition: transform 0.15s ease;
+}
+.ubits-profile-list--hover-lift .ubits-profile-list__avatar:hover,
+.ubits-profile-list--hover-lift .ubits-profile-list__avatar:focus-visible {
+    transform: translateY(-3px);
+    z-index: 20 !important;
+}
+
+.ubits-avatar-social-proof {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    min-width: 0;
+}
+.ubits-avatar-social-proof__label {
+    color: var(--ubits-fg-1-medium);
+    min-width: 0;
+}
+
+.ubits-avatar--grayscale,
+.ubits-avatar--grayscale .ubits-avatar__img {
+    filter: grayscale(1);
+}
+
+.ubits-avatar--rounded {
+    border-radius: var(--border-radius-md, 8px);
+}
+.ubits-avatar--rounded .ubits-avatar__img,
+.ubits-avatar--rounded .ubits-avatar__initials,
+.ubits-avatar--rounded .ubits-avatar__fallback {
+    border-radius: inherit;
+}
+
+
+/* Separación del grupo al hover (spread) */
+.ubits-profile-list--hover-spread {
+    overflow: visible;
+}
+.ubits-profile-list--hover-spread .ubits-profile-list__avatar,
+.ubits-profile-list--hover-spread .ubits-profile-list__count {
+    transition: margin-right 0.2s ease;
+}
+.ubits-profile-list--hover-spread:hover .ubits-profile-list__avatar,
+.ubits-profile-list--hover-spread:focus-within .ubits-profile-list__avatar {
+    margin-right: 6px !important;
+}
+.ubits-profile-list--hover-spread:hover .ubits-profile-list__count,
+.ubits-profile-list--hover-spread:focus-within .ubits-profile-list__count {
+    margin-right: 0 !important;
+}
+
+/* XL profile list */
+.ubits-profile-list--xl {
+    height: 64px;
+}
+.ubits-profile-list--xl .ubits-profile-list__count {
+    width: 64px;
+    height: 64px;
+    font-size: var(--font-size-md);
+}
+
+/* Fallback tones (sin imagen) */
+.ubits-avatar--tone-muted {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+.ubits-avatar--tone-brand {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-feedback-accent-info);
+}
+.ubits-avatar--tone-brand .ubits-avatar__initials,
+.ubits-avatar--tone-brand .ubits-avatar__fallback {
+    color: var(--ubits-feedback-accent-info);
+}
+.ubits-avatar--tone-solid {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+.ubits-avatar--tone-solid .ubits-avatar__initials,
+.ubits-avatar--tone-solid .ubits-avatar__fallback {
+    color: #fff;
+}
+
+/* Avatar + nombre */
+.ubits-avatar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    min-width: 0;
+}
+.ubits-avatar-label__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.ubits-avatar-label__title {
+    color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ubits-avatar-label__description {
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

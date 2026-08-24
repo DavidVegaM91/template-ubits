@@ -20,6 +20,7 @@
         'texto',
         'embebido',
         'scorm',
+        'presentacion-interactiva',
         'evaluacion-final',
         'asistencia',
         'encuesta-libre',

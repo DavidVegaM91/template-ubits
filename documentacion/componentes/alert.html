@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
     <title>Alert - Notificaciones del sistema | UBITS Playground</title>
-    
-    <!-- Estilos locales -->
+
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -15,29 +14,50 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
-        /* Preview Styles */
-        /* Preview control buttons - override UBITS button styles for active state */
         .preview-control-btn.active {
             background: var(--ubits-accent-brand) !important;
             color: white !important;
             border-color: var(--ubits-accent-brand) !important;
         }
-        
         .preview-control-btn.active span {
             color: white !important;
         }
-        
-        /* Component preview container */
-        .component-preview {
-            position: relative !important;
-            border-radius: 8px !important;
-            
-            background: var(--ubits-bg-1) !important;
-            border: 1px solid var(--ubits-border-1) !important;
-            padding: 24px !important;
+        .alert-control-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .alert-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 96px;
+        }
+        .alert-props-divider {
+            color: var(--ubits-fg-1-medium);
+            margin: 0 0 12px;
+            padding-top: 4px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        .alert-switch-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .alert-switch-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
         }
     </style>
 </head>
@@ -45,454 +65,493 @@
     <div class="dashboard-container">
         <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
-        
 
-        <!-- Main Content -->
         <main class="main-content">
-    <!-- Top Navigation -->
-    <div id="top-nav-container"></div>
-    
-            <!-- Content with Sidebar -->
+            <div id="top-nav-container"></div>
+
             <div style="display: flex;">
-            
-            <!-- Dropdown Móvil para Documentación -->
-            <div id="docs-dropdown-container"></div>
-            
-            <!-- Sidebar de Documentación -->
-            <div id="docs-sidebar-container"></div>
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
 
-            <!-- Content Area -->
-            <div class="components-content">
-                <!-- Content Area -->
-                <div class="content-area" style="display: block; width: 100%;">
-                    <!-- Hero Section -->
-                    <div style="text-align: center; margin-bottom: 60px;">
-                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                            Alert
-                        </h1>
-                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente de notificaciones del sistema que muestra mensajes informativos, de éxito, advertencia y error.
-                        </p>
-                    </div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Alert
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Alertas y callouts de sistema. Variantes de composición: estándar, mensaje de usuario, descubrimiento y apiladas. Propiedades: tono, ícono, título, cierre, acciones y texto en bloque.
+                            </p>
+                        </div>
 
-                    <!-- Preview Section -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Preview del componente
-                        </h2>
-                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                            Aquí puedes ver el componente Alert en acción. Haz clic en los botones para ver los diferentes tipos disponibles.
-                        </p>
-                        
-                        <!-- Preview Container -->
-                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
-                            
-                            <!-- Alert Preview -->
-                            <div id="alert-preview">
-                                <!-- Alert Success -->
-                                <div class="ubits-alert ubits-alert--success" id="alert-success-preview" style="margin: 0;">
-                                    <div class="ubits-alert__icon">
-                                <i class="far fa-check-circle"></i>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige una variante (composición). Debajo combina propiedades: tono, ícono, título, cierre, acciones y texto en bloque. Las propiedades no son variantes.
+                            </p>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                                <div id="alert-preview" style="display: flex; align-items: center; justify-content: center; min-height: 96px; width: 100%; max-width: 560px; margin: 0 auto;">
+                                    <!-- Se actualiza por JS -->
+                                </div>
                             </div>
-                                    <div class="ubits-alert__content">
-                                        <div class="ubits-alert__text">Los cambios se han guardado correctamente.</div>
+
+                            <div style="margin-top: 24px;">
+                                <div class="alert-control-row">
+                                    <span class="ubits-body-sm-bold alert-control-row__label">Variante:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="estandar" onclick="setComposition('estandar')"><span>Estándar</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="mensaje-usuario" onclick="setComposition('mensaje-usuario')"><span>Mensaje de usuario</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="descubrimiento" onclick="setComposition('descubrimiento')"><span>Descubrimiento</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="apiladas" onclick="setComposition('apiladas')"><span>Apiladas</span></button>
+                                    </div>
+                                </div>
+
+                                <p class="ubits-body-xs-regular alert-props-divider">
+                                    Propiedades (se combinan entre sí; no son variantes)
+                                </p>
+
+                                <p id="stack-hint" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0 0 12px; display: none;">
+                                    Stack fijo (éxito + alerta con acción). Elige si van separadas o unidas en un marco.
+                                </p>
+
+                                <div class="alert-control-row" id="row-stack-layout" style="display: none;">
+                                    <span class="ubits-body-sm-bold alert-control-row__label">Disposición:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-stack-layout">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="separated" onclick="setStackVariant('separated')"><span>Separadas</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="joined" onclick="setStackVariant('joined')"><span>Unidas</span></button>
+                                    </div>
+                                </div>
+
+                                <div id="block-props">
+                                    <div class="alert-control-row" id="row-tone">
+                                        <span class="ubits-body-sm-bold alert-control-row__label">Tono:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-tone"></div>
+                                    </div>
+
+                                    <div class="alert-switch-row" id="row-switches-estandar">
+                                        <div class="alert-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ícono</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-icon" checked role="switch" onchange="setShowIcon(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="alert-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Título</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-title" checked role="switch" onchange="setShowTitle(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="alert-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cierre</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-dismiss" checked role="switch" onchange="setDismissible(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="alert-switch-item" id="switch-block-wrap">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Texto en bloque</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-block" role="switch" onchange="setTextBlock(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert-switch-row" id="row-switches-user" style="display: none;">
+                                        <div class="alert-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cierre</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-dismiss-user" role="switch" onchange="setDismissible(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert-control-row" id="row-actions">
+                                        <span class="ubits-body-sm-bold alert-control-row__label">Acciones:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-actions">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="none" onclick="setActionsMode('none')"><span>Sin</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="one" onclick="setActionsMode('one')"><span>Una</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="two" onclick="setActionsMode('two')"><span>Dos</span></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                                    <button class="ubits-alert__close" onclick="hideAlert('success')">
-                            <i class="far fa-times"></i>
-                        </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">Estándar, mensaje de usuario, descubrimiento, apiladas</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tonos</div>
+                                    <div class="ubits-body-sm-regular">Éxito, info, alerta, error, IA, neutral, invertido</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hand-pointer"></i></div>
+                                    <div class="ubits-body-sm-bold">Acciones</div>
+                                    <div class="ubits-body-sm-regular">Sin, una o dos con botones del design system</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-align-left" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Énfasis y copy multilínea
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                <code>.ubits-alert__text</code> usa <code>display: flex</code>. Si el mensaje tiene varios hijos directos
+                                (texto suelto + <code>&lt;strong&gt;</code>, <code>&lt;p&gt;</code>, etc.), cada hijo se alinea como ítem flex y el copy se “parte” en columnas.
+                            </p>
+                            <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                <li style="margin-bottom: 8px;"><strong>Énfasis parcial:</strong> <code>&lt;span class="ubits-alert__emphasis"&gt;…&lt;/span&gt;</code> (inline, font-weight 600).</li>
+                                <li style="margin-bottom: 8px;"><strong>Mensaje largo o HTML:</strong> añade <code>ubits-alert--block-text</code> al root (o <code>blockText: true</code> en <code>showAlert</code>).</li>
+                                <li><strong>React:</strong> prop <code>textBlock</code> en <code>UbitsAlert</code>.</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="alert-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear alert de notificación</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-1')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-1">En [ubicación], usa showAlert('[success|info|warning|error|ia|invert|neutral]', '&lt;strong&gt;[título]&lt;/strong&gt; [mensaje]', { containerId: '[id]', noClose: true, actionsHtml: '[botones opcionales]' }). Incluye alert.css + alert.js + button.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Mensaje de usuario con avatar</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-2')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-2">En [ubicación], usa showAlert('neutral', '[copy HTML]', { containerId: '[id]', noClose: true, blockText: true, leadingHtml: renderAvatar({ nombre: '[nombre]', avatar: '[url]' }, { size: 'sm' }), actionsHtml: '[botones xs]' }). No reimplementes el markup a mano.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Stack de alertas</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-3')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-3">En [ubicación], usa showAlertStack('[id]', [{ type: 'success', message: '[msg1]' }, { type: 'warning', message: '[msg2]', options: { actionsHtml: '[botón]' } }], 'sm').</code></pre>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-                        <!-- Preview Controls -->
-                        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewType('success')">
-                                <span>Success</span>
-                            </button>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('info')">
-                                <span>Info</span>
-                            </button>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('warning')">
-                                <span>Warning</span>
-                            </button>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('error')">
-                                <span>Error</span>
-                            </button>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('ia')">
-                                <i class="far fa-sparkles"></i>
-                                <span>IA</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Characteristics Section -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Características generales
-                        </h2>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                                <div class="ubits-body-sm-bold">Tipos</div>
-                                <div class="ubits-body-sm-regular">Success, Info, Warning, Error, IA</div>
-                            </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-times-circle"></i></div>
-                                <div class="ubits-body-sm-bold">Cierre</div>
-                                <div class="ubits-body-sm-regular">Con y sin botón de cerrar</div>
-                            </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
-                                <div class="ubits-body-sm-bold">Responsive</div>
-                                <div class="ubits-body-sm-regular">Adaptable a todos los dispositivos</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Énfasis y copy multilínea -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-align-left" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Énfasis y copy multilínea
-                        </h2>
-                        <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                            <code>.ubits-alert__text</code> usa <code>display: flex</code>. Si el mensaje tiene varios hijos directos
-                            (texto suelto + <code>&lt;strong&gt;</code>, <code>&lt;p&gt;</code>, etc.), cada hijo se alinea como ítem flex y el copy se “parte” en columnas.
-                        </p>
-                        <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                            <li style="margin-bottom: 8px;"><strong>Énfasis parcial:</strong> <code>&lt;span class="ubits-alert__emphasis"&gt;…&lt;/span&gt;</code> (inline, font-weight 600). No uses <code>&lt;strong&gt;</code> suelto sin el modificador <code>ubits-alert--block-text</code>.</li>
-                            <li style="margin-bottom: 8px;"><strong>Mensaje largo o HTML en modales:</strong> añade <code>ubits-alert--block-text</code> al root del alert (junto al tipo y <code>ubits-alert--no-close</code> si aplica).</li>
-                            <li><strong>React:</strong> prop <code>textBlock</code> en <code>UbitsAlert</code> + clase <code>alert__emphasis</code> en el span. La prop <code>title</code> sí usa <code>&lt;strong&gt;</code> al inicio (un solo ítem flex con wrap).</li>
-                        </ul>
-                    </div>
-
-                    <!-- PROMPTS ÚTILES -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Prompts útiles
-                        </h2>
-                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                            Usa estos prompts con Cursor AI para configurar y personalizar el componente Alert de manera eficiente.
-                        </p>
-
-                        <!-- Alert Warning -->
-                        <div id="alert-warning-alert" style="margin-bottom: 32px;"></div>
-
-                        <!-- Prompt 1: Crear alert básico -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Crear alert de notificación
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-1')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-1">Crea un alert de [success, info, warning o error] que diga "[tu_mensaje]" en [ubicación donde quieres el alert].</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Prompt 2: Alert sin botón cerrar -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Alert sin botón de cerrar
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-2')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-2">Crea un alert de [success, info, warning o error] que diga "[tu_mensaje]" sin botón de cerrar en [ubicación donde quieres el alert].</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Prompt 3: Cambiar tipo de alert -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Cambiar tipo de alert
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-3')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-3">Cambia el alert [descripción_del_alert] de [tipo_actual] a [nuevo_tipo: success, info, warning o error].</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Prompt 4: Cambiar mensaje del alert -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Cambiar mensaje del alert
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-4')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-4">Cambia el mensaje del alert [descripción_del_alert] para que diga "[nuevo_mensaje]".</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Prompt 5: Quitar botón de cerrar -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Quitar botón de cerrar
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-5')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-5">Quita el botón de cerrar del alert [descripción_del_alert].</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Prompt 6: Eliminar alert -->
-                        <div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    Eliminar alert
-                                </h3>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-6')">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-6">Elimina el alert [descripción_del_alert].</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
             </div>
         </main>
-                </div>
-                
-    <!-- Toast Messages -->
-    <div class="toast-container">
-        <!-- Toast de Success -->
-        <div class="toast toast-success" id="toast-success" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-check"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-success-message">Mensaje de éxito</div>
-                <button class="toast-close" onclick="hideToast('success')">
-                    <i class="far fa-times"></i>
-                </button>
-                    </div>
-                </div>
-                
-        <!-- Toast de Info -->
-        <div class="toast toast-info" id="toast-info" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-info-circle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-info-message">Mensaje informativo</div>
-                <button class="toast-close" onclick="hideToast('info')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            </div>
-
-        <!-- Toast de Warning -->
-        <div class="toast toast-warning" id="toast-warning" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-exclamation-triangle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-warning-message">Mensaje de advertencia</div>
-                <button class="toast-close" onclick="hideToast('warning')">
-                    <i class="far fa-times"></i>
-                </button>
-                </div>
-            </div>
-            
-        <!-- Toast de Error -->
-        <div class="toast toast-error" id="toast-error" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-times-circle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-error-message">Mensaje de error</div>
-                <button class="toast-close" onclick="hideToast('error')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
     </div>
 
     <div id="ubits-toast-container"></div>
     <script src="../../components/sidebar.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/avatar.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-bootDocsWorkspace();
-            // Cargar alert de warning para prompts usando el componente oficial
-            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
-                containerId: 'alert-warning-alert',
-                noClose: true
-            });
-        });
+        var composition = 'estandar';
+        var type = 'info';
+        var showIcon = true;
+        var showTitle = true;
+        var dismissible = true;
+        var actionsMode = 'two';
+        var textBlock = false;
+        var stackVariant = 'separated';
 
-        // Funciones para el preview del componente
-        function setPreviewType(type) {
-            // Quitar active de todos los botones
-            document.querySelectorAll('.preview-control-btn').forEach(btn => {
-                btn.classList.remove('active');
+        var TONE_LABELS = {
+            success: 'Éxito',
+            info: 'Info',
+            warning: 'Alerta',
+            error: 'Error',
+            ia: 'IA',
+            invert: 'Invertido',
+            neutral: 'Neutral'
+        };
+
+        var COPY = {
+            success: { title: 'Evaluación enviada', msg: 'Tu respuesta fue registrada correctamente.' },
+            info: { title: 'Actualización de seguridad', msg: 'Actualiza tu contraseña y activa la verificación en dos pasos.' },
+            warning: { title: 'Límite de recursos', msg: 'Tu plan actual alcanzó el límite. Considera actualizar a un nivel superior.' },
+            error: { title: 'Suscripción por vencer', msg: 'Tu suscripción anual vence en 3 días. Renueva ahora para evitar interrupciones.' },
+            ia: { title: 'Sugerencia de IA', msg: 'Según tu historial, te recomendamos este plan de formación personalizado.' },
+            invert: { title: 'Función Pro', msg: 'Esta función solo está disponible en el plan Pro. Actualiza tu plan para acceder.' },
+            neutral: { title: 'Aviso del sistema', msg: 'Revisa los cambios antes de continuar.' }
+        };
+
+        function setActiveInGroup(groupId, value) {
+            var group = document.getElementById(groupId);
+            if (!group) return;
+            group.querySelectorAll('.preview-control-btn').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-value') === value);
             });
-            
-            // Activar el botón seleccionado
-            event.target.closest('.preview-control-btn').classList.add('active');
-            
-            // Actualizar preview
-            const preview = document.getElementById('alert-preview');
-            const alertConfig = {
-                success: {
-                    class: 'ubits-alert--success',
-                    icon: 'far fa-check-circle',
-                    title: 'Operación exitosa',
-                    message: 'Los cambios se han guardado correctamente.'
-                },
-                info: {
-                    class: 'ubits-alert--info',
-                    icon: 'far fa-info-circle',
-                    title: 'Información',
-                    message: 'Esta es una notificación informativa del sistema.'
-                },
-                warning: {
-                    class: 'ubits-alert--warning',
-                    icon: 'far fa-exclamation-triangle',
-                    title: 'Advertencia',
-                    message: 'Por favor, revisa los datos antes de continuar.'
-                },
-                error: {
-                    class: 'ubits-alert--error',
-                    icon: 'far fa-times-circle',
-                    title: 'Error',
-                    message: 'Ha ocurrido un error al procesar la solicitud.'
-                },
-                ia: {
-                    class: 'ubits-alert--ia',
-                    icon: 'far fa-sparkles',
-                    title: 'IA',
-                    message: 'El agente IA ha procesado tu solicitud. Revisa el resultado antes de continuar.'
-                }
-            };
-            
-            const config = alertConfig[type];
-            preview.innerHTML = `
-                <div class="ubits-alert ${config.class}">
-                    <div class="ubits-alert__icon">
-                        <i class="${config.icon}"></i>
-                    </div>
-                    <div class="ubits-alert__content">
-                        <div class="ubits-alert__text">${config.message}</div>
-                    </div>
-                    <button class="ubits-alert__close" onclick="hideAlert('${type}')">
-                        <i class="far fa-times"></i>
-                    </button>
-                </div>
-            `;
         }
-        
 
-        // Función para copiar prompts
+        function buildToneButtons(tones) {
+            var host = document.getElementById('ctrl-tone');
+            if (!host) return;
+            host.innerHTML = tones.map(function (t) {
+                var active = t === effectiveTone() ? ' active' : '';
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' + active + '" data-value="' + t + '" onclick="setType(\'' + t + '\')"><span>' + TONE_LABELS[t] + '</span></button>';
+            }).join('');
+        }
+
+        function effectiveTone() {
+            if (composition === 'mensaje-usuario') return type === 'invert' ? 'invert' : 'neutral';
+            if (composition === 'descubrimiento') {
+                return (type === 'ia' || type === 'invert' || type === 'neutral') ? type : 'info';
+            }
+            return type;
+        }
+
+        function syncControlsVisibility() {
+            var isStack = composition === 'apiladas';
+            var isUser = composition === 'mensaje-usuario';
+            var isDiscovery = composition === 'descubrimiento';
+            var isEstandar = composition === 'estandar';
+
+            document.getElementById('stack-hint').style.display = isStack ? 'block' : 'none';
+            document.getElementById('row-stack-layout').style.display = isStack ? 'flex' : 'none';
+            document.getElementById('block-props').style.display = isStack ? 'none' : 'block';
+
+            if (isStack) {
+                setActiveInGroup('ctrl-stack-layout', stackVariant);
+                return;
+            }
+
+            var tones = isUser
+                ? ['neutral', 'invert']
+                : isDiscovery
+                    ? ['info', 'ia', 'neutral', 'invert']
+                    : ['success', 'info', 'warning', 'error', 'ia', 'invert', 'neutral'];
+            buildToneButtons(tones);
+
+            document.getElementById('row-switches-estandar').style.display = (isEstandar || isDiscovery) ? 'flex' : 'none';
+            document.getElementById('row-switches-user').style.display = isUser ? 'flex' : 'none';
+            document.getElementById('switch-block-wrap').style.display = isEstandar ? 'flex' : 'none';
+            document.getElementById('row-actions').style.display = (isEstandar || isUser) ? 'flex' : 'none';
+
+            document.getElementById('switch-icon').checked = showIcon;
+            document.getElementById('switch-title').checked = showTitle;
+            document.getElementById('switch-dismiss').checked = dismissible;
+            document.getElementById('switch-dismiss-user').checked = dismissible;
+            document.getElementById('switch-block').checked = textBlock;
+            setActiveInGroup('ctrl-actions', actionsMode);
+            setActiveInGroup('ctrl-composition', composition);
+        }
+
+        function actionButtonsHtml(mode, tone) {
+            if (mode === 'none') return '';
+            if (mode === 'one') {
+                var oneLabel = tone === 'error' ? 'Renovar ahora' : (tone === 'warning' ? 'Verificar' : 'Actualizar');
+                var oneVariant = tone === 'error' ? 'ubits-button--error' : 'ubits-button--primary';
+                return '<button type="button" class="ubits-button ' + oneVariant + ' ubits-button--xs"><span>' + oneLabel + '</span></button>';
+            }
+            var dualLabel = tone === 'error' ? 'Renovar' : (tone === 'invert' ? 'Mejorar plan' : 'Actualizar');
+            var dualVariant = tone === 'error' ? 'ubits-button--error' : 'ubits-button--primary';
+            return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs"><span>Descartar</span></button>' +
+                '<button type="button" class="ubits-button ' + dualVariant + ' ubits-button--xs"><span>' + dualLabel + '</span></button>';
+        }
+
+        function updateAlertPreview() {
+            syncControlsVisibility();
+            var preview = document.getElementById('alert-preview');
+            if (!preview) return;
+
+            if (composition === 'apiladas') {
+                showAlertStack(preview, [
+                    {
+                        type: 'success',
+                        message: '<strong>Despliegue exitoso </strong>La aplicación se publicó correctamente en el entorno de producción.'
+                    },
+                    {
+                        type: 'warning',
+                        message: '<strong>Límite de recursos </strong>Tu plan actual alcanzó el límite. Considera actualizar a un nivel superior.',
+                        options: {
+                            actionsHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--xs"><span>Verificar</span></button>'
+                        }
+                    }
+                ], 'sm', stackVariant);
+                return;
+            }
+
+            var tone = effectiveTone();
+
+            if (composition === 'mensaje-usuario') {
+                var leading = typeof renderAvatar === 'function'
+                    ? renderAvatar(
+                        { nombre: 'Alex Johnson', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=96&h=96&dpr=2&q=80' },
+                        { size: 'sm', alt: 'Alex Johnson' }
+                    )
+                    : '';
+                showAlert(tone, '«Ya terminé el borrador del nuevo design system. Cuéntame qué te parece cuando tengas un momento.»', {
+                    containerId: 'alert-preview',
+                    noClose: !dismissible,
+                    noIcon: true,
+                    titleInline: true,
+                    clampDescription: true,
+                    titleHtml: '<span>Alex Johnson</span><span class="ubits-alert__title-muted">te envió un mensaje</span>',
+                    leadingHtml: leading,
+                    actionsHtml: actionButtonsHtml(actionsMode, tone),
+                    onClose: function () { updateAlertPreview(); }
+                });
+                return;
+            }
+
+            if (composition === 'descubrimiento') {
+                var discoveryMsg =
+                    'Acabamos de lanzar un panel para seguir el desempeño de tu equipo. ' +
+                    '<a href="#explorar" class="ubits-body-sm-bold" style="color:inherit;text-decoration:underline" onclick="event.preventDefault()">Explorar funciones</a>';
+                showAlert(tone, discoveryMsg, {
+                    containerId: 'alert-preview',
+                    noClose: !dismissible,
+                    noIcon: !showIcon,
+                    titleHtml: showTitle ? 'Nuevo: Analítica avanzada' : '',
+                    icon: 'fa-lightbulb',
+                    actionsHtml: actionsMode === 'none' ? '' : actionButtonsHtml(actionsMode, tone),
+                    onClose: function () { updateAlertPreview(); }
+                });
+                return;
+            }
+
+            var copy = COPY[tone] || COPY.info;
+            var body = textBlock
+                ? '<p style="margin:0">Revisa los siguientes puntos:</p><ul style="margin:6px 0 0;padding-left:18px"><li>Número y vencimiento de la tarjeta</li><li>Dirección de facturación</li><li>Fondos disponibles</li></ul>'
+                : copy.msg;
+            showAlert(tone, body, {
+                containerId: 'alert-preview',
+                noClose: !dismissible,
+                noIcon: !showIcon,
+                blockText: textBlock,
+                titleHtml: showTitle ? copy.title : '',
+                actionsHtml: actionButtonsHtml(actionsMode, tone),
+                onClose: function () { updateAlertPreview(); }
+            });
+        }
+
+        function setComposition(id) {
+            composition = id;
+            if (id === 'estandar') {
+                type = 'info';
+                showIcon = true;
+                showTitle = true;
+                dismissible = true;
+                actionsMode = 'two';
+                textBlock = false;
+            } else if (id === 'mensaje-usuario') {
+                type = 'neutral';
+                actionsMode = 'two';
+                dismissible = false;
+                textBlock = false;
+            } else if (id === 'descubrimiento') {
+                type = 'info';
+                showIcon = true;
+                showTitle = true;
+                dismissible = true;
+                actionsMode = 'none';
+                textBlock = false;
+            }
+            updateAlertPreview();
+        }
+
+        function setType(t) {
+            type = t;
+            updateAlertPreview();
+        }
+
+        function setShowIcon(v) {
+            showIcon = v;
+            updateAlertPreview();
+        }
+
+        function setShowTitle(v) {
+            showTitle = v;
+            updateAlertPreview();
+        }
+
+        function setDismissible(v) {
+            dismissible = v;
+            updateAlertPreview();
+        }
+
+        function setTextBlock(v) {
+            textBlock = v;
+            updateAlertPreview();
+        }
+
+        function setStackVariant(variant) {
+            stackVariant = variant;
+            updateAlertPreview();
+        }
+
+        function setActionsMode(mode) {
+            actionsMode = mode;
+            updateAlertPreview();
+        }
+
         function copyPrompt(promptId) {
-            const promptElement = document.getElementById(promptId);
-            const promptText = promptElement.textContent;
-            
-            // Copiar al portapapeles
-            navigator.clipboard.writeText(promptText).then(function() {
-                // Mostrar feedback visual
-                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
-                const icon = button.querySelector('i');
-                const text = button.querySelector('span');
-                
-                // Cambiar estado del botón
+            var promptElement = document.getElementById(promptId);
+            var promptText = promptElement.textContent;
+            navigator.clipboard.writeText(promptText).then(function () {
+                var button = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = button.querySelector('i');
+                var text = button.querySelector('span');
                 icon.className = 'far fa-check';
                 text.textContent = 'Copiado';
                 button.classList.add('ubits-button--active');
-                
-                // Mostrar toast
-                showToast('success', '¡Prompt copiado! 🎉', { containerId: 'ubits-toast-container', duration: 2500 });
-                
-                // Restaurar estado después de 2 segundos
-                setTimeout(function() {
+                showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 2500 });
+                setTimeout(function () {
                     icon.className = 'far fa-copy';
                     text.textContent = 'Copiar';
                     button.classList.remove('ubits-button--active');
                 }, 2000);
-                
-            }).catch(function(err) {
-                console.error('Error al copiar: ', err);
+            }).catch(function () {
                 showToast('error', 'Error al copiar el prompt', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
 
-        // Función para copiar código
-        function copyCode(codeId) {
-            const codeElement = document.getElementById(codeId);
-            const codeText = codeElement.textContent;
-            
-            navigator.clipboard.writeText(codeText).then(() => {
-                // Mostrar feedback visual
-                const button = event.target.closest('button');
-                const icon = button.querySelector('i');
-                const span = button.querySelector('span');
-                const originalIconClass = icon.className;
-                const originalText = span.textContent;
-                
-                // Cambiar estado del botón
-                icon.className = 'far fa-check';
-                span.textContent = 'Copiado!';
-                button.classList.add('ubits-button--active');
-                
-                // Mostrar toast
-                showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 2500 });
-                
-                // Restaurar estado después de 2 segundos
-                setTimeout(() => {
-                    icon.className = originalIconClass;
-                    span.textContent = originalText;
-                    button.classList.remove('ubits-button--active');
-                }, 2000);
-            }).catch(err => {
-                console.error('Error al copiar: ', err);
-                showToast('error', 'Error al copiar el código', { containerId: 'ubits-toast-container', duration: 2500 });
+        document.addEventListener('DOMContentLoaded', function () {
+            bootDocsWorkspace();
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'alert-warning-alert',
+                noClose: true
             });
-        }
-
-        // Función para ocultar alerta
-        function hideAlert(type) {
-            const alert = document.querySelector(`.ubits-alert--${type}`);
-            if (alert) {
-                alert.style.display = 'none';
-            }
-        }
+            updateAlertPreview();
+        });
     </script>
-    <script>
 </body>
 </html>

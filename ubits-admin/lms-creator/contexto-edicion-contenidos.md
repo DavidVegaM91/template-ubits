@@ -486,7 +486,7 @@ Implementación: modal UBITS tamaño **`lg`**.
 
 | Acción | Edición publicada |
 |--------|-------------------|
-| Añadir página | **Permitido** — modal solo **tipo** (8 tarjetas) → flujo hermano inmersivo (patrón **Agregar video**) → fila en el índice **solo al confirmar**. Si abandona el flujo → **no se crea** la página. Nombre default: `Título de la página` (vacío → vuelve al default). |
+| Añadir página | **Permitido** — modal solo **tipo** (8 tarjetas) → flujo hermano inmersivo (patrón **Agregar video**) → fila en el índice **solo al confirmar**. Si abandona el flujo → **no se crea** la página. Nombre default: el del recurso (`Video`, `Evaluación`, etc.; vacío → vuelve al default). |
 | Eliminar página | **No** — sustituido por Ocultar / Mostrar |
 | Ocultar página | **Sí** — menú ⋮ **Ocultar** |
 | Mostrar página | **Sí** — menú ⋮ **Mostrar** (si estaba oculta) |

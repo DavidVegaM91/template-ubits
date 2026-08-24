@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/accordion.css">
     <style>
         .preview-control-btn.active {
@@ -23,9 +26,40 @@
             color: white !important;
             border-color: var(--ubits-accent-brand) !important;
         }
-
         .preview-control-btn.active span {
             color: white !important;
+        }
+        .acc-control-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .acc-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 110px;
+        }
+        .acc-props-divider {
+            color: var(--ubits-fg-1-medium);
+            margin: 0 0 12px;
+            padding-top: 4px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        .acc-switch-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .acc-switch-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
         }
     </style>
 </head>
@@ -42,7 +76,7 @@
                             Accordion
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente para mostrar y ocultar bloques de información de forma ordenada, con título obligatorio y campos opcionales de numeración y descripción.
+                            Cinco variantes de composición (Grupo, Disclosure, Anidado, Lista de usuarios, Pasos / onboarding) y propiedades transversales: estilo, separados, indicador, badge junto al título y más.
                         </p>
                     </div>
 
@@ -52,39 +86,135 @@
                             Preview del componente
                         </h2>
                         <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                            Cambia el tamaño, la variante y activa o desactiva numeración y descripción (debajo del título) para ver las variaciones del Accordion.
+                            Elige una variante (composición). Debajo combina propiedades: separados, iconos, badge junto al título, indicador a la izquierda, etc.
                         </p>
 
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
-                            <div id="accordion-preview"></div>
+                            <div id="accordion-preview" style="width: 100%; max-width: 560px; margin: 0 auto;"></div>
                         </div>
 
-                        <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap; align-items: center;">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setAccordionSize('sm')"><span>SM</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setAccordionSize('md')"><span>MD</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setAccordionSize('lg')"><span>LG</span></button>
-
-                            <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-left: 12px;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Variante</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn active" onclick="setAccordionVariant('filled')"><span>Con fondo</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" onclick="setAccordionVariant('line')"><span>Solo línea</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" onclick="setAccordionVariant('plain')"><span>Plano</span></button>
+                        <div style="margin-top: 24px;">
+                            <div class="acc-control-row">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Variante:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="composition" data-value="grupo" onclick="setComposition('grupo')"><span>Grupo</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="composition" data-value="disclosure" onclick="setComposition('disclosure')"><span>Disclosure</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="composition" data-value="anidado" onclick="setComposition('anidado')"><span>Anidado</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="composition" data-value="perfiles" onclick="setComposition('perfiles')"><span>Lista de usuarios</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="composition" data-value="pasos" onclick="setComposition('pasos')"><span>Pasos / onboarding</span></button>
+                                </div>
                             </div>
 
-                            <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-left: 12px;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Numeración</span>
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" id="toggle-number" checked onchange="renderAccordionPreview()">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                </label>
+                            <p class="ubits-body-xs-regular acc-props-divider">
+                                Propiedades (se combinan entre sí; no son variantes)
+                            </p>
+
+                            <div class="acc-control-row">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Estilo:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-appearance">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="appearance" data-value="filled" onclick="setAppearance('filled')"><span>Con fondo</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="appearance" data-value="line" onclick="setAppearance('line')"><span>Solo línea</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="appearance" data-value="plain" onclick="setAppearance('plain')"><span>Plano</span></button>
+                                </div>
                             </div>
 
-                            <div style="display: flex; align-items: center; gap: var(--gap-sm);">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Descripción</span>
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" id="toggle-description" checked onchange="renderAccordionPreview()">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                </label>
+                            <div class="acc-control-row">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Tamaño:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-size">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="size" data-value="sm" onclick="setSize('sm')"><span>SM</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="size" data-value="md" onclick="setSize('md')"><span>MD</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="size" data-value="lg" onclick="setSize('lg')"><span>LG</span></button>
+                                </div>
+                            </div>
+
+                            <div class="acc-control-row">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Indicador:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-indicator">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="indicator" data-value="chevron" onclick="setIndicator('chevron')"><span>Chevron</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="indicator" data-value="plus" onclick="setIndicator('plus')"><span>Plus / minus</span></button>
+                                </div>
+                            </div>
+
+                            <div class="acc-control-row">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Lado indicador:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-indicator-position">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="indicatorPosition" data-value="end" onclick="setIndicatorPosition('end')"><span>Derecha</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="indicatorPosition" data-value="start" onclick="setIndicatorPosition('start')"><span>Izquierda</span></button>
+                                </div>
+                            </div>
+
+                            <div class="acc-control-row" id="row-trigger">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Disparador:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-trigger">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="triggerPosition" data-value="header" onclick="setTriggerPosition('header')"><span>Arriba</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="triggerPosition" data-value="footer" onclick="setTriggerPosition('footer')"><span>Abajo</span></button>
+                                </div>
+                            </div>
+
+                            <div class="acc-switch-row">
+                                <div class="acc-switch-item" id="switch-separated-wrap">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Separados (cards con gap)</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-separated" checked role="switch" onchange="setSeparated(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item" id="switch-multi-wrap">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Multi-open</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-multi" role="switch" onchange="setAllowMultiple(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item" id="switch-icons-wrap">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-icons" checked role="switch" onchange="setShowIcons(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Numeración</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-number" role="switch" onchange="setShowNumber(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Descripción</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-description" checked role="switch" onchange="setShowDescription(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Badge junto al título</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-badge" checked role="switch" onchange="setShowBadge(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ítem deshabilitado</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-disabled" role="switch" onchange="setShowDisabled(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Resaltado</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-highlight" role="switch" onchange="setShowHighlight(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div class="acc-switch-item" id="switch-checkbox-wrap">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenido con checkbox</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-checkbox" role="switch" onchange="setShowCheckboxContent(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -96,24 +226,24 @@
                         </h2>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-alt"></i></div>
-                                <div class="ubits-body-sm-bold">Cuatro tamaños</div>
-                                <div class="ubits-body-sm-regular">SM, MD y LG para diferentes jerarquías de texto</div>
-                            </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-heading"></i></div>
-                                <div class="ubits-body-sm-bold">Título obligatorio</div>
-                                <div class="ubits-body-sm-regular">Siempre muestra el tema principal del bloque</div>
-                            </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list-ol"></i></div>
-                                <div class="ubits-body-sm-bold">Campos opcionales</div>
-                                <div class="ubits-body-sm-regular">La descripción opcional va debajo del título en el encabezado</div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                <div class="ubits-body-sm-bold">Variantes (composición)</div>
+                                <div class="ubits-body-sm-regular">Grupo, disclosure, anidado, lista de usuarios y pasos</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
-                                <div class="ubits-body-sm-bold">Tres variantes</div>
-                                <div class="ubits-body-sm-regular">Con fondo, solo línea o plano sin contenedor</div>
+                                <div class="ubits-body-sm-bold">Propiedades transversales</div>
+                                <div class="ubits-body-sm-regular">Separados, estilo, tamaño, indicador izq/der, multi-open</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-chevron-down"></i></div>
+                                <div class="ubits-body-sm-bold">Indicador</div>
+                                <div class="ubits-body-sm-regular">Chevron o plus/minus; izquierda o derecha</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user"></i></div>
+                                <div class="ubits-body-sm-bold">Lista y pasos</div>
+                                <div class="ubits-body-sm-regular">Avatar + badge de rol; onboarding con QR y acciones</div>
                             </div>
                         </div>
                     </div>
@@ -130,36 +260,34 @@
 
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Insertar accordion básico</span>
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Insertar accordion de grupo</span>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
-                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-1">Inserta un Accordion UBITS en [ubicación] en tamaño [sm/md/lg], variante [filled/line/plain], con título [texto]. Importa accordion.css y accordion.js.</code></pre>
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-1">Inserta un Accordion UBITS en [ubicación] con createAccordionGroup: tamaño [sm/md/lg], estilo [filled/line/plain], separated [true/false], indicador [chevron/plus], indicatorPosition [start/end]. Importa accordion.css y accordion.js.</code></pre>
                             </div>
                         </div>
 
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Accordion con numeración</span>
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Accordion con badge junto al título</span>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-2')"><i class="far fa-copy"></i><span>Copiar</span></button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
-                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-2">Inserta un Accordion UBITS en [ubicación] en tamaño [sm/md/lg], variante [filled/line/plain], con numeración [ej: 1], título [texto] y descripción debajo del título [texto].</code></pre>
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-2">En el Accordion de [ubicación], añade trailingHtml con un Badge Tag outlined xs text-only pegado al título (no empujado a la derecha). Mantén el indicador en [start/end].</code></pre>
                             </div>
                         </div>
 
                         <div>
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Actualizar tamaño y contenido</span>
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Lista de usuarios o pasos</span>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-3')"><i class="far fa-copy"></i><span>Copiar</span></button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
-                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-3">Cambia el Accordion [nombre o selector] a tamaño [sm/md/lg] y variante [filled/line/plain], mantén el título [texto], ajusta la descripción debajo del título a [texto] y deja el contenido interno con [HTML libre].</code></pre>
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-3">Crea un Accordion UBITS de [lista de usuarios con Avatar + badge de rol / pasos de onboarding con iconos y badge de estado] en [ubicación]. Usa createAccordionGroup y los átomos oficiales (avatar, badge-tag, button).</code></pre>
                             </div>
                         </div>
                     </div>
-
-                    
                 </div>
             </div>
         </div>
@@ -170,85 +298,376 @@
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/avatar.js"></script>
     <script src="../../components/accordion.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
-        var previewState = {
-            size: 'sm',
-            variant: 'filled'
+        var state = {
+            composition: 'grupo',
+            size: 'md',
+            appearance: 'filled',
+            separated: true,
+            indicator: 'chevron',
+            indicatorPosition: 'end',
+            triggerPosition: 'header',
+            allowMultiple: false,
+            showIcons: true,
+            showNumber: false,
+            showDescription: true,
+            showBadge: true,
+            showDisabled: false,
+            showHighlight: false,
+            showCheckboxContent: false
         };
 
-        function renderAccordionPreview() {
-            var hasNumber = document.getElementById('toggle-number').checked;
-            var hasDescription = document.getElementById('toggle-description').checked;
-            var preview = document.getElementById('accordion-preview');
-            var titleClassBySize = { sm: 'ubits-body-sm-bold', md: 'ubits-body-md-bold', lg: 'ubits-heading-h2' };
-            var numberClassBySize = { sm: 'ubits-body-sm-regular', md: 'ubits-body-md-regular', lg: 'ubits-body-md-bold' };
-            var descriptionClassBySize = { sm: 'ubits-body-sm-regular', md: 'ubits-body-sm-regular', lg: 'ubits-body-md-regular' };
-            var titleClass = titleClassBySize[previewState.size];
-            var numberClass = numberClassBySize[previewState.size];
-            var descriptionClass = descriptionClassBySize[previewState.size];
+        function setActiveGroup(group, value) {
+            document.querySelectorAll('.preview-control-btn[data-group="' + group + '"]').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+            });
+        }
 
-            var numberHtml = hasNumber ? '<span class="ubits-accordion__number ' + numberClass + '">1</span>' : '';
-            var descriptionHtml = hasDescription
-                ? '<p class="ubits-accordion__description ' + descriptionClass + '">Esta descripción es opcional y va debajo del título.</p>'
-                : '';
+        function syncControlVisibility() {
+            var isGrupo = state.composition === 'grupo';
+            var isDisclosure = state.composition === 'disclosure';
+            var isAnidado = state.composition === 'anidado';
+            var showTrigger = isGrupo || isDisclosure;
+            var showMulti = !isDisclosure;
+            var showSeparated = state.appearance === 'filled' && !isDisclosure;
+            var showIcons = isGrupo || isDisclosure || isAnidado;
+            var showCheckbox = isGrupo || isDisclosure || isAnidado;
 
-            preview.innerHTML = '' +
-                '<div class="ubits-accordion ubits-accordion--' + previewState.size + ' ubits-accordion--' + previewState.variant + '" data-open="false" id="accordion-preview-item">' +
-                    '<button type="button" class="ubits-accordion__header" aria-expanded="false" aria-controls="accordion-preview-content">' +
-                        '<div class="ubits-accordion__title-wrap">' +
-                            numberHtml +
-                            '<div class="ubits-accordion__title-content">' +
-                                '<span class="ubits-accordion__title ' + titleClass + '">Título del accordion</span>' +
-                                descriptionHtml +
-                            '</div>' +
-                        '</div>' +
-                        '<span class="ubits-accordion__chevron" aria-hidden="true"><i class="far fa-chevron-down"></i></span>' +
-                    '</button>' +
-                    '<div class="ubits-accordion__content" id="accordion-preview-content" hidden>' +
-                        '<div class="ubits-body-md-regular">Contenido libre del accordion. Aquí puede ir cualquier HTML.</div>' +
-                    '</div>' +
+            document.getElementById('row-trigger').style.display = showTrigger ? '' : 'none';
+            document.getElementById('switch-separated-wrap').style.display = showSeparated ? '' : 'none';
+            document.getElementById('switch-multi-wrap').style.display = showMulti ? '' : 'none';
+            document.getElementById('switch-icons-wrap').style.display = showIcons ? '' : 'none';
+            document.getElementById('switch-checkbox-wrap').style.display = showCheckbox ? '' : 'none';
+        }
+
+        function bodyCopyHtml() {
+            return '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">Contenido libre del accordion. Aquí puede ir cualquier HTML.</p>';
+        }
+
+        function checkboxContentHtml() {
+            return '' +
+                '<div style="display: flex; flex-direction: column; gap: 12px;">' +
+                    '<label class="ubits-checkbox ubits-checkbox--sm">' +
+                        '<input type="checkbox" class="ubits-checkbox__input" checked>' +
+                        '<span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
+                        '<span class="ubits-checkbox__label">Recibir avisos por correo</span>' +
+                    '</label>' +
+                    '<label class="ubits-checkbox ubits-checkbox--sm">' +
+                        '<input type="checkbox" class="ubits-checkbox__input">' +
+                        '<span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
+                        '<span class="ubits-checkbox__label">Resumen semanal</span>' +
+                    '</label>' +
                 '</div>';
-
-            initAccordions('#accordion-preview-item');
         }
 
-        function setAccordionSize(size) {
-            previewState.size = size;
-            document.querySelectorAll('.preview-control-btn').forEach(function (btn) {
-                btn.classList.remove('active');
+        function badgeHtml(color, text) {
+            return '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + color +
+                ' ubits-badge-tag--xs ubits-badge-tag--text-only"><span class="ubits-badge-tag__text">' + text + '</span></span>';
+        }
+
+        function settingsOrBody() {
+            return state.showCheckboxContent ? checkboxContentHtml() : bodyCopyHtml();
+        }
+
+        function demoBadgeHtml() {
+            return state.showBadge ? badgeHtml('info', 'Nuevo') : '';
+        }
+
+        function sharedGroupConfig(extra) {
+            var cfg = {
+                containerId: 'accordion-preview',
+                size: state.size,
+                variant: state.appearance,
+                separated: state.appearance === 'filled' ? state.separated : false,
+                indicator: state.indicator,
+                indicatorPosition: state.indicatorPosition,
+                allowMultiple: state.allowMultiple
+            };
+            if (extra) {
+                Object.keys(extra).forEach(function (k) { cfg[k] = extra[k]; });
+            }
+            return cfg;
+        }
+
+        function renderDisclosure() {
+            createAccordionGroup(sharedGroupConfig({
+                triggerPosition: state.triggerPosition,
+                allowMultiple: false,
+                separated: false,
+                items: [{
+                    id: 'disclosure-1',
+                    title: 'Mostrar opciones avanzadas',
+                    description: state.showDescription ? 'Disclosure de un solo panel (collapsible).' : undefined,
+                    icon: state.showIcons ? 'far fa-sliders' : undefined,
+                    number: state.showNumber ? '1' : undefined,
+                    trailingHtml: demoBadgeHtml() || undefined,
+                    contentHtml: settingsOrBody(),
+                    isOpen: true
+                }]
+            }));
+        }
+
+        function renderAnidado() {
+            var nestedSize = state.size === 'lg' ? 'md' : 'sm';
+            createAccordionGroup(sharedGroupConfig({
+                items: [
+                    {
+                        id: 'parent-1',
+                        title: 'Configuración general',
+                        description: state.showDescription ? 'Incluye un accordion anidado (bordes internos).' : undefined,
+                        icon: state.showIcons ? 'far fa-gear' : undefined,
+                        number: state.showNumber ? '1' : undefined,
+                        trailingHtml: demoBadgeHtml() || undefined,
+                        contentHtml: '<div id="acc-nested-level1"></div>',
+                        isOpen: true
+                    },
+                    {
+                        id: 'parent-2',
+                        title: 'Facturación',
+                        icon: state.showIcons ? 'far fa-credit-card' : undefined,
+                        number: state.showNumber ? '2' : undefined,
+                        contentHtml: bodyCopyHtml(),
+                        disabled: state.showDisabled,
+                        highlighted: state.showHighlight
+                    }
+                ]
+            }));
+
+            createAccordionGroup({
+                containerId: 'acc-nested-level1',
+                size: nestedSize,
+                variant: 'line',
+                indicator: state.indicator,
+                indicatorPosition: state.indicatorPosition,
+                allowMultiple: true,
+                separated: false,
+                items: [
+                    {
+                        id: 'child-a',
+                        title: 'Notificaciones',
+                        icon: state.showIcons ? 'far fa-bell' : undefined,
+                        trailingHtml: state.showBadge ? badgeHtml('warning', '3') : undefined,
+                        contentHtml: settingsOrBody(),
+                        isOpen: true
+                    },
+                    {
+                        id: 'child-b',
+                        title: 'Privacidad',
+                        icon: state.showIcons ? 'far fa-lock' : undefined,
+                        contentHtml: bodyCopyHtml()
+                    },
+                    {
+                        id: 'child-c',
+                        title: 'Integraciones anidadas',
+                        icon: state.showIcons ? 'far fa-plug' : undefined,
+                        contentHtml: '<div id="acc-nested-level2"></div>'
+                    }
+                ]
             });
-            var clicked = event.target.closest('.preview-control-btn');
-            if (clicked) clicked.classList.add('active');
+
+            createAccordionGroup({
+                containerId: 'acc-nested-level2',
+                size: 'sm',
+                variant: 'plain',
+                indicator: state.indicator,
+                indicatorPosition: state.indicatorPosition,
+                allowMultiple: true,
+                items: [
+                    { id: 'deep-1', title: 'Slack', contentHtml: bodyCopyHtml() },
+                    { id: 'deep-2', title: 'Teams', contentHtml: bodyCopyHtml() }
+                ]
+            });
+        }
+
+        function renderPerfiles() {
+            createAccordionGroup(sharedGroupConfig({
+                items: [
+                    {
+                        id: 'user-1',
+                        title: 'Ana García',
+                        description: state.showDescription ? 'Product Designer · En línea' : undefined,
+                        leadingHtml: renderAvatar(
+                            { nombre: 'Ana García', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop' },
+                            { size: 'sm', status: 'online' }
+                        ),
+                        trailingHtml: badgeHtml('success', 'Admin'),
+                        contentHtml: bodyCopyHtml(),
+                        isOpen: true
+                    },
+                    {
+                        id: 'user-2',
+                        title: 'Luis Pérez',
+                        description: state.showDescription ? 'Engineering Manager' : undefined,
+                        leadingHtml: renderAvatar(
+                            { nombre: 'Luis Pérez', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop' },
+                            { size: 'sm', status: 'away' }
+                        ),
+                        trailingHtml: badgeHtml('info', 'Manager'),
+                        contentHtml: bodyCopyHtml(),
+                        disabled: state.showDisabled
+                    },
+                    {
+                        id: 'user-3',
+                        title: 'María López',
+                        description: state.showDescription ? 'People Partner' : undefined,
+                        leadingHtml: renderAvatar(
+                            { nombre: 'María López', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop' },
+                            { size: 'sm', status: 'busy' }
+                        ),
+                        trailingHtml: badgeHtml('purple', 'HR'),
+                        contentHtml: bodyCopyHtml(),
+                        highlighted: state.showHighlight
+                    }
+                ]
+            }));
+        }
+
+        function renderPasos() {
+            var step2Trailing = demoBadgeHtml() || badgeHtml('info', 'En curso');
+            createAccordionGroup(sharedGroupConfig({
+                items: [
+                    {
+                        id: 'step-1',
+                        title: 'Crear cuenta',
+                        description: state.showDescription ? 'Datos básicos y verificación.' : undefined,
+                        icon: 'far fa-user',
+                        number: state.showNumber ? '1' : undefined,
+                        trailingHtml: badgeHtml('success', 'Listo'),
+                        contentHtml: bodyCopyHtml(),
+                        isOpen: true
+                    },
+                    {
+                        id: 'step-2',
+                        title: 'Invitar equipo',
+                        description: state.showDescription ? 'Comparte el enlace o código QR.' : undefined,
+                        icon: 'far fa-users',
+                        number: state.showNumber ? '2' : undefined,
+                        trailingHtml: step2Trailing,
+                        contentHtml: '' +
+                            '<div style="display: flex; flex-direction: column; gap: 12px;">' +
+                                bodyCopyHtml() +
+                                '<div aria-hidden="true" style="width: 88px; height: 88px; border-radius: var(--border-radius-sm); border: 1px dashed var(--ubits-border-2); background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; color: var(--ubits-fg-1-medium);">' +
+                                    '<i class="far fa-qrcode" style="font-size: 28px;"></i>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">' +
+                                        '<i class="far fa-copy"></i><span>Copiar enlace</span>' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>'
+                    },
+                    {
+                        id: 'step-3',
+                        title: 'Publicar espacio',
+                        icon: 'far fa-rocket',
+                        number: state.showNumber ? '3' : undefined,
+                        trailingHtml: state.showBadge ? badgeHtml('gray', 'Pendiente') : undefined,
+                        contentHtml: bodyCopyHtml(),
+                        disabled: state.showDisabled,
+                        highlighted: state.showHighlight
+                    }
+                ]
+            }));
+        }
+
+        function renderGrupo() {
+            createAccordionGroup(sharedGroupConfig({
+                triggerPosition: state.triggerPosition,
+                items: [
+                    {
+                        id: 'g1',
+                        title: '¿Qué es UBITS Learning?',
+                        description: state.showDescription ? 'Respuesta breve para FAQ o settings.' : undefined,
+                        icon: state.showIcons ? 'far fa-circle-info' : undefined,
+                        number: state.showNumber ? '1' : undefined,
+                        trailingHtml: demoBadgeHtml() || undefined,
+                        contentHtml: settingsOrBody(),
+                        isOpen: true,
+                        highlighted: state.showHighlight
+                    },
+                    {
+                        id: 'g2',
+                        title: '¿Cómo asigno un plan?',
+                        description: state.showDescription ? 'Puedes abrir varios si activas multi-open.' : undefined,
+                        icon: state.showIcons ? 'far fa-clipboard-list' : undefined,
+                        number: state.showNumber ? '2' : undefined,
+                        trailingHtml: state.showBadge ? badgeHtml('warning', 'Popular') : undefined,
+                        contentHtml: bodyCopyHtml(),
+                        disabled: state.showDisabled
+                    },
+                    {
+                        id: 'g3',
+                        title: '¿Dónde veo reportes?',
+                        icon: state.showIcons ? 'far fa-chart-simple' : undefined,
+                        number: state.showNumber ? '3' : undefined,
+                        contentHtml: bodyCopyHtml()
+                    }
+                ]
+            }));
+        }
+
+        function renderAccordionPreview() {
+            syncControlVisibility();
+            var mount = document.getElementById('accordion-preview');
+            if (!mount) return;
+            mount.innerHTML = '';
+
+            if (state.composition === 'disclosure') renderDisclosure();
+            else if (state.composition === 'anidado') renderAnidado();
+            else if (state.composition === 'perfiles') renderPerfiles();
+            else if (state.composition === 'pasos') renderPasos();
+            else renderGrupo();
+        }
+
+        function setComposition(value) {
+            state.composition = value;
+            setActiveGroup('composition', value);
             renderAccordionPreview();
         }
-
-        function setAccordionVariant(variant) {
-            previewState.variant = variant;
-            document.querySelectorAll('.preview-variant-btn').forEach(function (btn) {
-                btn.classList.remove('active');
-            });
-            var clicked = event.target.closest('.preview-variant-btn');
-            if (clicked) clicked.classList.add('active');
+        function setAppearance(value) {
+            state.appearance = value;
+            setActiveGroup('appearance', value);
             renderAccordionPreview();
         }
-
-        
+        function setSize(value) {
+            state.size = value;
+            setActiveGroup('size', value);
+            renderAccordionPreview();
+        }
+        function setIndicator(value) {
+            state.indicator = value;
+            setActiveGroup('indicator', value);
+            renderAccordionPreview();
+        }
+        function setIndicatorPosition(value) {
+            state.indicatorPosition = value;
+            setActiveGroup('indicatorPosition', value);
+            renderAccordionPreview();
+        }
+        function setTriggerPosition(value) {
+            state.triggerPosition = value;
+            setActiveGroup('triggerPosition', value);
+            renderAccordionPreview();
+        }
+        function setSeparated(v) { state.separated = v; renderAccordionPreview(); }
+        function setAllowMultiple(v) { state.allowMultiple = v; renderAccordionPreview(); }
+        function setShowIcons(v) { state.showIcons = v; renderAccordionPreview(); }
+        function setShowNumber(v) { state.showNumber = v; renderAccordionPreview(); }
+        function setShowDescription(v) { state.showDescription = v; renderAccordionPreview(); }
+        function setShowBadge(v) { state.showBadge = v; renderAccordionPreview(); }
+        function setShowDisabled(v) { state.showDisabled = v; renderAccordionPreview(); }
+        function setShowHighlight(v) { state.showHighlight = v; renderAccordionPreview(); }
+        function setShowCheckboxContent(v) { state.showCheckboxContent = v; renderAccordionPreview(); }
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             navigator.clipboard.writeText(el.textContent).then(function () {
                 showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
-            });
-        }
-
-        function copyCode(codeId) {
-            var el = document.getElementById(codeId);
-            navigator.clipboard.writeText(el.textContent).then(function () {
-                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
 

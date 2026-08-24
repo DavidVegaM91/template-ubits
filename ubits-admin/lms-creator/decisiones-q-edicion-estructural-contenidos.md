@@ -241,7 +241,7 @@ Además del modal al entrar a Recursos, en **Ajustes** (hub) se añade una **ter
 
 | Área | Impacto si implementamos el paquete |
 |------|-------------------------------------|
-| Índice + «Añadir página» | Modal tipo → flujo hermano; **índice sin fila** hasta confirmar recurso. Si abandona el flujo → **no se crea** la página. **Excepción Video con IA:** si ya entró al editor y cierra → sí hay página con IA loader «Video en edición». |
+| Índice + «Añadir página» | Modal tipo → flujo hermano; **índice sin fila** hasta confirmar recurso. Si abandona el flujo → **no se crea** la página. Video con IA: la página nace solo al **Generar video**; salir del editor guarda el borrador en Recursos IA y Tus videos recientes. |
 | Panel derecho Resources block (cuadrícula 8 tipos) | **Fuera** como vía de alta (P8). Panel derecho = recurso montado / preview. Selector de tipos solo en modal T2. |
 | Cancelar en formulario intermedio (PDF vacío, etc.) | **Obsoleto** con T2: no hay formularios intermedios en panel derecho que dejen página sin recurso. Abandonar inmersivo = no se crea página (P6). |
 | Eliminar recurso principal | Se quita (T1) |
@@ -428,22 +428,19 @@ El nombre **no** se pide en el modal de tipo; se edita en el flujo / índice com
 
 - [x] **A.** Si abandona sin finalizar, la página **ni siquiera se crea** (como si no hubiera pulsado Añadir página).
 
-**Excepción — Video con IA (Dave, 2026-08-04):**
+**Excepción — Video con IA (cerrada, Dave 2026-08-19):**
 
-Si el autor **ya entró al editor** de Video con IA y cierra sin exportar:
+La excepción del 2026-08-04 quedó **sin efecto**. Si el autor entra al editor y cierra **sin Generar video**:
 
-- **Sí** nace / se conserva la página de video.
-- El panel de Recursos (y el learner) muestran un **IA loader**:
-  - Título: `Video en edición`
-  - Descripción: `Finaliza el video para visualizarlo acá.`
-- La sesión del editor se conserva para retomar (click en el placeholder).
-- Motivo: el proceso es largo; no queremos que pierda el avance. En producción la página de video exige un video real; en el prototipo el loader es el placeholder hasta el export.
+- **No** nace página en Recursos (ni loader de proyecto sin terminar).
+- El borrador se guarda en **Recursos IA** y en **Tus videos recientes** (Continuar edición).
+- La página solo nace si confirma **Generar video** (entonces sí hay loader de render).
 
-Detalle técnico (React): `Ubits-React/lib/video-ia-escenas/video-editing-placeholder.md`.
+Alineado con P6 estricto y con no crear páginas vacías.
 
 **Notas:**
 
-> Excepción solo para **Video con IA** tras llegar al editor. PDF / SCORM / embebido / resto siguen P6 estricto (abandonar = no se crea).
+> PDF / SCORM / embebido / Video con IA (sin generar) siguen P6: abandonar = no se crea página.
 
 ---
 
@@ -853,6 +850,7 @@ y cómo se maneja el impacto en el progreso de los estudiantes.
 | 2026-08-03 | **T3+T4 implementados** (vanilla + React): menú ⋮ en edición con Ocultar/Mostrar; variante visual (opacidad + tachado + badge «Oculta»); toast si intenta ocultar la última visible. Crear sigue con Eliminar (sin Ocultar). | T3 / T4 |
 | 2026-08-03 | **T2 (fase 1):** modal «Añadir página» con 8 Resources cards → flujo inmersivo por tipo. React: video = Agregar video; resto = `/agregar-recurso/[tipo]` (stub confirmar). Vanilla: modal + video/scorm legacy + empty states. Botón visible en edición. Página nace al confirmar (P5/P6 en React). | T2 |
 | 2026-08-04 | **Excepción P6 — Video con IA:** si el autor llega al editor y cierra, nace/conserva página con IA loader «Video en edición» (sesión retocable). Resto de tipos sigue P6 estricto. | P6 excepción |
+| 2026-08-19 | **P6 Video con IA:** se cierra la excepción. Salir sin Generar video no crea página; el borrador vive en Recursos IA y Tus videos recientes. La página nace solo al Generar video. | P6 |
 | 2026-08-05 | **T5b / P23 cerrada:** tercera card en Ajustes `Impacto en el progreso` (solo editar). Panel = cuerpo del modal T5 (opciones + video + indicadores). Modal sigue saliendo cada vez; solo preselecciona. Hash `#ajustes-impacto`. | P23 / T5b |
 
 ---

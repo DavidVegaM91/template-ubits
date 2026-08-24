@@ -47,18 +47,23 @@
         var n = getVideoAiTokens();
         var el = document.getElementById('cc-video-modal-tokens-badge');
         if (!el) return;
-        var num = el.querySelector('.ubits-badge-tag__token-number');
-        var display =
-            typeof global.formatIaTokensBadgeNumber === 'function'
-                ? global.formatIaTokensBadgeNumber(n)
-                : String(n);
-        if (num) num.textContent = display;
-        el.setAttribute(
-            'aria-label',
-            typeof global.formatIaTokensBadgeAriaLabel === 'function'
-                ? global.formatIaTokensBadgeAriaLabel(n)
-                : String(n) + ' tokens restantes'
-        );
+        if (typeof global.spendUbitsBadgeTokens === 'function') {
+            global.spendUbitsBadgeTokens(el, n);
+        } else {
+            var num = el.querySelector('.ubits-badge-tag__token-number');
+            var display =
+                typeof global.formatIaTokensBadgeNumber === 'function'
+                    ? global.formatIaTokensBadgeNumber(n)
+                    : String(n);
+            if (num) num.textContent = display;
+            el.setAttribute('data-token-value', String(n));
+            el.setAttribute(
+                'aria-label',
+                typeof global.formatIaTokensBadgeAriaLabel === 'function'
+                    ? global.formatIaTokensBadgeAriaLabel(n)
+                    : String(n) + ' tokens restantes'
+            );
+        }
         var show = _currentTab === 'ia';
         el.style.display = show ? '' : 'none';
         el.setAttribute('aria-hidden', show ? 'false' : 'true');

@@ -135,6 +135,7 @@
     return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
 
+  global.ubitsBuildPageCompletionDates = buildPageCompletionDates;
   global.ubitsBuildPageCompletionLabels = buildPageCompletionLabels;
   global.ubitsFormatCompletedAtLabel = formatCompletedAtLabel;
   global.ubitsAddDaysToDateStr = addDaysToDateStr;

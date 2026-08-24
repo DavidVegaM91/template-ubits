@@ -1198,6 +1198,14 @@
         }
     }
 
+    function _evalAfterBadgeSpend(cost, cb) {
+        var ms =
+            typeof global.ubitsBadgeSpendThenNavigateMs === 'function'
+                ? global.ubitsBadgeSpendThenNavigateMs(cost)
+                : 1850;
+        setTimeout(cb, ms);
+    }
+
     function evalAgentCloseUiForGeneration() {
         if (typeof global.closeIAPanel === 'function') global.closeIAPanel();
     }
@@ -1291,6 +1299,7 @@
             var btn = document.getElementById('cc-eval-gen-confirm-btn');
             if (!btn) return;
             btn.addEventListener('click', function () {
+                if (state.step === 'generating') return;
                 if (!_evalTrySpendTokens(cost)) return;
                 if (typeof global.setIaButtonGenerating === 'function') {
                     global.setIaButtonGenerating(btn, true, { label: 'Generando' });
@@ -1298,8 +1307,10 @@
                     btn.disabled = true;
                 }
                 state.step = 'generating';
-                evalAgentCloseUiForGeneration();
-                setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);
+                _evalAfterBadgeSpend(cost, function () {
+                    evalAgentCloseUiForGeneration();
+                    setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);
+                });
             });
         }, 100);
     }
@@ -2418,6 +2429,7 @@
                 var btn = document.getElementById('cc-eval-gen-confirm-btn');
                 if (!btn) return;
                 btn.addEventListener('click', function () {
+                    if (state.step === 'generating') return;
                     if (!_evalTrySpendTokens(cost)) return;
                     if (typeof global.setIaButtonGenerating === 'function') {
                         global.setIaButtonGenerating(btn, true, { label: 'Generando' });
@@ -2425,8 +2437,10 @@
                         btn.disabled = true;
                     }
                     state.step = 'generating';
-                    evalAgentCloseUiForGeneration();
-                    setTimeout(function () { evalAgentRunGenerationMvp(rootEl); }, 150);
+                    _evalAfterBadgeSpend(cost, function () {
+                        evalAgentCloseUiForGeneration();
+                        setTimeout(function () { evalAgentRunGenerationMvp(rootEl); }, 150);
+                    });
                 });
             }, 100);
         });

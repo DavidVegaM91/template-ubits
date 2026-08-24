@@ -225,6 +225,18 @@
     max-width: 150px;
 }
 
+@media (max-width: 768px) {
+    .page-contenidos-creator .ubits-header-product__actions {
+        flex-wrap: wrap;
+        flex-shrink: 1;
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+}
+
 /* Tarjetas LMS Creator (no Antiguo LMS): abrir editor al clic */
 .contenidos-card-item--abrir-editor .course-card {
     cursor: pointer;

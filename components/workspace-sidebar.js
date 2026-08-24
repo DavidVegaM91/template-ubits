@@ -345,7 +345,7 @@
                 label: 'Universidad corporativa',
                 href: 'ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html',
               },
-              { id: 'lmsai', label: 'LMS AI', href: 'ubits-admin/lms-creator/ia-panel-demo.html' },
+              { id: 'recursos-ia', label: 'Recursos IA', href: 'ubits-admin/lms-creator/recursos-ia.html' },
             ],
           },
           {
@@ -614,7 +614,9 @@
     home: 'home',
     contenidos: 'contenidos',
     categorias: 'categorias',
-    lmsai: 'lmsai',
+    lmsai: 'recursos-ia',
+    'recursos-ia': 'recursos-ia',
+    'lms-ai': 'recursos-ia',
     'planes-formacion': 'planes-lista',
     'planes-contenidos': 'planes-lista',
     grupos: 'grupos',
@@ -705,7 +707,8 @@
     'tipografia.html': 'foundations/typography',
     'componentes.html': 'components-index',
     'personalizacion-seguimiento.html': 'seguimiento',
-    'ia-panel-demo.html': 'lmsai',
+    'ia-panel-demo.html': 'recursos-ia',
+    'recursos-ia.html': 'recursos-ia',
   };
 
   function fileNameFromPath(path) {

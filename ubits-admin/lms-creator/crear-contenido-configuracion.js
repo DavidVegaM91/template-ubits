@@ -34,7 +34,11 @@
     }
 
     function syncPesosForIds(ids) {
-        var prevIds = Object.keys(PESOS).sort();
+        var prevIds = Object.keys(PESOS)
+            .filter(function (id) {
+                return ids.indexOf(id) !== -1;
+            })
+            .sort();
         var nextIds = ids.slice().sort();
         var same =
             prevIds.length === nextIds.length &&
@@ -42,11 +46,16 @@
                 return id === nextIds[i];
             });
         if (!same) {
-            PESOS = redistributeEqual(ids);
+            var redistributed = redistributeEqual(ids);
+            Object.keys(PESOS).forEach(function (k) {
+                if (ids.indexOf(k) === -1) delete PESOS[k];
+            });
+            ids.forEach(function (id) {
+                PESOS[id] = redistributed[id];
+            });
             return;
         }
         if (ids.length === 1) {
-            PESOS = {};
             PESOS[ids[0]] = 100;
             return;
         }
@@ -54,7 +63,52 @@
         ids.forEach(function (id) {
             if (PESOS[id] == null) missing = true;
         });
-        if (missing) PESOS = redistributeEqual(ids);
+        if (missing) {
+            var red = redistributeEqual(ids);
+            ids.forEach(function (id) {
+                PESOS[id] = red[id];
+            });
+        }
+    }
+
+    /** Visibles suman 100%; ocultas = 0%. Redistribuye si cambió el set con peso. */
+    function syncPesosForItems(items) {
+        items = items || [];
+        var visibleIds = [];
+        items.forEach(function (it) {
+            if (!it.hidden) visibleIds.push(it.id);
+        });
+        var prevPoolIds = Object.keys(PESOS)
+            .filter(function (id) {
+                return items.some(function (it) {
+                    return it.id === id;
+                });
+            })
+            .filter(function (id) {
+                var it = items.filter(function (x) {
+                    return x.id === id;
+                })[0];
+                if (!it.hidden) return true;
+                return (parseInt(PESOS[id], 10) || 0) > 0;
+            })
+            .sort();
+        var nextSorted = visibleIds.slice().sort();
+        var same =
+            prevPoolIds.length === nextSorted.length &&
+            prevPoolIds.every(function (id, i) {
+                return id === nextSorted[i];
+            });
+        if (!same) {
+            var red = redistributeEqual(visibleIds);
+            visibleIds.forEach(function (id) {
+                PESOS[id] = red[id];
+            });
+        } else {
+            syncPesosForIds(visibleIds);
+        }
+        items.forEach(function (it) {
+            if (it.hidden) PESOS[it.id] = 0;
+        });
     }
 
     function sumPesos(ids) {
@@ -76,6 +130,8 @@
         Object.keys(keysMap).forEach(function (pk) {
             if (!keysMap[pk]) return;
             var title = 'Evaluación';
+            var hidden = false;
+            var hiddenSinceIso = '';
             if (mount) {
                 var item = mount.querySelector(
                     '.ubits-paginas-creator__item[data-paginas-creator-key="' +
@@ -86,16 +142,19 @@
                     var label = item.querySelector('.ubits-paginas-creator__label');
                     var t = label ? String(label.textContent || '').trim() : '';
                     if (t) title = t;
+                    hidden =
+                        item.getAttribute('data-paginas-hidden') === 'true' ||
+                        item.classList.contains('ubits-paginas-creator__item--hidden');
+                    hiddenSinceIso = item.getAttribute('data-paginas-hidden-since') || '';
                 }
             }
-            // También revisar primaryType en estado de recursos
-            var st = global.CC_RECURSOS_PAGE_STATE && global.CC_RECURSOS_PAGE_STATE[pk];
-            if (st && String(st.primaryType || '') === 'evaluacion-final') {
-                /* keep */
-            }
-            items.push({ id: pk, title: title });
+            items.push({
+                id: pk,
+                title: title,
+                hidden: hidden,
+                hiddenSinceIso: hiddenSinceIso
+            });
         });
-        // Orden del índice si hay mount
         if (mount) {
             var ordered = [];
             mount.querySelectorAll('.ubits-paginas-creator__item[data-paginas-creator-key]').forEach(function (el) {
@@ -146,14 +205,18 @@
     }
 
     function formatPesosSummary(items) {
+        var visible = (items || []).filter(function (i) {
+            return !i.hidden;
+        });
         if (!items.length) return 'Sin evaluaciones en este contenido.';
-        if (items.length === 1) return 'Automático · 100%';
-        var ids = items.map(function (i) {
+        if (!visible.length) return 'Todas las evaluaciones están ocultas.';
+        if (visible.length === 1) return 'Automático · 100%';
+        var ids = visible.map(function (i) {
             return i.id;
         });
         var sum = sumPesos(ids);
         if (sum !== 100) return 'Incompleto · ' + sum + '% de 100%';
-        return items
+        return visible
             .map(function (it) {
                 return it.title + ' (' + (parseInt(PESOS[it.id], 10) || 0) + '%)';
             })
@@ -277,10 +340,14 @@
             impactoDesc.textContent = global.getEditarContenidoImpactoSummary();
         }
         if (pesosCard) {
-            var ids = items.map(function (i) {
-                return i.id;
-            });
-            var warn = items.length >= 2 && !isPesosComplete(ids);
+            var visibleIds = items
+                .filter(function (i) {
+                    return !i.hidden;
+                })
+                .map(function (i) {
+                    return i.id;
+                });
+            var warn = visibleIds.length >= 2 && !isPesosComplete(visibleIds);
             pesosCard.classList.toggle('cc-config-hub-card--warn', warn);
         }
     }
@@ -289,11 +356,7 @@
         var mount = document.getElementById('cc-config-pesos-mount');
         if (!mount) return;
         var items = FORCE_PESOS_EMPTY ? [] : listEvalPages();
-        syncPesosForIds(
-            items.map(function (i) {
-                return i.id;
-            })
-        );
+        syncPesosForItems(items);
         if (!items.length) {
             mount.innerHTML =
                 '<div class="cc-config-pesos-empty" id="cc-config-pesos-empty"></div>';
@@ -312,20 +375,25 @@
             }
             return;
         }
-        var canEdit = !READONLY && items.length >= 2;
+        var visible = items.filter(function (i) {
+            return !i.hidden;
+        });
+        var canEdit = !READONLY && visible.length >= 2;
         var intro =
-            items.length === 1
-                ? 'Con una sola evaluación, el peso es automáticamente el 100% de la nota final.'
-                : 'Asigna el porcentaje de cada evaluación.';
-        var ids = items.map(function (i) {
+            visible.length === 0
+                ? 'Todas las evaluaciones están ocultas. Muéstralas en Recursos para asignar pesos.'
+                : visible.length === 1
+                  ? 'Con una sola evaluación visible, el peso es automáticamente el 100% de la nota final. Las ocultas quedan en 0%.'
+                  : 'Asigna el porcentaje de cada evaluación visible. Las ocultas quedan en 0%.';
+        var ids = visible.map(function (i) {
             return i.id;
         });
         var total = sumPesos(ids);
         var complete = isPesosComplete(ids);
-        var totalTone = items.length < 2 ? 'neutral' : complete ? 'ok' : total === 0 ? 'neutral' : 'error';
+        var totalTone = visible.length < 2 ? 'neutral' : complete ? 'ok' : total === 0 ? 'neutral' : 'error';
         var barWidth = Math.max(0, Math.min(100, total));
         var totalHtml =
-            items.length >= 2
+            visible.length >= 2
                 ? '<div class="cc-config-pesos-total-block" aria-live="polite">' +
                   '<span class="ubits-body-sm-regular">El total debe ser 100%. Llevas</span>' +
                   '<strong class="ubits-heading-h2 cc-config-pesos-total-num' +
@@ -338,7 +406,7 @@
                   '</div>'
                 : '';
         var barHtml = '';
-        if (items.length >= 2 && typeof global.progressBarHtml === 'function') {
+        if (visible.length >= 2 && typeof global.progressBarHtml === 'function') {
             barHtml = global.progressBarHtml({
                 value: barWidth,
                 size: 'lg',
@@ -351,19 +419,39 @@
         }
         var rows = items
             .map(function (it, index) {
-                var val = parseInt(PESOS[it.id], 10) || 0;
+                var isHidden = !!it.hidden;
+                var val = isHidden ? 0 : parseInt(PESOS[it.id], 10) || 0;
+                var ocultaLabel = 'Oculta';
+                if (isHidden && it.hiddenSinceIso && typeof global.formatDateDDMmmAAAA === 'function') {
+                    var fl = global.formatDateDDMmmAAAA(it.hiddenSinceIso);
+                    if (fl) ocultaLabel = 'Oculta · ' + fl;
+                }
+                var tagHtml = isHidden
+                    ? '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left" aria-label="' +
+                      escapeHtml(ocultaLabel) +
+                      '">' +
+                      '<i class="far fa-eye-slash" aria-hidden="true"></i>' +
+                      '<span class="ubits-status-tag__text">' +
+                      escapeHtml(ocultaLabel) +
+                      '</span></span>'
+                    : '';
                 return (
-                    '<li class="cc-config-pesos-row">' +
+                    '<li class="cc-config-pesos-row' +
+                    (isHidden ? ' cc-config-pesos-row--hidden' : '') +
+                    '">' +
                     '<div class="cc-config-pesos-row__main">' +
                     '<span class="ubits-body-sm-regular cc-config-pesos-row__index" aria-hidden="true">' +
                     (index + 1) +
                     '</span>' +
+                    '<div class="cc-config-pesos-row__text">' +
                     '<p class="ubits-body-md-bold cc-config-pesos-row__label">' +
                     escapeHtml(it.title) +
-                    '</p></div>' +
+                    '</p>' +
+                    tagHtml +
+                    '</div></div>' +
                     '<div class="cc-config-pesos-row__input">' +
                     '<input type="number" class="ubits-input ubits-input--sm" min="0" max="100" ' +
-                    (canEdit ? '' : 'disabled ') +
+                    (canEdit && !isHidden ? '' : 'disabled ') +
                     'value="' +
                     val +
                     '" data-cc-peso-input="' +
@@ -516,37 +604,47 @@
 
     function getEvalPesosMap() {
         var items = listEvalPages();
-        syncPesosForIds(
-            items.map(function (i) {
-                return i.id;
-            })
-        );
+        syncPesosForItems(items);
         var out = {};
         items.forEach(function (it) {
-            out[it.id] = parseInt(PESOS[it.id], 10) || 0;
+            out[it.id] = it.hidden ? 0 : parseInt(PESOS[it.id], 10) || 0;
         });
         return out;
     }
 
     function areEvalPesosValidForPublish() {
         var items = listEvalPages();
-        var ids = items.map(function (i) {
-            return i.id;
-        });
-        syncPesosForIds(ids);
+        syncPesosForItems(items);
+        var ids = items
+            .filter(function (i) {
+                return !i.hidden;
+            })
+            .map(function (i) {
+                return i.id;
+            });
         return isPesosComplete(ids);
     }
 
     function openPesosPanelIfInvalid() {
         var items = listEvalPages();
-        var ids = items.map(function (i) {
-            return i.id;
-        });
+        syncPesosForItems(items);
+        var ids = items
+            .filter(function (i) {
+                return !i.hidden;
+            })
+            .map(function (i) {
+                return i.id;
+            });
         if (ids.length >= 2 && !isPesosComplete(ids)) {
             setPanel('pesos');
             return true;
         }
         return false;
+    }
+
+    function refreshPesosFromRecursos() {
+        refreshHubCards();
+        if (PANEL === 'pesos') renderPesosPanel();
     }
 
     function getTipoNavegacion() {
@@ -567,6 +665,7 @@
     global.areCrearContenidoEvalPesosValid = areEvalPesosValidForPublish;
     global.openCrearContenidoPesosIfInvalid = openPesosPanelIfInvalid;
     global.refreshCrearContenidoConfigHub = refreshHubCards;
+    global.ccConfigRefreshPesos = refreshPesosFromRecursos;
     global.hashForCrearContenidoConfigPanel = hashForConfigPanel;
     global.panelFromCrearContenidoConfigHash = panelFromConfigHash;
     global.isPesosEmptyDemoHash = isPesosEmptyDemoHash;

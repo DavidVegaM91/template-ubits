@@ -272,3 +272,44 @@
 .ubits-file-upload-compact__error-report-btn-inline {
     flex-shrink: 0;
 }
+
+/* Lista multi-archivo */
+.ubits-file-upload-compact__file-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload-compact__file-list[hidden] {
+    display: none !important;
+}
+
+.ubits-file-upload-compact__file-list-head {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload-compact__file-list-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-file-upload-compact__file-list-grow {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ubits-file-upload-compact__file-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload-compact__tile--disabled {
+    opacity: 0.64;
+    pointer-events: none;
+}

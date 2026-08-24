@@ -128,13 +128,16 @@
     /**
      * Aplica / quita el estado visual «Oculta» (T3). No valida ≥1 visible — eso lo hace la página.
      */
-    function setPaginasCreatorItemHidden(item, hidden) {
+    function setPaginasCreatorItemHidden(item, hidden, hiddenSinceIso) {
         if (!item) return;
         var labelWrap = item.querySelector('.ubits-paginas-creator__label-wrap');
         var badge = item.querySelector('.ubits-paginas-creator__hidden-badge');
         if (hidden) {
             item.classList.add('ubits-paginas-creator__item--hidden');
             item.setAttribute('data-paginas-hidden', 'true');
+            if (hiddenSinceIso) {
+                item.setAttribute('data-paginas-hidden-since', String(hiddenSinceIso));
+            }
             if (labelWrap && !badge) {
                 var span = document.createElement('span');
                 span.className = 'ubits-paginas-creator__hidden-badge';
@@ -147,6 +150,7 @@
         } else {
             item.classList.remove('ubits-paginas-creator__item--hidden');
             item.removeAttribute('data-paginas-hidden');
+            item.removeAttribute('data-paginas-hidden-since');
             if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
         }
     }
@@ -916,6 +920,10 @@
         var pageKey = opts.pageKey != null ? String(opts.pageKey) : '';
         var dataKeyAttr = pageKey ? ' data-paginas-creator-key="' + escapeAttr(pageKey) + '"' : '';
         var dataHiddenAttr = hidden ? ' data-paginas-hidden="true"' : '';
+        if (hidden && opts.hiddenSinceIso) {
+            dataHiddenAttr +=
+                ' data-paginas-hidden-since="' + escapeAttr(String(opts.hiddenSinceIso)) + '"';
+        }
         var itemClass =
             'ubits-paginas-creator__item' +
             (active ? ' is-active' : '') +

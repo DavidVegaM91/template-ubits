@@ -14,6 +14,9 @@
  *   fileUploadClearProcessing(idOrEl)           — limpia variante "Procesando"
  *   fileUploadAnimateProcessing(idOrEl, ms, cb) — anima 0→100 (default 5s) y ejecuta cb al terminar
  *   fileUploadSetHeaderVisible(idOrEl, visible) — muestra u oculta .ubits-file-upload__header (visible false = oculto)
+ *   fileUploadSetFile(idOrEl, name, sizeKb)     — inyecta un mock (demos); en multiple reemplaza la lista con 1 ítem
+ *   fileUploadSetFiles(idOrEl, items)           — inyecta mocks [{ name, sizeKb }, …] (modo multiple)
+ *   fileUploadClearFile(idOrEl)                 — limpia archivo(s) y vuelve al vacío
  *
  * Opciones de createFileUpload():
  *   containerId       {string}   ID del contenedor donde inyectar el HTML (requerido)
@@ -23,14 +26,17 @@
  *   maxSizeMb         {number}   Tamaño máximo en MB (default: 5)
  *   maxLabel          {string}   Texto para mostrar el límite (default: '{maxSizeMb} MB')
  *   formats           {string}   Texto libre de formatos (default: derivado de accept + maxLabel)
+ *   multiple          {boolean}  true = varios archivos; dropzone sigue disponible + lista debajo
+ *   maxFiles          {number}   Tope opcional en modo multiple (sin valor = sin límite)
  *   downloadButtons   {Array}    Hasta 3 objetos { label, icon?, onClick }; icon = clase FA sin 'fa-'
  *   hideHeader        {boolean}  true = oculta la fila .ubits-file-upload__header (título + acciones)
- *   onChange          {Function} Callback (file | null) al seleccionar o quitar el archivo
- *   onError           {Function} Callback ({ type: 'type'|'size', message }) al fallar validación
+ *   onChange          {Function} Callback (file | null) al seleccionar o quitar (modo simple)
+ *   onFilesChange     {Function} Callback (File[]) con la lista (modo multiple; también se llama en simple)
+ *   onError           {Function} Callback ({ type: 'type'|'size'|'max', message }) al fallar validación
  *
  * Eventos custom (bubbles: true):
- *   'ubits-file-upload-change'  — detail: { file: File | null }
- *   'ubits-file-upload-error'   — detail: { type: 'type'|'size', message: string }
+ *   'ubits-file-upload-change'  — detail: { file: File | null, files?: File[] }
+ *   'ubits-file-upload-error'   — detail: { type: 'type'|'size'|'max', message: string }
  *
  * Bugs / notas de implementación:
  *   - El click en el dropzone se delega al <input type="file"> oculto; si el usuario hace clic
@@ -89,8 +95,8 @@
 
     function formatSize(bytes) {
         if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / 1048576).toFixed(1) + ' MB';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1).replace(/\.0$/, '') + ' KB';
+        return (bytes / 1048576).toFixed(1).replace(/\.0$/, '') + ' MB';
     }
 
     function fileMatchesAccept(file, accept) {
@@ -109,7 +115,22 @@
         if (!accept) return 'Archivos';
         return accept.split(',').map(function (s) {
             return s.trim().replace(/^\./, '').toUpperCase();
-        }).join(', ');
+        }).filter(function (s) { return s.indexOf('/') === -1; }).join(', ');
+    }
+
+    function maxFilesMessage(maxFiles) {
+        return 'Puedes adjuntar hasta ' + maxFiles + ' archivos.';
+    }
+
+    var _fuIdSeq = 0;
+    function nextFileId() {
+        _fuIdSeq += 1;
+        return 'fu-' + _fuIdSeq;
+    }
+
+    function resolveUploadEl(idOrEl) {
+        if (!idOrEl) return null;
+        return typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
     }
 
     /* ─── construcción del HTML ──────────────────────── */
@@ -119,10 +140,20 @@
         var accept  = opts.accept || '';
         var maxMb   = opts.maxSizeMb || 5;
         var maxLbl  = opts.maxLabel  || (maxMb + ' MB');
-        var formats = opts.formats   || (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl);
+        var multiple = opts.multiple === true;
+        var maxFiles = opts.maxFiles;
+        var hasFileCap = typeof maxFiles === 'number' && maxFiles > 0;
+        var formats = opts.formats || (
+            multiple && hasFileCap
+                ? (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl + ' · Máximo ' + maxFiles)
+                : (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl)
+        );
         var btns    = (opts.downloadButtons || []).slice(0, 3);
         var hideHeader = opts.hideHeader === true;
         var rootExtraClass = hideHeader ? ' ubits-file-upload--hide-header' : '';
+        if (multiple) rootExtraClass += ' ubits-file-upload--multiple';
+        var dropTitle = multiple ? 'Subir archivos' : 'Subir archivo';
+        var selectLabel = multiple ? 'Seleccionar archivos' : 'Seleccionar archivo';
 
         var actionBtnsHtml = btns.map(function (b) {
             return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-file-upload__download-btn" data-file-upload-download>' +
@@ -136,7 +167,8 @@
             '<i class="far fa-circle-exclamation"></i><span>Informe de errores</span></button>';
 
         return (
-            '<div class="ubits-file-upload' + rootExtraClass + '" id="' + id + '" data-file-upload>' +
+            '<div class="ubits-file-upload' + rootExtraClass + '" id="' + id + '" data-file-upload' +
+              (multiple ? ' data-file-upload-multiple="true"' : '') + '>' +
               '<div class="ubits-file-upload__header">' +
                 '<h2 class="ubits-body-md-bold ubits-file-upload__title">' + title + '</h2>' +
                 '<div class="ubits-file-upload__actions">' + actionBtnsHtml + '</div>' +
@@ -145,10 +177,10 @@
                 '<div class="ubits-file-upload__empty" data-file-upload-empty>' +
                   '<div class="ubits-file-upload__dropzone-inner">' +
                     '<div class="ubits-file-upload__icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
-                    '<p class="ubits-body-md-semibold ubits-file-upload__dropzone-title">Subir archivo</p>' +
+                    '<p class="ubits-body-md-semibold ubits-file-upload__dropzone-title">' + dropTitle + '</p>' +
                     '<p class="ubits-body-sm-regular ubits-file-upload__dropzone-formats">' + formats + '</p>' +
                     '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-file-upload__select-btn" data-file-upload-select>' +
-                      '<i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivo</span>' +
+                      '<i class="far fa-arrow-up-from-bracket"></i><span>' + selectLabel + '</span>' +
                     '</button>' +
                   '</div>' +
                 '</div>' +
@@ -172,7 +204,16 @@
                   '<span class="ubits-body-sm-regular ubits-file-upload__processing-pct" data-file-upload-processing-pct>0%</span>' +
                 '</div>' +
                 '<input type="file" class="ubits-file-upload__input" data-file-upload-input' +
-                  (accept ? ' accept="' + accept + '"' : '') + ' style="display:none">' +
+                  (accept ? ' accept="' + accept + '"' : '') +
+                  (multiple ? ' multiple' : '') + ' style="display:none">' +
+              '</div>' +
+              '<div class="ubits-file-upload__file-list" data-file-upload-file-list style="display:none">' +
+                '<div class="ubits-file-upload__file-list-head">' +
+                  '<span class="ubits-body-sm-bold ubits-file-upload__file-list-title" data-file-upload-file-list-title>Archivos (0)</span>' +
+                  '<span class="ubits-file-upload__file-list-grow"></span>' +
+                  '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" data-file-upload-clear-all>Limpiar todo</button>' +
+                '</div>' +
+                '<div class="ubits-file-upload__file-list-items" data-file-upload-file-list-items></div>' +
               '</div>' +
               '<div class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none">' +
                 '<span class="ubits-file-upload__helper-msg" data-file-upload-helper-msg></span>' +
@@ -190,23 +231,32 @@
         if (!el || el.dataset.fileUploadInit) return;
         el.dataset.fileUploadInit = '1';
 
-        var accept   = (el.querySelector('[data-file-upload-input]') || {}).getAttribute ? el.querySelector('[data-file-upload-input]').getAttribute('accept') || '' : '';
-        var maxMb    = opts.maxSizeMb || 5;
-        var onChange = opts.onChange  || null;
-        var onError  = opts.onError   || null;
+        var inputEl = el.querySelector('[data-file-upload-input]');
+        var accept = (inputEl && inputEl.getAttribute('accept')) || opts.accept || '';
+        var maxMb = opts.maxSizeMb || 5;
+        var multiple = opts.multiple === true || el.getAttribute('data-file-upload-multiple') === 'true';
+        var maxFiles = opts.maxFiles;
+        var hasFileCap = typeof maxFiles === 'number' && maxFiles > 0;
+        var onChange = opts.onChange || null;
+        var onFilesChange = opts.onFilesChange || null;
+        var onError = opts.onError || null;
         var successMessage = (Object.prototype.hasOwnProperty.call(opts, 'successMessage') ? opts.successMessage : 'Archivo validado. Puedes continuar.');
 
-        var dropzone  = el.querySelector('[data-file-upload-dropzone]');
-        var emptyEl   = el.querySelector('[data-file-upload-empty]');
-        var cardEl    = el.querySelector('[data-file-upload-card]');
-        var nameEl    = el.querySelector('[data-file-upload-name]');
-        var sizeEl    = el.querySelector('[data-file-upload-size]');
-        var helperEl  = el.querySelector('[data-file-upload-helper]');
-        var inputEl   = el.querySelector('[data-file-upload-input]');
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var emptyEl = el.querySelector('[data-file-upload-empty]');
+        var cardEl = el.querySelector('[data-file-upload-card]');
+        var nameEl = el.querySelector('[data-file-upload-name]');
+        var sizeEl = el.querySelector('[data-file-upload-size]');
+        var helperEl = el.querySelector('[data-file-upload-helper]');
         var selectBtn = el.querySelector('[data-file-upload-select]');
         var removeBtn = el.querySelector('[data-file-upload-remove]');
+        var listEl = el.querySelector('[data-file-upload-file-list]');
+        var listTitleEl = el.querySelector('[data-file-upload-file-list-title]');
+        var listItemsEl = el.querySelector('[data-file-upload-file-list-items]');
+        var clearAllBtn = el.querySelector('[data-file-upload-clear-all]');
 
-        /* ── helpers de estado ── */
+        /** @type {Array<{ id: string, name: string, size: number, real: File|null }>} */
+        var files = [];
 
         function setHelper(type, msg) {
             if (!helperEl) return;
@@ -248,57 +298,245 @@
             setHelper('success', msg);
         }
 
-        function showFile(file) {
+        function atMax() {
+            return Boolean(multiple && hasFileCap && files.length >= maxFiles);
+        }
+
+        function syncDropzoneDisabled() {
+            if (!dropzone) return;
+            dropzone.classList.toggle('ubits-file-upload__dropzone--disabled', atMax());
+        }
+
+        function emitChange() {
+            var real = files.map(function (f) { return f.real; }).filter(Boolean);
+            var detail = { file: real[0] || null };
+            if (multiple) detail.files = real.slice();
+            el.dispatchEvent(new CustomEvent('ubits-file-upload-change', { bubbles: true, detail: detail }));
+            if (onFilesChange) onFilesChange(real.slice());
+            if (!multiple && onChange) onChange(real[0] || null);
+        }
+
+        function renderFileList() {
+            if (!multiple || !listEl || !listItemsEl) return;
+            if (files.length === 0) {
+                listEl.style.display = 'none';
+                listItemsEl.innerHTML = '';
+                if (listTitleEl) listTitleEl.textContent = 'Archivos (0)';
+                syncDropzoneDisabled();
+                return;
+            }
+            listEl.style.display = '';
+            if (listTitleEl) {
+                listTitleEl.textContent = 'Archivos (' + files.length.toLocaleString('es-CO') + ')';
+            }
+            listItemsEl.innerHTML = files.map(function (item) {
+                return (
+                    '<div class="ubits-file-upload__file-list-card" data-file-upload-list-item="' + item.id + '" aria-live="polite">' +
+                      '<div class="ubits-file-upload__file-icon-wrap" aria-hidden="true"><i class="far fa-file-lines"></i></div>' +
+                      '<div class="ubits-file-upload__file-meta">' +
+                        '<span class="ubits-body-sm-semibold ubits-file-upload__file-name">' + escapeHtml(item.name) + '</span>' +
+                        '<span class="ubits-body-sm-regular ubits-file-upload__file-size">' + formatSize(item.size) + '</span>' +
+                      '</div>' +
+                      '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only ubits-file-upload__remove-btn" ' +
+                        'data-file-upload-list-remove="' + item.id + '" aria-label="Quitar archivo">' +
+                        '<i class="far fa-trash-alt"></i>' +
+                      '</button>' +
+                    '</div>'
+                );
+            }).join('');
+            syncDropzoneDisabled();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function showSingleFile(fileLike) {
             clearError();
-            if (nameEl) nameEl.textContent = file.name;
-            if (sizeEl) sizeEl.textContent = formatSize(file.size);
+            if (nameEl) nameEl.textContent = fileLike.name;
+            if (sizeEl) sizeEl.textContent = formatSize(fileLike.size);
             if (emptyEl) emptyEl.style.display = 'none';
-            if (cardEl)  cardEl.style.display  = '';
+            if (cardEl) cardEl.style.display = '';
             if (dropzone) {
                 dropzone.classList.add('ubits-file-upload__dropzone--has-file');
                 dropzone.classList.remove('ubits-file-upload__dropzone--dragover');
             }
         }
 
-        function clearFile() {
+        function resetUiToEmpty(optsClear) {
+            optsClear = optsClear || {};
             if (emptyEl) emptyEl.style.display = '';
-            if (cardEl)  cardEl.style.display  = 'none';
+            if (cardEl) cardEl.style.display = 'none';
             el.classList.remove('ubits-file-upload--processing');
-            if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--has-file', 'ubits-file-upload__dropzone--invalid');
-            if (inputEl)  inputEl.value = '';
+            if (dropzone) {
+                dropzone.classList.remove(
+                    'ubits-file-upload__dropzone--has-file',
+                    'ubits-file-upload__dropzone--invalid',
+                    'ubits-file-upload__dropzone--disabled'
+                );
+            }
+            if (inputEl) inputEl.value = '';
+            if (listEl) listEl.style.display = 'none';
+            if (listItemsEl) listItemsEl.innerHTML = '';
             clearError();
             fileUploadShowErrorReport(el, false, { placement: 'header' });
             fileUploadShowErrorReport(el, false, { placement: 'inline' });
             fileUploadClearProgress(el);
             fileUploadClearProcessing(el);
-            if (onChange) onChange(null);
-            el.dispatchEvent(new CustomEvent('ubits-file-upload-change', { bubbles: true, detail: { file: null } }));
+            var rem = el.querySelector('[data-file-upload-remove]');
+            if (rem) rem.style.display = '';
+            if (!optsClear.silent) {
+                /* emit handled by caller */
+            }
         }
 
-        function handleFile(file) {
-            if (!file) return;
-            /* validar tipo */
-            if (accept && !fileMatchesAccept(file, accept)) {
-                var extList = accept.split(',').map(function (s) { return s.trim(); }).join(', ');
-                var msg = 'El archivo no es compatible. Solo se aceptan: ' + extList + '.';
-                showError(msg);
-                if (onError) onError({ type: 'type', message: msg });
-                el.dispatchEvent(new CustomEvent('ubits-file-upload-error', { bubbles: true, detail: { type: 'type', message: msg } }));
+        function clearAll(emit) {
+            files = [];
+            resetUiToEmpty();
+            if (emit !== false) emitChange();
+        }
+
+        function removeAt(id) {
+            files = files.filter(function (f) { return f.id !== id; });
+            clearError();
+            if (inputEl) inputEl.value = '';
+            if (!multiple) {
+                clearAll(true);
                 return;
             }
-            /* validar peso */
+            if (files.length === 0) {
+                clearAll(true);
+                return;
+            }
+            renderFileList();
+            emitChange();
+        }
+
+        function validateOne(file) {
+            if (accept && !fileMatchesAccept(file, accept)) {
+                var extList = accept.split(',').map(function (s) { return s.trim(); })
+                    .filter(function (s) { return s.charAt(0) === '.' || s.indexOf('/') === -1; })
+                    .join(', ');
+                return { type: 'type', message: 'El archivo no es compatible. Solo se aceptan: ' + (extList || accept) + '.' };
+            }
             var maxBytes = maxMb * 1048576;
             if (file.size > maxBytes) {
-                var msg = 'El archivo es demasiado grande. El límite es ' + maxMb + ' MB.';
-                showError(msg);
-                if (onError) onError({ type: 'size', message: msg });
-                el.dispatchEvent(new CustomEvent('ubits-file-upload-error', { bubbles: true, detail: { type: 'size', message: msg } }));
+                return { type: 'size', message: 'El archivo es demasiado grande. El límite es ' + maxMb + ' MB.' };
+            }
+            return null;
+        }
+
+        function fireError(err) {
+            showError(err.message);
+            if (onError) onError(err);
+            el.dispatchEvent(new CustomEvent('ubits-file-upload-error', { bubbles: true, detail: err }));
+        }
+
+        function applyIncoming(incoming) {
+            if (!incoming || !incoming.length) return;
+
+            if (!multiple) {
+                var f = incoming[0];
+                var err = validateOne(f);
+                if (err) {
+                    fireError(err);
+                    return;
+                }
+                files = [{ id: nextFileId(), name: f.name, size: f.size, real: f }];
+                showSingleFile(f);
+                if (successMessage !== false) showSuccess(successMessage);
+                emitChange();
                 return;
             }
-            showFile(file);
-            if (successMessage !== false) showSuccess(successMessage);
-            if (onChange) onChange(file);
-            el.dispatchEvent(new CustomEvent('ubits-file-upload-change', { bubbles: true, detail: { file: file } }));
+
+            var room = hasFileCap ? Math.max(0, maxFiles - files.length) : Number.POSITIVE_INFINITY;
+            if (hasFileCap && room === 0) {
+                fireError({ type: 'max', message: maxFilesMessage(maxFiles) });
+                return;
+            }
+
+            var existingKeys = {};
+            files.forEach(function (item) {
+                existingKeys[item.name + '::' + item.size] = true;
+            });
+            var accepted = [];
+            var lastError = null;
+
+            for (var i = 0; i < incoming.length; i++) {
+                if (accepted.length >= room) break;
+                var file = incoming[i];
+                var key = file.name + '::' + file.size;
+                if (existingKeys[key]) continue;
+                var vErr = validateOne(file);
+                if (vErr) {
+                    lastError = vErr;
+                    continue;
+                }
+                existingKeys[key] = true;
+                accepted.push({ id: nextFileId(), name: file.name, size: file.size, real: file });
+            }
+
+            if (accepted.length === 0) {
+                if (lastError) fireError(lastError);
+                return;
+            }
+
+            files = files.concat(accepted);
+            if (emptyEl) emptyEl.style.display = '';
+            if (cardEl) cardEl.style.display = 'none';
+            if (dropzone) {
+                dropzone.classList.remove('ubits-file-upload__dropzone--has-file', 'ubits-file-upload__dropzone--dragover');
+            }
+            renderFileList();
+            clearError();
+            if (successMessage !== false) {
+                if (accepted.length === 1) showSuccess(successMessage);
+                else showSuccess(accepted.length + ' archivos validados. Puedes continuar.');
+            }
+            emitChange();
+            if (lastError) {
+                fireError(lastError);
+            } else if (hasFileCap && incoming.length > room) {
+                fireError({ type: 'max', message: maxFilesMessage(maxFiles) });
+            }
+        }
+
+        function injectMocks(items) {
+            files = (items || []).map(function (item) {
+                return {
+                    id: nextFileId(),
+                    name: item.name,
+                    size: (typeof item.sizeKb === 'number' ? item.sizeKb : 0) * 1024,
+                    real: null
+                };
+            });
+            fileUploadClearProgress(el);
+            fileUploadClearProcessing(el);
+            fileUploadShowErrorReport(el, false, { placement: 'header' });
+            fileUploadShowErrorReport(el, false, { placement: 'inline' });
+            clearError();
+            if (inputEl) inputEl.value = '';
+            var rem = el.querySelector('[data-file-upload-remove]');
+            if (rem) rem.style.display = '';
+
+            if (!multiple) {
+                if (files.length === 0) {
+                    resetUiToEmpty();
+                    return;
+                }
+                showSingleFile(files[0]);
+                if (listEl) listEl.style.display = 'none';
+                return;
+            }
+
+            if (emptyEl) emptyEl.style.display = '';
+            if (cardEl) cardEl.style.display = 'none';
+            if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--has-file');
+            renderFileList();
         }
 
         /* ── eventos ── */
@@ -306,26 +544,27 @@
         if (selectBtn && inputEl) {
             selectBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
+                if (atMax()) return;
                 inputEl.click();
             });
         }
 
         if (dropzone) {
             dropzone.addEventListener('click', function (e) {
-                if (dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) return;
+                if (!multiple && dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) return;
+                if (atMax()) return;
                 if (e.target.closest('[data-file-upload-select]')) return;
+                if (e.target.closest('[data-file-upload-remove]')) return;
                 if (inputEl) inputEl.click();
             });
 
             dropzone.addEventListener('dragover', function (e) {
                 e.preventDefault();
-                if (!dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) {
-                    dropzone.classList.add('ubits-file-upload__dropzone--dragover');
-                }
+                if ((!multiple && dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) || atMax()) return;
+                dropzone.classList.add('ubits-file-upload__dropzone--dragover');
             });
 
             dropzone.addEventListener('dragleave', function (e) {
-                /* Solo colapsar si el cursor sale del dropzone de verdad */
                 if (!dropzone.contains(e.relatedTarget)) {
                     dropzone.classList.remove('ubits-file-upload__dropzone--dragover');
                 }
@@ -334,16 +573,16 @@
             dropzone.addEventListener('drop', function (e) {
                 e.preventDefault();
                 dropzone.classList.remove('ubits-file-upload__dropzone--dragover');
-                if (dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) return;
-                var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-                if (file) handleFile(file);
+                if ((!multiple && dropzone.classList.contains('ubits-file-upload__dropzone--has-file')) || atMax()) return;
+                var list = e.dataTransfer && e.dataTransfer.files ? Array.prototype.slice.call(e.dataTransfer.files) : [];
+                if (list.length) applyIncoming(list);
             });
         }
 
         if (inputEl) {
             inputEl.addEventListener('change', function () {
-                if (this.files && this.files[0]) handleFile(this.files[0]);
-                /* Limpiar el value para que el mismo archivo se pueda volver a seleccionar */
+                var list = this.files ? Array.prototype.slice.call(this.files) : [];
+                if (list.length) applyIncoming(list);
                 this.value = '';
             });
         }
@@ -351,9 +590,29 @@
         if (removeBtn) {
             removeBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                clearFile();
+                clearAll(true);
             });
         }
+
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                clearAll(true);
+            });
+        }
+
+        if (listItemsEl) {
+            listItemsEl.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-file-upload-list-remove]');
+                if (!btn) return;
+                e.stopPropagation();
+                removeAt(btn.getAttribute('data-file-upload-list-remove'));
+            });
+        }
+
+        el._fileUploadInjectMocks = injectMocks;
+        el._fileUploadClearAll = function () { clearAll(true); };
+        el._fileUploadIsMultiple = multiple;
     }
 
     /* ─── API pública ────────────────────────────────── */
@@ -550,6 +809,9 @@
            eliminar el archivo; ocultar el botón de quitar para no confundir al usuario. */
         var removeBtn = el.querySelector('[data-file-upload-remove]');
         if (removeBtn) removeBtn.style.display = 'none';
+        el.querySelectorAll('[data-file-upload-list-remove]').forEach(function (btn) {
+            btn.style.display = 'none';
+        });
     }
 
     /**
@@ -647,6 +909,50 @@
         return timer;
     }
 
+    /**
+     * Inyecta un archivo mock (demos/docs). En multiple, deja 1 ítem en la lista.
+     */
+    function fileUploadSetFile(idOrEl, name, sizeKb) {
+        var el = resolveUploadEl(idOrEl);
+        if (!el || typeof el._fileUploadInjectMocks !== 'function') return;
+        el._fileUploadInjectMocks([{ name: name, sizeKb: sizeKb }]);
+    }
+
+    /**
+     * Inyecta varios mocks [{ name, sizeKb }, …] (variante multiple / demos).
+     */
+    function fileUploadSetFiles(idOrEl, items) {
+        var el = resolveUploadEl(idOrEl);
+        if (!el || typeof el._fileUploadInjectMocks !== 'function') return;
+        el._fileUploadInjectMocks(items || []);
+    }
+
+    /**
+     * Limpia archivo(s) y vuelve al estado vacío.
+     */
+    function fileUploadClearFile(idOrEl) {
+        var el = resolveUploadEl(idOrEl);
+        if (!el) return;
+        if (typeof el._fileUploadClearAll === 'function') {
+            el._fileUploadClearAll();
+            return;
+        }
+        /* Fallback DOM si aún no está wired */
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var emptyEl = el.querySelector('[data-file-upload-empty]');
+        var cardEl = el.querySelector('[data-file-upload-card]');
+        var listEl = el.querySelector('[data-file-upload-file-list]');
+        var listItems = el.querySelector('[data-file-upload-file-list-items]');
+        if (emptyEl) emptyEl.style.display = '';
+        if (cardEl) cardEl.style.display = 'none';
+        if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--has-file', 'ubits-file-upload__dropzone--invalid', 'ubits-file-upload__dropzone--disabled');
+        if (listEl) listEl.style.display = 'none';
+        if (listItems) listItems.innerHTML = '';
+        fileUploadClearError(el);
+        fileUploadClearProgress(el);
+        fileUploadClearProcessing(el);
+    }
+
     /* ─── exposición global ──────────────────────────── */
 
     window.createFileUpload          = createFileUpload;
@@ -663,6 +969,9 @@
     window.fileUploadClearProcessing = fileUploadClearProcessing;
     window.fileUploadAnimateProcessing = fileUploadAnimateProcessing;
     window.fileUploadSetHeaderVisible  = fileUploadSetHeaderVisible;
+    window.fileUploadSetFile         = fileUploadSetFile;
+    window.fileUploadSetFiles        = fileUploadSetFiles;
+    window.fileUploadClearFile       = fileUploadClearFile;
 
     /* Auto-init sobre HTML estático */
     if (document.readyState === 'loading') {

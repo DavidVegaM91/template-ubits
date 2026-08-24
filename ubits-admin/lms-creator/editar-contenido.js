@@ -661,8 +661,19 @@
         applyReadonlyMode();
         wireClosePin();
 
-        var initial = hashToSection();
-        if (initial === 'recursos' && !editState.readonly) {
+        var initialParsed =
+            typeof window.parseEditarContenidoHash === 'function'
+                ? window.parseEditarContenidoHash(window.location.hash)
+                : { section: hashToSection() };
+        var initial = initialParsed.section || hashToSection();
+        if (initialParsed.isOcultarEvaluacionModal) {
+            editState.recursosUnlocked = true;
+            applyEditSection('recursos');
+            var oeKey = initialParsed.ocultarEvaluacionPageId || 'cc-demo-pg-3';
+            if (typeof window.openOcultarEvaluacionModal === 'function') {
+                window.openOcultarEvaluacionModal(oeKey);
+            }
+        } else if (initial === 'recursos' && !editState.readonly) {
             showEditSection('recursos', { dismissTo: 'informacion' });
         } else {
             showEditSection(initial);
@@ -677,7 +688,20 @@
 
         window.addEventListener('hashchange', function () {
             if (document.getElementById('ec-recursos-warn-modal')) return;
-            var section = hashToSection();
+            var parsed =
+                typeof window.parseEditarContenidoHash === 'function'
+                    ? window.parseEditarContenidoHash(window.location.hash)
+                    : { section: hashToSection() };
+            if (parsed.isOcultarEvaluacionModal) {
+                editState.recursosUnlocked = true;
+                applyEditSection('recursos');
+                var pk = parsed.ocultarEvaluacionPageId || 'cc-demo-pg-3';
+                if (typeof window.openOcultarEvaluacionModal === 'function') {
+                    window.openOcultarEvaluacionModal(pk);
+                }
+                return;
+            }
+            var section = parsed.section || hashToSection();
             showEditSection(section);
             if (
                 section === 'resultados' &&

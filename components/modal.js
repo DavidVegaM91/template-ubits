@@ -91,13 +91,13 @@
         var raw = tokensValue != null && tokensValue !== '' ? Number(tokensValue) : 0;
         var n = formatIaTokensBadgeNumber(raw);
         var aria = formatIaTokensBadgeAriaLabel(raw);
-        return '<span id="' + id + '" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs" tabindex="0" ' +
-            'data-tooltip="' + escapeHtml(tip) + '" data-tooltip-delay="0" data-tooltip-tap-toggle="" ' +
+        return '<span class="ubits-badge-tag-host"><span id="' + id + '" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs" tabindex="0" ' +
+            'data-token-value="' + escapeHtml(String(raw)) + '" data-tooltip="' + escapeHtml(tip) + '" data-tooltip-delay="0" data-tooltip-tap-toggle="" ' +
             'aria-label="' + escapeHtml(aria) + '">' +
             '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
             '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-badge-tag__token-number">' + escapeHtml(n) + '</span>' +
-            '</span></span>';
+            '</span></span></span>';
     }
 
     /**

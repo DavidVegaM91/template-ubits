@@ -66,9 +66,6 @@ function normalizeAvatarUrlForPage(avatar) {
  * Genera el HTML de un avatar único.
  * - Si tiene avatar (URL): muestra la imagen.
  * - Si no tiene avatar: muestra icono de usuario (far fa-user).
- * - Si mode es 'admin' o 'lms': envuelve el avatar en .ubits-avatar-modo
- *   con un badge-tag text-only indicando el rol activo.
- *   Requiere badge-tag.css cuando se usa con mode.
  *
  * @param {Object} persona - Objeto con nombre/nombre y opcionalmente avatar
  * @param {string} [persona.nombre] - Nombre de la persona (también acepta persona.name)
@@ -80,10 +77,9 @@ function normalizeAvatarUrlForPage(avatar) {
  * @param {string} [options.initials] - Letra(s) inicial(es) si no hay imagen. Máx. 2 caracteres.
  * @param {boolean} [options.showTooltip=false] - Si true, añade data-tooltip con el nombre (requiere initTooltip del componente tooltip)
  * @param {number} [options.tooltipDelay=1000] - Delay en ms antes de mostrar el tooltip (solo si showTooltip es true)
- * @param {string|null} [options.mode=null] - Modo activo: null (Colaborador, sin badge), 'admin' (badge "Admin"), 'lms' (badge "LMS")
  * @param {boolean} [options.selectable=false] - Si true, hover/selección con borde brand (opt-in)
  * @param {boolean} [options.selected=false] - Estado seleccionado (solo si selectable es true)
- * @returns {string} HTML del avatar, envuelto en .ubits-avatar-modo si hay mode activo
+ * @returns {string} HTML del avatar
  */
 function renderAvatar(persona, options) {
     const opts = options || {};
@@ -93,8 +89,26 @@ function renderAvatar(persona, options) {
     const selectedClass = opts.selectable && opts.selected ? ' ubits-avatar--selected' : '';
     const tabIndexAttr = opts.selectable ? ' tabindex="0"' : '';
     const nombre = persona && (persona.nombre || persona.name);
-    const avatarUrl = normalizeAvatarUrlForPage(persona && (persona.avatar || persona.providerLogo));
-    const initials = formatAvatarInitials(opts.initials || (persona && persona.initials) || '');
+    const forceNoImg = opts.initialsOnly === true;
+    const avatarUrl = forceNoImg ? null : normalizeAvatarUrlForPage(persona && (persona.avatar || persona.providerLogo));
+    const initials = formatAvatarInitials(opts.initials || (persona && persona.initials) || nombre || '');
+    const status = opts.status && ['online', 'offline', 'busy', 'away'].includes(opts.status) ? opts.status : null;
+    const statusPos = opts.statusPosition && ['bottom-right', 'top-right', 'bottom-left', 'top-left'].includes(opts.statusPosition)
+        ? opts.statusPosition : 'bottom-right';
+    const STATUS_LABEL = { online: 'En línea', offline: 'Desconectado', busy: 'Ocupado', away: 'Ausente' };
+    const ring = opts.ring === true ? 'ring' : (opts.ring === 'pulse' || opts.ring === 'spin' || opts.ring === 'gradient') ? 'ring-' + opts.ring : '';
+    const ringClass = ring ? ` ubits-avatar--${ring}` : '';
+    const loading = opts.loading === true;
+    const loadingClass = loading ? ' ubits-avatar--loading' : '';
+    const grayscaleClass = opts.grayscale ? ' ubits-avatar--grayscale' : '';
+    const shapeClass = opts.shape === 'rounded' ? ' ubits-avatar--rounded' : '';
+    const tone = opts.fallbackTone && ['muted', 'brand', 'solid'].includes(opts.fallbackTone) ? opts.fallbackTone : null;
+    const toneClass = (!avatarUrl && tone) ? ` ubits-avatar--tone-${tone}` : '';
+
+    var badges = Array.isArray(opts.badges) ? opts.badges.slice() : [];
+    if (!badges.length && opts.badgeIcon) {
+        badges.push({ icon: opts.badgeIcon, position: opts.badgePosition || 'bottom-right' });
+    }
 
     var inner;
     if (avatarUrl) {
@@ -108,19 +122,26 @@ function renderAvatar(persona, options) {
     const tooltipAttrs = opts.showTooltip && nombre
         ? ` data-tooltip="${escapeAttr(nombre)}" data-tooltip-delay="${Number(opts.tooltipDelay) || 1000}"`
         : '';
-    const avatarHtml = `<span class="ubits-avatar ${sizeClass}${selectableClass}${selectedClass}"${tooltipAttrs}${tabIndexAttr}>${inner}</span>`;
+    const avatarHtml = `<span class="ubits-avatar ${sizeClass}${selectableClass}${selectedClass}${ringClass}${loadingClass}${grayscaleClass}${shapeClass}${toneClass}"${tooltipAttrs}${tabIndexAttr}>${inner}</span>`;
 
-    // Variante Modo: badge de rol sobre el avatar (solo Admin y LMS Creator)
-    const modeConfig = {
-        admin: { icon: 'laptop', color: 'info' },
-        lms:   { icon: 'bolt',   color: 'info' }
-    };
-    const mode = opts.mode && modeConfig[opts.mode] ? opts.mode : null;
-    if (!mode) return avatarHtml;
+    const needsShell = Boolean(status || badges.length || loading);
+    if (!needsShell) return avatarHtml;
 
-    const cfg = modeConfig[mode];
-    const badgeHtml = `<span class="ubits-avatar-modo__badge ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${cfg.color} ubits-badge-tag--xs ubits-badge-tag--with-icon ubits-badge-tag--icon-only"><i class="far fa-${cfg.icon}"></i></span>`;
-    return `<span class="ubits-avatar-modo">${avatarHtml}${badgeHtml}</span>`;
+    var extras = '';
+    if (status) {
+        var statusLabel = STATUS_LABEL[status] || status;
+        extras += `<span class="ubits-avatar__status ubits-avatar__status--${status} ubits-avatar__status--${statusPos}" title="${statusLabel}" aria-label="${statusLabel}"></span>`;
+    }
+    badges.forEach(function (b) {
+        var pos = (b && b.position) || 'bottom-right';
+        var icon = (b && b.icon) || '';
+        if (!icon) return;
+        extras += `<span class="ubits-avatar__badge ubits-avatar__badge--${pos}" aria-hidden="true"><i class="${escapeAttr(icon)}"></i></span>`;
+    });
+    if (loading) {
+        extras += '<span class="ubits-avatar__loading-overlay" aria-hidden="true"><span class="ubits-avatar__loading-spinner"></span></span>';
+    }
+    return `<span class="ubits-avatar-shell ubits-avatar--${size}">${avatarHtml}${extras}</span>`;
 }
 
 /**
@@ -133,6 +154,8 @@ function renderAvatar(persona, options) {
  * @param {boolean} [options.showTooltip=true] - Tooltip con nombre en cada avatar visible (requiere initTooltip o wireProfileLists)
  * @param {number} [options.tooltipDelay=300] - Delay en ms del tooltip
  * @param {boolean} [options.showOverflowPopover=true] - Popover al clic en +N con personas restantes (requiere initProfileLists una vez)
+ * @param {'count'|'icon'} [options.overflowMode='count'] - Overflow numérico (+N) o con icono (far fa-users)
+ * @param {string} [options.overflowIcon='far fa-users'] - Clase FA cuando overflowMode='icon'
  * @param {boolean} [options.selectable=false] - Si true, avatares clickeables con hover/selección (opt-in)
  * @returns {string} HTML de la profile list
  */
@@ -143,8 +166,14 @@ function renderProfileList(personas, options) {
     const selectable = opts.selectable === true;
     const showTooltip = opts.showTooltip !== false;
     const showOverflowPopover = opts.showOverflowPopover !== false;
+    const overflowMode = opts.overflowMode === 'icon' ? 'icon' : 'count';
+    const overflowIcon = typeof opts.overflowIcon === 'string' && opts.overflowIcon
+        ? opts.overflowIcon
+        : 'far fa-users';
     const tooltipDelay = Number(opts.tooltipDelay) || 300;
-    const listModifier = selectable ? ' ubits-profile-list--selectable' : '';
+    const hoverLift = opts.hoverLift === true && !selectable;
+    const hoverSpread = opts.hoverSpread === true && !selectable;
+    const listModifier = (selectable ? ' ubits-profile-list--selectable' : '') + (hoverLift ? ' ubits-profile-list--hover-lift' : '') + (hoverSpread ? ' ubits-profile-list--hover-spread' : '');
 
     const list = Array.isArray(personas) ? personas : [];
     if (list.length === 0) {
@@ -159,7 +188,10 @@ function renderProfileList(personas, options) {
         const zIndex = visibleCount - index;
         const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
         const isSelected = selectable && persona && persona.selected === true;
-        const avatarHtml = renderAvatar(persona, avatarOpts);
+        const itemStatus = persona && persona.status && ['online', 'offline', 'busy', 'away'].includes(persona.status)
+            ? persona.status
+            : null;
+        const avatarHtml = renderAvatar(persona, Object.assign({}, avatarOpts, itemStatus ? { status: itemStatus } : {}));
         const nombre = persona && (persona.nombre || persona.name);
         const tooltipAttrs = showTooltip && nombre
             ? ` data-tooltip="${escapeAttr(nombre)}" data-tooltip-delay="${tooltipDelay}"`
@@ -177,6 +209,7 @@ function renderProfileList(personas, options) {
                     nombre: (persona && (persona.nombre || persona.name)) || 'Sin asignar',
                     avatar: persona && persona.avatar ? persona.avatar : null
                 };
+                if (persona && persona.status) entry.status = persona.status;
                 if (persona && persona._key) entry._key = persona._key;
                 if (persona && persona.id) entry.id = persona.id;
                 return entry;
@@ -185,10 +218,14 @@ function renderProfileList(personas, options) {
         } catch (e) { /* noop */ }
     }
 
+    const overflowInner = overflowMode === 'icon'
+        ? `<i class="${escapeAttr(overflowIcon)} ubits-profile-list__count-icon" aria-hidden="true"></i>`
+        : `<span class="ubits-profile-list__count-text">+${remainingCount}</span>`;
+
     const countHtml = remainingCount > 0
         ? (showOverflowPopover && overflowPayload
-            ? `<button type="button" class="ubits-profile-list__count ubits-profile-list__count-btn" style="z-index: 0; margin-right: 0;" data-profile-list-overflow="${overflowPayload}" data-profile-list-size="${size}" aria-label="Ver ${remainingCount} más"><span class="ubits-profile-list__count-text">+${remainingCount}</span></button>`
-            : `<span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+${remainingCount}</span></span>`)
+            ? `<button type="button" class="ubits-profile-list__count ubits-profile-list__count-btn" style="z-index: 0; margin-right: 0;" data-profile-list-overflow="${overflowPayload}" data-profile-list-size="${size}" aria-label="Ver ${remainingCount} más">${overflowInner}</button>`
+            : `<span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;">${overflowInner}</span>`)
         : '';
 
     return `<div class="ubits-profile-list ubits-profile-list--${size}${listModifier}">${items}${countHtml}</div>`;
@@ -254,7 +291,10 @@ function openProfileListOverflowPopover(chip) {
         var itemKey = (p && (p._key || p.id)) ? String(p._key || p.id) : '';
         var keyAttr = itemKey ? ' data-profile-list-overflow-item-key="' + escapeAttr(itemKey) + '"' : '';
         var avatarHtml = typeof renderAvatar === 'function'
-            ? renderAvatar({ nombre: nombre, avatar: p.avatar }, { size: size })
+            ? renderAvatar({ nombre: nombre, avatar: p.avatar }, {
+                size: 'xs',
+                status: p && p.status && ['online', 'offline', 'busy', 'away'].includes(p.status) ? p.status : undefined
+            })
             : '';
         return '<div class="ubits-profile-list-overflow-popover-item"' + keyAttr + '>' + avatarHtml +
             '<span class="ubits-body-sm-regular">' + escapeAttr(nombre) + '</span></div>';
@@ -335,7 +375,102 @@ if (typeof document !== 'undefined') {
 
 // Exponer globalmente para uso en páginas HTML
 if (typeof window !== 'undefined') {
+
+/**
+ * Prueba social: grupo de avatares + etiqueta.
+ * @param {Array<Object>} personas
+ * @param {Object} [options]
+ * @param {string} [options.label='']
+ * @param {string} [options.size='sm']
+ * @param {number} [options.maxVisible=3]
+ * @param {boolean} [options.initialsOnly=false]
+ * @returns {string}
+ */
+function renderAvatarSocialProof(personas, options) {
+    const opts = options || {};
+    const label = opts.label != null ? String(opts.label) : '';
+    const listHtml = renderProfileList(personas, {
+        size: opts.size || 'sm',
+        maxVisible: typeof opts.maxVisible === 'number' ? opts.maxVisible : 3,
+        showTooltip: opts.showTooltip !== false,
+        showOverflowPopover: false,
+        selectable: false
+    });
+    // Si initialsOnly, re-render items sin avatar url
+    var html = listHtml;
+    if (opts.initialsOnly === true) {
+        var compact = (Array.isArray(personas) ? personas : []).map(function (p) {
+            return { nombre: p && (p.nombre || p.name), initials: p && p.initials };
+        });
+        html = compact.map(function () { return ''; }).join(''); // rebuilt below
+        html = renderProfileList(
+            (Array.isArray(personas) ? personas : []).map(function (p) {
+                return { nombre: p && (p.nombre || p.name), avatar: null, initials: (p && p.initials) || undefined };
+            }),
+            {
+                size: opts.size || 'sm',
+                maxVisible: typeof opts.maxVisible === 'number' ? opts.maxVisible : 3,
+                showTooltip: opts.showTooltip !== false,
+                showOverflowPopover: false
+            }
+        );
+        // force initialsOnly on each avatar by replacing — simpler: custom loop
+        var size = opts.size || 'sm';
+        var maxVisible = typeof opts.maxVisible === 'number' ? opts.maxVisible : 3;
+        var list = Array.isArray(personas) ? personas : [];
+        var visible = list.slice(0, maxVisible);
+        var remaining = Math.max(0, list.length - maxVisible);
+        var items = visible.map(function (p, index) {
+            var z = visible.length - index;
+            var mr = (index < visible.length - 1) || remaining > 0 ? '-5px' : '0';
+            var av = renderAvatar(p, { size: size, initialsOnly: true, initials: p && p.initials });
+            return `<span class="ubits-profile-list__avatar" style="z-index:${z};margin-right:${mr};">${av}</span>`;
+        }).join('');
+        var count = remaining > 0
+            ? `<span class="ubits-profile-list__count" style="z-index:0;"><span class="ubits-profile-list__count-text">+${remaining}</span></span>`
+            : '';
+        html = `<div class="ubits-profile-list ubits-profile-list--${size}">${items}${count}</div>`;
+    }
+    return `<span class="ubits-avatar-social-proof">${html}<span class="ubits-avatar-social-proof__label ubits-body-sm-regular">${escapeAttr(label)}</span></span>`;
+}
+
+/**
+ * Avatar + título + descripción (paridad React UbitsAvatarLabel).
+ * @param {Object} persona
+ * @param {Object} [options]
+ * @param {string} options.title
+ * @param {string} [options.description]
+ * @returns {string}
+ */
+function renderAvatarLabel(persona, options) {
+    const opts = options || {};
+    const title = opts.title != null ? String(opts.title) : (persona && (persona.nombre || persona.name)) || '';
+    const description = opts.description != null ? String(opts.description) : '';
+    const avatarHtml = renderAvatar(persona, {
+        size: opts.size,
+        alt: opts.alt != null ? opts.alt : title,
+        initials: opts.initials,
+        initialsOnly: opts.initialsOnly,
+        status: opts.status,
+        statusPosition: opts.statusPosition,
+        shape: opts.shape,
+        fallbackTone: opts.fallbackTone,
+        grayscale: opts.grayscale,
+        loading: opts.loading,
+        ring: opts.ring,
+        badgeIcon: opts.badgeIcon,
+        badgePosition: opts.badgePosition,
+        badges: opts.badges
+    });
+    const descHtml = description
+        ? `<span class="ubits-avatar-label__description ubits-body-xs-regular">${escapeAttr(description)}</span>`
+        : '';
+    return `<span class="ubits-avatar-label">${avatarHtml}<span class="ubits-avatar-label__text"><span class="ubits-avatar-label__title ubits-body-sm-bold">${escapeAttr(title)}</span>${descHtml}</span></span>`;
+}
+
     window.renderAvatar = renderAvatar;
+    window.renderAvatarLabel = renderAvatarLabel;
+    window.renderAvatarSocialProof = renderAvatarSocialProof;
     window.formatAvatarInitials = formatAvatarInitials;
     window.renderProfileList = renderProfileList;
     window.normalizeAvatarUrlForPage = normalizeAvatarUrlForPage;

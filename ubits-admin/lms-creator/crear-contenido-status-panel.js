@@ -14,6 +14,70 @@
     };
 
     var _pageKeys = {};
+    var _jobTypes = {};
+    var _alerted = {};
+    var READY_ALERTS_ID = 'cc-resource-ready-alerts';
+
+    function readyAlertCopy(type) {
+        return type === 'scorm'
+            ? 'Tu presentación SCORM ya está lista.'
+            : 'Tu video ya está listo.';
+    }
+
+    function ensureReadyAlertsMount() {
+        var mount = document.getElementById(READY_ALERTS_ID);
+        if (mount) return mount;
+        mount = document.createElement('div');
+        mount.id = READY_ALERTS_ID;
+        mount.className = 'cc-resource-ready-alerts';
+        mount.setAttribute('aria-live', 'polite');
+        document.body.appendChild(mount);
+        return mount;
+    }
+
+    function goToGeneratedPage(pageKey) {
+        if (!pageKey) return;
+        var hash = String(location.hash || '');
+        if (hash.indexOf('recursos') === -1) {
+            location.hash = '#recursos';
+        }
+        var el = document.querySelector('[data-paginas-creator-key="' + pageKey + '"]');
+        if (el && typeof global.setPaginasCreatorActiveItem === 'function') {
+            global.setPaginasCreatorActiveItem(el);
+        }
+    }
+
+    function showReadyAlert(type, pageKey) {
+        var mount = ensureReadyAlertsMount();
+        var alertEl = document.createElement('div');
+        alertEl.className = 'ubits-alert ubits-alert--success ubits-alert--with-action';
+        alertEl.setAttribute('role', 'alert');
+        alertEl.innerHTML =
+            '<div class="ubits-alert__icon"><i class="far fa-check-circle"></i></div>' +
+            '<div class="ubits-alert__content">' +
+            '<span class="ubits-alert__text">' + readyAlertCopy(type) + '</span>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-alert__action">' +
+            '<span>Ver página</span>' +
+            '</button>' +
+            '</div>' +
+            '<button type="button" class="ubits-alert__close" aria-label="Cerrar alerta">' +
+            '<i class="far fa-times"></i>' +
+            '</button>';
+        var actionBtn = alertEl.querySelector('.ubits-alert__action');
+        var closeBtn = alertEl.querySelector('.ubits-alert__close');
+        if (actionBtn) {
+            actionBtn.addEventListener('click', function () {
+                goToGeneratedPage(pageKey);
+                if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
+            });
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
+            });
+        }
+        mount.appendChild(alertEl);
+    }
 
     function initPanel() {
         if (typeof global.renderStatusPanelHtml !== 'function' || typeof global.initStatusPanel !== 'function') {
@@ -47,6 +111,7 @@
         initPanel();
         removeJob(id);
         _pageKeys[id] = opts.pageKey || null;
+        _jobTypes[id] = opts.type || 'video';
         global.statusPanelAddItem(PANEL_ID, id, {
             title: opts.label != null ? String(opts.label) : '…',
             subtitle: 'Generando...',
@@ -58,22 +123,26 @@
     function finishJob(id) {
         if (typeof global.statusPanelUpdateItem !== 'function') return;
         var pageKey = _pageKeys[id];
+        var type = _jobTypes[id] || 'video';
         global.statusPanelUpdateItem(PANEL_ID, id, {
             status: 'success',
             subtitle: 'Listo · Haz clic para ver',
             onClick: pageKey
                 ? function () {
-                      var el = document.querySelector('[data-paginas-creator-key="' + pageKey + '"]');
-                      if (el && typeof global.setPaginasCreatorActiveItem === 'function') {
-                          global.setPaginasCreatorActiveItem(el);
-                      }
+                      goToGeneratedPage(pageKey);
                   }
                 : null
         });
+        if (!_alerted[id]) {
+            showReadyAlert(type, pageKey);
+            _alerted[id] = true;
+        }
     }
 
     function removeJob(id) {
         delete _pageKeys[id];
+        delete _jobTypes[id];
+        delete _alerted[id];
         if (typeof global.statusPanelRemoveItem === 'function') {
             global.statusPanelRemoveItem(PANEL_ID, id);
         }

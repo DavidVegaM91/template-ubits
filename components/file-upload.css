@@ -351,3 +351,68 @@
     flex-shrink: 0;
     margin-top: 2px;
 }
+
+/* ── Lista multi-archivo (debajo del dropzone) ── */
+.ubits-file-upload__file-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload__file-list-head {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload__file-list-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-file-upload__file-list-grow {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ubits-file-upload__file-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload__file-list-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    box-sizing: border-box;
+    text-align: start;
+}
+
+.ubits-file-upload__file-list-card .ubits-file-upload__file-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-file-upload__file-list-card .ubits-file-upload__file-name {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-file-upload__dropzone--disabled {
+    cursor: not-allowed;
+    opacity: 0.64;
+    pointer-events: none;
+}

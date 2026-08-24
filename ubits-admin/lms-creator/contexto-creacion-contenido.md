@@ -207,7 +207,7 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
   - Se abre un **modal** que solo pide el **tipo** de recurso (**8 tarjetas**).  
   - Luego un **flujo hermano inmersivo** (patrón **Agregar video** en React: rutas propias + `ImmersiveLayout` + return al padre `#recursos`). Aplica a **los 8 tipos**.  
-  - Al **confirmar** el recurso → aparece la fila en el índice **con** recurso montado. Nombre default: **`Título de la página`**. Si el usuario deja el título **vacío**, vuelve a **`Título de la página`**.  
+  - Al **confirmar** el recurso → aparece la fila en el índice **con** recurso montado. Nombre default: el **nombre del recurso principal** (`Video`, `Evaluación`, `PDF`, etc.). Si el usuario deja el título **vacío**, vuelve a ese default.  
   - Si **abandona** el flujo inmersivo sin finalizar → **no se crea** la página (como si no hubiera pulsado Añadir).  
 - **Menú ⋮ de cada página (creación):** **Mover arriba**, **Mover abajo** (con las reglas de orden global) y **Eliminar** (ver **Confirmación al eliminar una página**). En creación **no** hay Ocultar/Mostrar (eso es solo edición publicada).  
 - **Orden — menú (⋮) y arrastrar y soltar:** cada fila puede **reordenarse** de dos formas:  
@@ -227,7 +227,7 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 ### Panel derecho: página con recurso montado
 
 - **Orden vertical:**  
-  1. **Fila de título:** a la izquierda, **título de la página** **editable inline** (alineado con la etiqueta en Páginas creator; default / fallback **`Título de la página`**). A la **derecha** de esa fila, texto auxiliar: **«Página X de X»**.  
+  1. **Fila de título:** a la izquierda, **título de la página** **editable inline** (alineado con la etiqueta en Páginas creator; default / fallback = nombre del recurso, p. ej. **`Video`**). A la **derecha** de esa fila, texto auxiliar: **«Página X de X»**.  
   2. Debajo, el **recurso principal montado** (preview + acciones: **Reemplazar** mismo tipo; **sin** botón **Eliminar**).  
   3. Debajo, **recursos complementarios** si aplican (ver sección correspondiente).
 
@@ -244,8 +244,8 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 Para poder **avanzar** desde Recursos (botón **Siguiente** o equivalente), **cada página** del índice debe tener un **título válido**:
 
-- **Válido:** texto con contenido tras quitar espacios en blanco (incluye el default **`Título de la página`**).  
-- **No válido:** campo vacío — al perder foco / guardar, si queda vacío, **vuelve** a **`Título de la página`**.  
+- **Válido:** texto con contenido tras quitar espacios en blanco (incluye el default del tipo de recurso, p. ej. **`Video`**).  
+- **No válido:** campo vacío — al perder foco / guardar, si queda vacío, **vuelve** al nombre del recurso principal.  
 - El literal genérico **«Sin título»** (si apareciera por datos viejos) **no** es un título aceptable para publicar; normalizar al default.
 
 **Cómo se comunica el error:**

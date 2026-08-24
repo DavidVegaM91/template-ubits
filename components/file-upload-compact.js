@@ -16,19 +16,22 @@
  *   fileUploadCompactClearProcessing(idOrEl)
  *   fileUploadCompactAnimateProcessing(idOrEl, ms, cb)
  *   fileUploadCompactSetProcessingError(idOrEl, opts)
+ *   fileUploadCompactSetHeaderVisible(idOrEl, visible)
+ *   fileUploadCompactSetFile(idOrEl, name, sizeKb)
+ *   fileUploadCompactSetFiles(idOrEl, items)   — [{ name, sizeKb }, …]
+ *   fileUploadCompactClearFile(idOrEl)
  *
  * Eventos custom (bubbles: true):
- *   'ubits-file-upload-compact-change' — detail: { file: File | null, previewUrl: string | null }
- *   'ubits-file-upload-compact-error'  — detail: { type: 'type'|'size', message: string }
- *
- *   fileUploadCompactSetHeaderVisible(idOrEl, visible) — muestra u oculta .ubits-file-upload-compact__header
+ *   'ubits-file-upload-compact-change' — detail: { file: File | null, previewUrl: string | null, files?: File[] }
+ *   'ubits-file-upload-compact-error'  — detail: { type: 'type'|'size'|'max', message: string }
  *
  * Opciones createFileUploadCompact:
  *   containerId, id, title (default: 'Importar archivo'), accept, maxSizeMb, maxLabel, formats,
  *   icon (FA sin fa-), uploadButtonLabel, changeButtonLabel, previewThumbnail (bool),
+ *   multiple {boolean}, maxFiles {number},
  *   downloadButtons {Array} hasta 3 { label, icon?, onClick },
  *   hideHeader {boolean} true = oculta título + acciones,
- *   onChange(file, detail), onError({ type, message })
+ *   onChange(file, detail), onFilesChange(File[]), onError({ type, message })
  */
 (function () {
     'use strict';
@@ -92,6 +95,24 @@
         }).filter(function (s) { return s.indexOf('/') === -1; }).join(', ');
     }
 
+    function maxFilesMessage(maxFiles) {
+        return 'Puedes adjuntar hasta ' + maxFiles + ' archivos.';
+    }
+
+    var _fucIdSeq = 0;
+    function nextCompactFileId() {
+        _fucIdSeq += 1;
+        return 'fuc-' + _fucIdSeq;
+    }
+
+    function escapeCompactHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
     function isImageFile(file) {
         if (!file) return false;
         if ((file.type || '').indexOf('image/') === 0) return true;
@@ -153,14 +174,22 @@
         var accept = opts.accept || '';
         var maxMb = opts.maxSizeMb || 5;
         var maxLbl = opts.maxLabel || (maxMb + ' MB');
-        var formats = opts.formats || (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl);
+        var multiple = opts.multiple === true;
+        var maxFiles = opts.maxFiles;
+        var hasFileCap = typeof maxFiles === 'number' && maxFiles > 0;
+        var formats = opts.formats || (
+            multiple && hasFileCap
+                ? (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl + ' · Máximo ' + maxFiles)
+                : (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl)
+        );
         var icon = opts.icon || 'file-lines';
-        var uploadLabel = opts.uploadButtonLabel || 'Subir';
+        var uploadLabel = multiple ? 'Subir archivos' : (opts.uploadButtonLabel || 'Subir');
         var changeLabel = opts.changeButtonLabel || 'Cambiar';
         var fileIcon = opts.fileIcon || 'file-lines';
         var btns = (opts.downloadButtons || []).slice(0, 3);
         var hideHeader = opts.hideHeader === true;
         var rootExtraClass = hideHeader ? ' ubits-file-upload-compact--hide-header' : '';
+        if (multiple) rootExtraClass += ' ubits-file-upload-compact--multiple';
 
         var actionBtnsHtml = btns.map(function (b) {
             return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-file-upload-compact__download-btn" data-file-upload-compact-download>' +
@@ -174,7 +203,8 @@
             '<i class="far fa-circle-exclamation"></i><span>Informe de errores</span></button>';
 
         return (
-            '<div class="ubits-file-upload-compact' + rootExtraClass + '" id="' + id + '" data-file-upload-compact>' +
+            '<div class="ubits-file-upload-compact' + rootExtraClass + '" id="' + id + '" data-file-upload-compact' +
+              (multiple ? ' data-file-upload-compact-multiple="true"' : '') + '>' +
               '<div class="ubits-file-upload-compact__header">' +
                 '<h2 class="ubits-body-md-bold ubits-file-upload-compact__title">' + title + '</h2>' +
                 '<div class="ubits-file-upload-compact__header-actions">' + actionBtnsHtml + '</div>' +
@@ -209,13 +239,22 @@
                     '<i class="far fa-trash-alt"></i></button>' +
                 '</div>' +
               '</div>' +
+              '<div class="ubits-file-upload-compact__file-list" data-file-upload-compact-file-list hidden>' +
+                '<div class="ubits-file-upload-compact__file-list-head">' +
+                  '<span class="ubits-body-sm-bold ubits-file-upload-compact__file-list-title" data-file-upload-compact-file-list-title>Archivos (0)</span>' +
+                  '<span class="ubits-file-upload-compact__file-list-grow"></span>' +
+                  '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" data-file-upload-compact-clear-all>Limpiar todo</button>' +
+                '</div>' +
+                '<div class="ubits-file-upload-compact__file-list-items" data-file-upload-compact-file-list-items></div>' +
+              '</div>' +
               '<div class="ubits-file-upload-compact__processing" data-file-upload-compact-processing hidden aria-live="polite">' +
                 '<span class="ubits-body-sm-regular ubits-file-upload-compact__processing-label">Procesando</span>' +
                 '<div class="ubits-file-upload-compact__processing-mount" data-file-upload-compact-processing-mount></div>' +
                 '<span class="ubits-body-sm-regular ubits-file-upload-compact__processing-pct" data-file-upload-compact-processing-pct>0%</span>' +
               '</div>' +
               '<input type="file" class="ubits-file-upload-compact__input" data-file-upload-compact-input' +
-                (accept ? ' accept="' + accept + '"' : '') + '>' +
+                (accept ? ' accept="' + accept + '"' : '') +
+                (multiple ? ' multiple' : '') + '>' +
               '<div class="ubits-body-sm-regular ubits-file-upload-compact__helper" data-file-upload-compact-helper style="display:none">' +
                 '<span class="ubits-file-upload-compact__helper-msg" data-file-upload-compact-helper-msg></span>' +
                 '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-file-upload-compact__error-report-btn-inline" data-file-upload-compact-error-report-inline style="display:none" aria-live="polite">' +
@@ -232,7 +271,12 @@
         opts = opts || {};
         var accept = opts.accept || (el.querySelector('[data-file-upload-compact-input]') || {}).accept || '';
         var maxMb = opts.maxSizeMb || 5;
-        var previewThumbnail = opts.previewThumbnail !== false;
+        var multiple = opts.multiple === true || el.getAttribute('data-file-upload-compact-multiple') === 'true';
+        var maxFiles = opts.maxFiles;
+        var hasFileCap = typeof maxFiles === 'number' && maxFiles > 0;
+        var previewThumbnail = opts.previewThumbnail !== false && !multiple;
+        var fileIcon = opts.fileIcon || 'file-lines';
+        var onFilesChange = opts.onFilesChange || null;
 
         var input = el.querySelector('[data-file-upload-compact-input]');
         var emptyEl = el.querySelector('[data-file-upload-compact-empty]');
@@ -244,6 +288,13 @@
         var fileIconEl = el.querySelector('[data-file-upload-compact-file-icon]');
         var nameEl = el.querySelector('[data-file-upload-compact-name]');
         var sizeEl = el.querySelector('[data-file-upload-compact-size]');
+        var listEl = el.querySelector('[data-file-upload-compact-file-list]');
+        var listTitleEl = el.querySelector('[data-file-upload-compact-file-list-title]');
+        var listItemsEl = el.querySelector('[data-file-upload-compact-file-list-items]');
+        var clearAllBtn = el.querySelector('[data-file-upload-compact-clear-all]');
+
+        /** @type {Array<{ id: string, name: string, size: number, real: File|null, previewUrl: string|null }>} */
+        var files = [];
 
         function setHelper(message, type) {
             if (!helperEl) return;
@@ -259,28 +310,99 @@
             helperEl.style.display = 'flex';
         }
 
-        function showEmpty() {
-            if (emptyEl) emptyEl.hidden = false;
-            if (filledEl) filledEl.hidden = true;
-            if (emptyEl) emptyEl.classList.remove('ubits-file-upload-compact__tile--invalid');
+        function atMax() {
+            return Boolean(multiple && hasFileCap && files.length >= maxFiles);
+        }
+
+        function syncEmptyVisibility() {
+            if (!emptyEl) return;
+            if (multiple) {
+                emptyEl.hidden = atMax();
+                emptyEl.classList.toggle('ubits-file-upload-compact__tile--disabled', atMax());
+            } else {
+                emptyEl.hidden = files.length > 0;
+                emptyEl.classList.remove('ubits-file-upload-compact__tile--disabled');
+            }
+        }
+
+        function emitChange(previewUrl) {
+            var real = files.map(function (f) { return f.real; }).filter(Boolean);
+            var detail = {
+                file: real[0] || null,
+                previewUrl: previewUrl != null ? previewUrl : (files[0] && files[0].previewUrl) || null
+            };
+            if (multiple) detail.files = real.slice();
+            el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-change', {
+                bubbles: true,
+                detail: detail
+            }));
+            if (onFilesChange) onFilesChange(real.slice());
+            if (typeof opts.onChange === 'function') {
+                opts.onChange(detail.file, detail);
+            }
+        }
+
+        function renderFileList() {
+            if (!multiple || !listEl || !listItemsEl) return;
+            if (files.length === 0) {
+                listEl.hidden = true;
+                listItemsEl.innerHTML = '';
+                if (listTitleEl) listTitleEl.textContent = 'Archivos (0)';
+                syncEmptyVisibility();
+                return;
+            }
+            listEl.hidden = false;
+            if (listTitleEl) {
+                listTitleEl.textContent = 'Archivos (' + files.length.toLocaleString('es-CO') + ')';
+            }
+            listItemsEl.innerHTML = files.map(function (item) {
+                return (
+                    '<div class="ubits-file-upload-compact__tile ubits-file-upload-compact__tile--filled" data-file-upload-compact-list-item="' + item.id + '" aria-live="polite">' +
+                      '<span class="ubits-file-upload-compact__icon-wrap" aria-hidden="true">' +
+                        '<i class="far fa-' + fileIcon + '"></i></span>' +
+                      '<div class="ubits-file-upload-compact__meta">' +
+                        '<span class="ubits-body-sm-semibold ubits-file-upload-compact__name">' + escapeCompactHtml(item.name) + '</span>' +
+                        '<span class="ubits-body-sm-regular ubits-file-upload-compact__size">' + formatSize(item.size) + '</span>' +
+                      '</div>' +
+                      '<div class="ubits-file-upload-compact__actions">' +
+                        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only ubits-file-upload-compact__remove-btn" ' +
+                          'data-file-upload-compact-list-remove="' + item.id + '" aria-label="Quitar ' + escapeCompactHtml(item.name) + '">' +
+                          '<i class="far fa-trash-alt"></i></button>' +
+                      '</div>' +
+                    '</div>'
+                );
+            }).join('');
+            syncEmptyVisibility();
+        }
+
+        function showEmpty(emit) {
+            files = [];
+            if (emptyEl) {
+                emptyEl.hidden = false;
+                emptyEl.classList.remove('ubits-file-upload-compact__tile--invalid', 'ubits-file-upload-compact__tile--disabled');
+            }
+            if (filledEl) {
+                filledEl.hidden = true;
+                filledEl.classList.remove('ubits-file-upload-compact__tile--invalid');
+            }
             if (input) input.value = '';
             if (previewImg) previewImg.removeAttribute('src');
             if (thumbEl) thumbEl.hidden = true;
             if (fileIconEl) fileIconEl.hidden = false;
+            if (listEl) listEl.hidden = true;
+            if (listItemsEl) listItemsEl.innerHTML = '';
             el._fileUploadCompactPreviewUrl = null;
             setHelper(null);
             fileUploadCompactShowErrorReport(el, false, { placement: 'header' });
             fileUploadCompactShowErrorReport(el, false, { placement: 'inline' });
             fileUploadCompactClearProgress(el);
             fileUploadCompactClearProcessing(el);
-            el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-change', {
-                bubbles: true,
-                detail: { file: null, previewUrl: null }
-            }));
-            if (typeof opts.onChange === 'function') opts.onChange(null, { file: null, previewUrl: null });
+            var rem = el.querySelector('[data-file-upload-compact-remove]');
+            if (rem) rem.style.display = '';
+            if (emit !== false) emitChange(null);
         }
 
-        function showFilled(file, previewUrl) {
+        function showSingleFilled(file, previewUrl) {
             if (emptyEl) emptyEl.hidden = true;
             if (filledEl) filledEl.hidden = false;
             if (nameEl) nameEl.textContent = file.name;
@@ -291,17 +413,167 @@
             el._fileUploadCompactPreviewUrl = previewUrl || null;
             el._fileUploadCompactPreviewThumbnail = previewThumbnail;
             syncCompactUploadThumbnail(el);
+        }
 
-            el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-change', {
+        function removeAt(id) {
+            files = files.filter(function (f) { return f.id !== id; });
+            setHelper(null);
+            if (input) input.value = '';
+            if (!multiple) {
+                showEmpty(true);
+                return;
+            }
+            if (files.length === 0) {
+                showEmpty(true);
+                return;
+            }
+            renderFileList();
+            emitChange(null);
+        }
+
+        function validateOne(file) {
+            if (!fileMatchesAccept(file, accept)) {
+                var typeMsg = 'El archivo no es compatible. Solo se aceptan: ' + accept + '.';
+                return { type: 'type', message: typeMsg };
+            }
+            if (file.size > maxMb * 1048576) {
+                return { type: 'size', message: 'El archivo es demasiado grande. El límite es ' + maxMb + ' MB.' };
+            }
+            return null;
+        }
+
+        function fireError(err) {
+            if (emptyEl && !emptyEl.hidden) emptyEl.classList.add('ubits-file-upload-compact__tile--invalid');
+            setHelper(err.message);
+            el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-error', {
                 bubbles: true,
-                detail: { file: file, previewUrl: previewUrl || null }
+                detail: err
             }));
-            if (typeof opts.onChange === 'function') {
-                opts.onChange(file, { file: file, previewUrl: previewUrl || null });
+            if (typeof opts.onError === 'function') opts.onError(err);
+        }
+
+        function finishApplyMultiple(accepted, lastError, incomingLen, room) {
+            files = files.concat(accepted);
+            if (filledEl) filledEl.hidden = true;
+            renderFileList();
+            setHelper(null);
+            if (accepted.length === 1) {
+                setHelper('Archivo validado. Puedes continuar.', 'success');
+            } else {
+                setHelper(accepted.length + ' archivos validados. Puedes continuar.', 'success');
+            }
+            emitChange(null);
+            if (lastError) fireError(lastError);
+            else if (hasFileCap && incomingLen > room) {
+                fireError({ type: 'max', message: maxFilesMessage(maxFiles) });
             }
         }
 
+        function applyIncoming(incoming) {
+            if (!incoming || !incoming.length) return;
+
+            if (!multiple) {
+                var f = incoming[0];
+                var err = validateOne(f);
+                if (err) {
+                    if (input) input.value = '';
+                    fireError(err);
+                    return;
+                }
+                files = [{ id: nextCompactFileId(), name: f.name, size: f.size, real: f, previewUrl: null }];
+                if (previewThumbnail && isImageFile(f)) {
+                    var reader = new FileReader();
+                    reader.onload = function (ev) {
+                        var url = ev && ev.target ? ev.target.result : null;
+                        files[0].previewUrl = url;
+                        showSingleFilled(f, url);
+                        emitChange(url);
+                    };
+                    reader.readAsDataURL(f);
+                } else {
+                    showSingleFilled(f, null);
+                    emitChange(null);
+                }
+                return;
+            }
+
+            var room = hasFileCap ? Math.max(0, maxFiles - files.length) : Number.POSITIVE_INFINITY;
+            if (hasFileCap && room === 0) {
+                fireError({ type: 'max', message: maxFilesMessage(maxFiles) });
+                return;
+            }
+
+            var existingKeys = {};
+            files.forEach(function (item) {
+                existingKeys[item.name + '::' + item.size] = true;
+            });
+            var accepted = [];
+            var lastError = null;
+
+            for (var i = 0; i < incoming.length; i++) {
+                if (accepted.length >= room) break;
+                var file = incoming[i];
+                var key = file.name + '::' + file.size;
+                if (existingKeys[key]) continue;
+                var vErr = validateOne(file);
+                if (vErr) {
+                    lastError = vErr;
+                    continue;
+                }
+                existingKeys[key] = true;
+                accepted.push({
+                    id: nextCompactFileId(),
+                    name: file.name,
+                    size: file.size,
+                    real: file,
+                    previewUrl: null
+                });
+            }
+
+            if (accepted.length === 0) {
+                if (lastError) fireError(lastError);
+                return;
+            }
+
+            finishApplyMultiple(accepted, lastError, incoming.length, room);
+        }
+
+        function injectMocks(items) {
+            fileUploadCompactClearProgress(el);
+            fileUploadCompactClearProcessing(el);
+            fileUploadCompactShowErrorReport(el, false, { placement: 'header' });
+            fileUploadCompactShowErrorReport(el, false, { placement: 'inline' });
+            setHelper(null);
+            if (input) input.value = '';
+            var rem = el.querySelector('[data-file-upload-compact-remove]');
+            if (rem) rem.style.display = '';
+
+            files = (items || []).map(function (item) {
+                return {
+                    id: nextCompactFileId(),
+                    name: item.name,
+                    size: (typeof item.sizeKb === 'number' ? item.sizeKb : 0) * 1024,
+                    real: null,
+                    previewUrl: null
+                };
+            });
+
+            if (!multiple) {
+                if (files.length === 0) {
+                    showEmpty(false);
+                    return;
+                }
+                showSingleFilled(files[0], null);
+                if (listEl) listEl.hidden = true;
+                return;
+            }
+
+            if (filledEl) filledEl.hidden = true;
+            renderFileList();
+        }
+
         function openPicker() {
+            if (atMax()) return;
             if (input) input.click();
         }
 
@@ -317,56 +589,40 @@
             removeBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                showEmpty();
+                showEmpty(true);
+            });
+        }
+
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showEmpty(true);
+            });
+        }
+
+        if (listItemsEl) {
+            listItemsEl.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-file-upload-compact-list-remove]');
+                if (!btn) return;
+                e.preventDefault();
+                e.stopPropagation();
+                removeAt(btn.getAttribute('data-file-upload-compact-list-remove'));
             });
         }
 
         if (input) {
             input.addEventListener('change', function () {
-                var file = input.files && input.files[0];
-                if (!file) return;
-
-                if (!fileMatchesAccept(file, accept)) {
-                    var typeMsg = 'El archivo no es compatible. Solo se aceptan: ' + accept + '.';
-                    if (emptyEl) emptyEl.classList.add('ubits-file-upload-compact__tile--invalid');
-                    setHelper(typeMsg);
-                    input.value = '';
-                    el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-error', {
-                        bubbles: true,
-                        detail: { type: 'type', message: typeMsg }
-                    }));
-                    if (typeof opts.onError === 'function') opts.onError({ type: 'type', message: typeMsg });
-                    return;
-                }
-
-                if (file.size > maxMb * 1048576) {
-                    var sizeMsg = 'El archivo es demasiado grande. El límite es ' + maxMb + ' MB.';
-                    if (emptyEl) emptyEl.classList.add('ubits-file-upload-compact__tile--invalid');
-                    setHelper(sizeMsg);
-                    input.value = '';
-                    el.dispatchEvent(new CustomEvent('ubits-file-upload-compact-error', {
-                        bubbles: true,
-                        detail: { type: 'size', message: sizeMsg }
-                    }));
-                    if (typeof opts.onError === 'function') opts.onError({ type: 'size', message: sizeMsg });
-                    return;
-                }
-
-                if (previewThumbnail && isImageFile(file)) {
-                    var reader = new FileReader();
-                    reader.onload = function (ev) {
-                        showFilled(file, ev && ev.target ? ev.target.result : null);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    showFilled(file, null);
-                }
+                var list = input.files ? Array.prototype.slice.call(input.files) : [];
+                if (list.length) applyIncoming(list);
+                input.value = '';
             });
         }
 
-        el._fileUploadCompactShowEmpty = showEmpty;
-        el._fileUploadCompactShowFilled = showFilled;
-        el._fileUploadCompactSetHelper = setHelper;
+        el._fileUploadCompactShowEmpty = function () { showEmpty(true); };
+        el._fileUploadCompactInjectMocks = injectMocks;
+        el._fileUploadCompactClearAll = function () { showEmpty(true); };
+        el._fileUploadCompactIsMultiple = multiple;
         return el;
     }
 
@@ -586,6 +842,32 @@
         if (inlineBtn) inlineBtn.style.display = '';
         var removeBtn = el.querySelector('[data-file-upload-compact-remove]');
         if (removeBtn) removeBtn.style.display = 'none';
+        /* En multiple, ocultar quitar de cada ítem de la lista */
+        el.querySelectorAll('[data-file-upload-compact-list-remove]').forEach(function (btn) {
+            btn.style.display = 'none';
+        });
+    }
+
+    function fileUploadCompactSetFile(idOrEl, name, sizeKb) {
+        var el = resolveEl(idOrEl);
+        if (!el || typeof el._fileUploadCompactInjectMocks !== 'function') return;
+        el._fileUploadCompactInjectMocks([{ name: name, sizeKb: sizeKb }]);
+    }
+
+    function fileUploadCompactSetFiles(idOrEl, items) {
+        var el = resolveEl(idOrEl);
+        if (!el || typeof el._fileUploadCompactInjectMocks !== 'function') return;
+        el._fileUploadCompactInjectMocks(items || []);
+    }
+
+    function fileUploadCompactClearFile(idOrEl) {
+        var el = resolveEl(idOrEl);
+        if (!el) return;
+        if (typeof el._fileUploadCompactClearAll === 'function') {
+            el._fileUploadCompactClearAll();
+            return;
+        }
+        if (typeof el._fileUploadCompactShowEmpty === 'function') el._fileUploadCompactShowEmpty();
     }
 
     if (typeof window !== 'undefined') {
@@ -603,5 +885,8 @@
         window.fileUploadCompactAnimateProcessing = fileUploadCompactAnimateProcessing;
         window.fileUploadCompactSetProcessingError = fileUploadCompactSetProcessingError;
         window.fileUploadCompactSetHeaderVisible = fileUploadCompactSetHeaderVisible;
+        window.fileUploadCompactSetFile = fileUploadCompactSetFile;
+        window.fileUploadCompactSetFiles = fileUploadCompactSetFiles;
+        window.fileUploadCompactClearFile = fileUploadCompactClearFile;
     }
 })();

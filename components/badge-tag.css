@@ -422,3 +422,300 @@
 .ubits-badge-tag--icon-only.ubits-badge-tag--xs.ubits-badge-tag--with-icon i {
     font-size: var(--font-size-xs);
 }
+
+/* ========================================
+   Gasto de tokens IA (oficial)
+   Squash + cuenta regresiva + moneda gira + −N flota.
+   Sin sonido. Opción B: Cascada vía spendUbitsBadgeTokens(el, n, { sound: 'cascade' }).
+   ======================================== */
+
+.ubits-badge-tag-host {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    transform-origin: center;
+}
+
+.ubits-badge-tag__spend-minus {
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    z-index: 4;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-feedback-accent-error, var(--color-feedback-accent-error));
+    pointer-events: none;
+    opacity: 0;
+}
+
+.ubits-badge-tag-host.is-spending .ubits-badge-tag__spend-minus {
+    animation: ubits-badge-token-minus-up 0.85s ease forwards;
+}
+
+@keyframes ubits-badge-token-minus-up {
+    0% { opacity: 0; transform: translate(-50%, 8px); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -18px); }
+}
+
+.ubits-badge-tag.is-spending {
+    animation: ubits-badge-token-squash 0.5s cubic-bezier(0.2, 1.4, 0.3, 1);
+}
+
+@keyframes ubits-badge-token-squash {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(1.18, 0.78); }
+    55% { transform: scale(0.92, 1.12); }
+    100% { transform: scale(1, 1); }
+}
+
+.ubits-badge-tag.is-spending .ubits-badge-tag__token-cost i {
+    display: inline-block;
+    animation: ubits-badge-token-coin-spin 0.6s ease;
+}
+
+@keyframes ubits-badge-token-coin-spin {
+    from { transform: rotateY(0); }
+    to { transform: rotateY(360deg); }
+}
+
+/* ========================================
+   APARIENCIA: SOFT (*-light) + INVERT + BRAND + XL + RADIO
+   Paridad con Ubits-React Badge (oleada ReUI)
+   ======================================== */
+
+.ubits-badge-tag--radius-full {
+    border-radius: 1000px;
+}
+
+.ubits-badge-tag--radius-md {
+    border-radius: var(--border-radius-md, 8px);
+}
+
+.ubits-badge-tag--link {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.ubits-badge-tag--link:hover {
+    filter: brightness(0.97);
+}
+
+.ubits-badge-tag--with-avatar,
+.ubits-badge-tag--with-image {
+    gap: var(--gap-xs);
+    padding-left: 4px;
+}
+
+.ubits-badge-tag__image {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    object-fit: cover;
+    display: block;
+}
+
+.ubits-badge-tag--xs .ubits-badge-tag__image { width: 12px; height: 12px; }
+.ubits-badge-tag--lg .ubits-badge-tag__image { width: 16px; height: 16px; }
+.ubits-badge-tag--xl .ubits-badge-tag__image { width: 18px; height: 18px; }
+
+.ubits-badge-tag--removable {
+    padding-right: 2px;
+    gap: var(--gap-2xs, 4px);
+}
+
+/* Cierre nativo (sin botón DS) */
+.ubits-badge-tag__close:not(.ubits-button) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 1000px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.72;
+}
+
+.ubits-badge-tag__close:not(.ubits-button):hover {
+    opacity: 1;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.ubits-badge-tag--xs .ubits-badge-tag__close:not(.ubits-button) {
+    width: 16px;
+    height: 16px;
+}
+
+/* Cierre con átomo Button (paridad React) */
+.ubits-badge-tag__close.ubits-button {
+    flex-shrink: 0;
+    opacity: 0.72;
+    color: inherit;
+}
+
+.ubits-badge-tag__close.ubits-button:hover {
+    opacity: 1;
+}
+
+.ubits-badge-tag--xl {
+    min-height: 40px;
+    padding: 10px 14px;
+    font-size: var(--font-size-md, 14px);
+    gap: var(--gap-md);
+}
+
+.ubits-badge-tag--xl .ubits-badge-tag__indicator {
+    width: 10px;
+    height: 10px;
+}
+
+.ubits-badge-tag--xl.ubits-badge-tag--with-icon i {
+    font-size: var(--font-size-md, 14px);
+}
+
+.ubits-badge-tag--xl.ubits-badge-tag--icon-only {
+    min-width: 40px;
+    width: 40px;
+    min-height: 40px;
+    height: 40px;
+}
+
+/* Brand */
+.ubits-badge-tag--outlined.ubits-badge-tag--brand {
+    border-color: var(--ubits-accent-brand);
+}
+.ubits-badge-tag--outlined.ubits-badge-tag--brand .ubits-badge-tag__indicator {
+    background: var(--ubits-accent-brand);
+}
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--brand i {
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--brand {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--brand .ubits-badge-tag__text {
+    color: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--brand .ubits-badge-tag__indicator {
+    background: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--brand i {
+    color: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+
+/* Soft */
+.ubits-badge-tag--soft {
+    border-color: transparent;
+}
+
+.ubits-badge-tag--soft.ubits-badge-tag--success {
+    background: var(--ubits-feedback-bg-success-subtle);
+    color: var(--ubits-feedback-fg-success-subtle, var(--ubits-fg-1-high));
+}
+.ubits-badge-tag--soft.ubits-badge-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-feedback-fg-info-subtle, var(--ubits-fg-1-high));
+}
+.ubits-badge-tag--soft.ubits-badge-tag--warning {
+    background: var(--ubits-feedback-bg-warning-subtle);
+    color: var(--ubits-feedback-fg-warning-subtle, var(--ubits-fg-1-high));
+}
+.ubits-badge-tag--soft.ubits-badge-tag--error {
+    background: var(--ubits-feedback-bg-error-subtle);
+    color: var(--ubits-feedback-fg-error-subtle, var(--ubits-fg-1-high));
+}
+.ubits-badge-tag--soft.ubits-badge-tag--brand {
+    background: color-mix(in srgb, var(--ubits-accent-brand) 14%, var(--ubits-bg-1));
+    color: var(--ubits-accent-brand);
+}
+.ubits-badge-tag--soft.ubits-badge-tag--gray {
+    background: var(--ubits-bg-gray-subtle, #f3f3f4);
+    color: var(--ubits-fg-gray-subtle);
+}
+.ubits-badge-tag--soft .ubits-badge-tag__text { color: inherit; }
+
+.ubits-badge-tag--soft.ubits-badge-tag--success .ubits-badge-tag__indicator { background: var(--ubits-feedback-accent-success); }
+.ubits-badge-tag--soft.ubits-badge-tag--info .ubits-badge-tag__indicator { background: var(--ubits-feedback-accent-info); }
+.ubits-badge-tag--soft.ubits-badge-tag--warning .ubits-badge-tag__indicator { background: var(--ubits-feedback-accent-warning); }
+.ubits-badge-tag--soft.ubits-badge-tag--error .ubits-badge-tag__indicator { background: var(--ubits-feedback-accent-error); }
+.ubits-badge-tag--soft.ubits-badge-tag--brand .ubits-badge-tag__indicator { background: var(--ubits-accent-brand); }
+.ubits-badge-tag--soft.ubits-badge-tag--gray .ubits-badge-tag__indicator { background: var(--ubits-accent-gray, #6b7280); }
+
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--success i { color: var(--ubits-feedback-accent-success); }
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--info i { color: var(--ubits-feedback-accent-info); }
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--warning i { color: var(--ubits-feedback-accent-warning); }
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--error i { color: var(--ubits-feedback-accent-error); }
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--brand i { color: var(--ubits-accent-brand); }
+
+.ubits-badge-tag--soft.ubits-badge-tag--ia {
+    background: color-mix(in srgb, rgb(136, 35, 234) 10%, var(--ubits-bg-1));
+    color: var(--ubits-fg-1-high);
+}
+.ubits-badge-tag--soft.ubits-badge-tag--ia .ubits-badge-tag__indicator {
+    background: var(--ubits-ia-badge-border-gradient);
+}
+
+/* Invert */
+.ubits-badge-tag--invert {
+    background: var(--ubits-fg-1-high);
+    border-color: transparent;
+    color: var(--ubits-bg-1);
+}
+.ubits-badge-tag--invert .ubits-badge-tag__text { color: var(--ubits-bg-1); }
+.ubits-badge-tag--invert .ubits-badge-tag__indicator { background: var(--ubits-bg-1); }
+.ubits-badge-tag--invert.ubits-badge-tag--with-icon i { color: var(--ubits-bg-1); }
+
+.ubits-badge-tag--invert.ubits-badge-tag--brand {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--invert.ubits-badge-tag--brand .ubits-badge-tag__text {
+    color: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--invert.ubits-badge-tag--brand .ubits-badge-tag__indicator {
+    background: var(--ubits-fg-1-high-inverted, #edeeef);
+}
+.ubits-badge-tag--invert.ubits-badge-tag--success { background: var(--ubits-feedback-accent-success); }
+.ubits-badge-tag--invert.ubits-badge-tag--info { background: var(--ubits-feedback-accent-info); }
+.ubits-badge-tag--invert.ubits-badge-tag--warning { background: var(--ubits-feedback-accent-warning); }
+.ubits-badge-tag--invert.ubits-badge-tag--error { background: var(--ubits-feedback-accent-error); }
+
+/* Gray — outlined / filled (paridad React) */
+.ubits-badge-tag--outlined.ubits-badge-tag--gray {
+    border-color: var(--ubits-border-gray, var(--ubits-accent-gray, #6b7280));
+}
+.ubits-badge-tag--outlined.ubits-badge-tag--gray .ubits-badge-tag__indicator {
+    background: var(--ubits-accent-gray, #6b7280);
+}
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--gray i {
+    color: var(--ubits-accent-gray, #6b7280);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--gray {
+    background: var(--ubits-bg-gray-subtle, #f3f3f4);
+    color: var(--ubits-fg-gray-subtle);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--gray .ubits-badge-tag__text {
+    color: var(--ubits-fg-gray-subtle);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--gray .ubits-badge-tag__indicator {
+    background: var(--ubits-accent-gray, #6b7280);
+}
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--gray i {
+    color: var(--ubits-accent-gray, #6b7280);
+}
+
+.ubits-badge-tag--soft.ubits-badge-tag--with-icon.ubits-badge-tag--gray i {
+    color: var(--ubits-accent-gray, #6b7280);
+}

@@ -262,6 +262,7 @@ body.ia-panel-resizing .ia-panel {
     align-items: center;
     gap: var(--gap-sm);
     flex-shrink: 0;
+    overflow: visible;
 }
 
 .ia-panel__tokens-badge {

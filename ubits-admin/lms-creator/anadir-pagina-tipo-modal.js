@@ -24,6 +24,7 @@
         'texto',
         'embebido',
         'scorm',
+        'presentacion-interactiva',
         'evaluacion-final',
         'asistencia',
         'encuesta-libre',
@@ -34,7 +35,9 @@
     var ANADIR_PAGINA_DISABLED = {
         texto: true,
         'encuesta-libre': true,
-        encuesta: true
+        encuesta: true,
+        /* Studio V2 solo en playground React — ver diferencias-react-vs-vanilla.md */
+        'presentacion-interactiva': true
     };
 
     var _onSelectCallback = null;

@@ -33,7 +33,7 @@
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
    button.css → chip.css (adjuntos: chips en preview y en mensajes; sin chip.css se ven sin estilo)
    → ubits-ia-appearance.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ia-panel.css
-   (+ tooltip.js antes de ia-panel.js si usas el badge de tokens en cabecera).
+   (+ tooltip.js y badge-tag.js antes de ia-panel.js si usas el badge de tokens en cabecera).
    ======================================== */
 
 // ---------------------------------------------------------------------------
@@ -190,8 +190,10 @@ function _iaPanelTokensBadgeHtml(o) {
             ? merged.ariaLabel
             : _iaPanelTokensBadgeAriaLabel(num);
     return (
-        '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ia-panel__tokens-badge" id="ia-panel-tokens-badge" tabindex="0" ' +
-        'data-tooltip="' +
+        '<span class="ubits-badge-tag-host"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ia-panel__tokens-badge" id="ia-panel-tokens-badge" tabindex="0" ' +
+        'data-token-value="' +
+        _aiEscape(String(num)) +
+        '" data-tooltip="' +
         _aiEscape(tip) +
         '" data-tooltip-delay="0" data-tooltip-tap-toggle aria-label="' +
         _aiEscape(aria) +
@@ -201,7 +203,7 @@ function _iaPanelTokensBadgeHtml(o) {
         '<span class="ubits-badge-tag__token-number">' +
         _aiEscape(_iaPanelFormatTokensBadgeNumber(num)) +
         '</span>' +
-        '</span></span>'
+        '</span></span></span>'
     );
 }
 
@@ -949,9 +951,14 @@ function setIAPanelTokensBadgeValue(value) {
     if (isNaN(n) || n < 0) n = 0;
     var el = _aiEl('ia-panel-tokens-badge');
     if (!el) return;
-    var numEl = el.querySelector('.ubits-badge-tag__token-number');
-    if (numEl) numEl.textContent = _iaPanelFormatTokensBadgeNumber(n);
-    el.setAttribute('aria-label', _iaPanelTokensBadgeAriaLabel(n));
+    if (typeof window.spendUbitsBadgeTokens === 'function') {
+        window.spendUbitsBadgeTokens(el, n);
+    } else {
+        var numEl = el.querySelector('.ubits-badge-tag__token-number');
+        if (numEl) numEl.textContent = _iaPanelFormatTokensBadgeNumber(n);
+        el.setAttribute('data-token-value', String(n));
+        el.setAttribute('aria-label', _iaPanelTokensBadgeAriaLabel(n));
+    }
     if (_iaPanel.options && _iaPanel.options.tokensBadge !== false) {
         if (_iaPanel.options.tokensBadge && typeof _iaPanel.options.tokensBadge === 'object') {
             _iaPanel.options.tokensBadge.value = n;

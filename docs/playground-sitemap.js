@@ -599,6 +599,14 @@
                 'Editar · Ajustes · Pesos de evaluación',
                 C.editar + '?id=' + editContentId + '#ajustes-pesos',
                 'step',
+                'Incluye evaluación oculta demo (0% + tag Oculta · fecha)',
+              ),
+              link(
+                'ec-ocultar-eval',
+                'Editar · Modal ocultar evaluación',
+                C.editar + '?id=' + editContentId + '#recursos/ocultar-evaluacion',
+                'modal',
+                'Advertencia: peso 0% y redistribución equitativa',
               ),
               link(
                 'ec-ajustes-pesos-empty',

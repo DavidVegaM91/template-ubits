@@ -423,6 +423,54 @@
     border-radius: var(--border-radius-full);
 }
 
+/* Ancho completo */
+.ubits-button--full-width {
+    width: 100%;
+}
+
+/* Slot leading (avatar u otro átomo al inicio) */
+.ubits-button__leading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.ubits-button--has-leading:not(.ubits-button--icon-only) {
+    gap: var(--gap-sm);
+}
+
+.ubits-button--xs.ubits-button--has-leading:not(.ubits-button--icon-only) {
+    padding-left: 4px;
+    padding-right: 8px;
+}
+
+.ubits-button--sm.ubits-button--has-leading:not(.ubits-button--icon-only) {
+    padding-left: 4px;
+    padding-right: 12px;
+}
+
+.ubits-button--has-leading:not(.ubits-button--icon-only):not(.ubits-button--xs):not(.ubits-button--sm) {
+    padding-left: 6px;
+}
+
+/* Loading */
+.ubits-button--loading {
+    cursor: wait;
+    pointer-events: none;
+}
+
+.ubits-button__spinner {
+    animation: ubits-btn-spin 0.75s linear infinite;
+}
+
+@keyframes ubits-btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Aplicar tipografía UBITS al texto del botón large */
 .ubits-button--lg span:not(.ubits-attention-badge) {
     font-family: var(--ubits-font-family-sans);

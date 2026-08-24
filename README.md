@@ -256,7 +256,7 @@ El **LMS Creator** vive en **`ubits-admin/lms-creator/`**. Las **listas** usan e
 
 | Origen | Comportamiento |
 |--------|----------------|
-| Sidebar Workspace admin → Aprendizaje | Contenidos, Categorías, U. corporativa, LMS AI, Planes, Grupos, Certificados |
+| Sidebar Workspace admin → Aprendizaje | Contenidos, Categorías, U. corporativa, Recursos IA, Planes, Grupos, Certificados |
 | Menú del avatar (colaborador) | **Modo LMS Creator** → `ubits-admin/lms-creator/contenidos.html` |
 | `aprendizaje/u-corporativa.html` | Botón **Acceder a LMS Creator** → `../../ubits-admin/lms-creator/contenidos.html` |
 | Bookmark viejo `ubits-colaborador/lms-creator/*` | Redirect HTML al mismo path bajo admin (conserva `?` y `#`) |

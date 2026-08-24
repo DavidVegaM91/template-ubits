@@ -60,10 +60,50 @@
         }
 
         if (h === 'informacion' || h === 'portada') {
-            return { section: 'informacion', resultadosTab: 'progreso', configPanel: 'hub' };
+            return {
+                section: 'informacion',
+                resultadosTab: 'progreso',
+                configPanel: 'hub',
+                isOcultarEvaluacionModal: false,
+                ocultarEvaluacionPageId: null
+            };
         }
-        if (h === 'recursos') return { section: 'recursos', resultadosTab: 'progreso', configPanel: 'hub' };
-        if (h === 'certificado') return { section: 'certificado', resultadosTab: 'progreso', configPanel: 'hub' };
+        var ocultarEvalMatch = h.match(/^recursos\/ocultar-evaluacion(?:\/([^/]+))?$/i);
+        if (ocultarEvalMatch) {
+            var oePage = null;
+            if (ocultarEvalMatch[1]) {
+                try {
+                    oePage = decodeURIComponent(ocultarEvalMatch[1]);
+                } catch (e) {
+                    oePage = ocultarEvalMatch[1];
+                }
+            }
+            return {
+                section: 'recursos',
+                resultadosTab: 'progreso',
+                configPanel: 'hub',
+                isOcultarEvaluacionModal: true,
+                ocultarEvaluacionPageId: oePage
+            };
+        }
+        if (h === 'recursos' || h.indexOf('recursos/') === 0) {
+            return {
+                section: 'recursos',
+                resultadosTab: 'progreso',
+                configPanel: 'hub',
+                isOcultarEvaluacionModal: false,
+                ocultarEvaluacionPageId: null
+            };
+        }
+        if (h === 'certificado') {
+            return {
+                section: 'certificado',
+                resultadosTab: 'progreso',
+                configPanel: 'hub',
+                isOcultarEvaluacionModal: false,
+                ocultarEvaluacionPageId: null
+            };
+        }
         if (
             h === 'ajustes' ||
             h === 'ajustes-visibilidad' ||
@@ -78,16 +118,40 @@
             h === 'visibilidad' ||
             h === 'publicacion'
         ) {
-            return { section: 'visibilidad', resultadosTab: 'progreso', configPanel: configPanel };
+            return {
+                section: 'visibilidad',
+                resultadosTab: 'progreso',
+                configPanel: configPanel,
+                isOcultarEvaluacionModal: false,
+                ocultarEvaluacionPageId: null
+            };
         }
         if (h === 'resultados' || h.indexOf('resultados-') === 0) {
-            return { section: 'resultados', resultadosTab: resultadosTab, configPanel: 'hub' };
+            return {
+                section: 'resultados',
+                resultadosTab: resultadosTab,
+                configPanel: 'hub',
+                isOcultarEvaluacionModal: false,
+                ocultarEvaluacionPageId: null
+            };
         }
-        return { section: 'resultados', resultadosTab: 'progreso', configPanel: 'hub' };
+        return {
+            section: 'resultados',
+            resultadosTab: 'progreso',
+            configPanel: 'hub',
+            isOcultarEvaluacionModal: false,
+            ocultarEvaluacionPageId: null
+        };
     }
 
     function resolveEditarContenidoHashForSection(section, currentHash) {
         var parsed = parseEditarContenidoHash(currentHash);
+        if (parsed.isOcultarEvaluacionModal && section === 'recursos') {
+            if (parsed.ocultarEvaluacionPageId) {
+                return '#recursos/ocultar-evaluacion/' + encodeURIComponent(parsed.ocultarEvaluacionPageId);
+            }
+            return '#recursos/ocultar-evaluacion';
+        }
         if (section === 'resultados') {
             if (parsed.section === 'resultados') {
                 return buildResultadosHash(parsed.resultadosTab);
@@ -382,8 +446,7 @@
                     id: 'cc-demo-pg-2',
                     title: 'Conversaciones difíciles según Thomas-Kilmann',
                     tipo: 'scorm',
-                    hidden: true,
-                    hiddenSinceIso: '2026-08-12'
+                    hidden: true
                 },
                 { id: 'cc-demo-pg-3', title: 'Evaluación Sección 1', tipo: 'evaluacion' }
             ]
@@ -396,31 +459,72 @@
             pages: [
                 { id: 'cc-demo-pg-4', title: 'Simulador de conversación difícil', tipo: 'scorm' },
                 { id: 'cc-demo-pg-5', title: 'Guía mapa de conflicto', tipo: 'pdf' },
-                { id: 'cc-demo-pg-6', title: 'Evaluación Sección 2', tipo: 'evaluacion' }
+                { id: 'cc-demo-pg-6', title: 'Evaluación Sección 2', tipo: 'evaluacion' },
+                {
+                    id: 'cc-demo-pg-7',
+                    title: 'Evaluación de cierre',
+                    tipo: 'evaluacion',
+                    hidden: true,
+                    hiddenSinceIso: (function () {
+                        var d = new Date();
+                        d.setHours(12, 0, 0, 0);
+                        d.setDate(d.getDate() - 1);
+                        var y = d.getFullYear();
+                        var m = String(d.getMonth() + 1).padStart(2, '0');
+                        var day = String(d.getDate()).padStart(2, '0');
+                        return y + '-' + m + '-' + day;
+                    })()
+                }
             ]
         }
     ];
 
-    var DEMO_HIDDEN_SINCE_ISO = '2026-08-12';
+    /**
+     * Overlay demo: página oculta después de Completada (RN-12).
+     * Fecha relativa (hace 1 día) para no chocar con fechaInicio del mock (≥2 días).
+     */
+    function demoHiddenSinceIso() {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() - 1);
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+    }
 
-    var DEMO_PROGRESS_OVERRIDES = {
-        p2: { hidden: true, hiddenSinceIso: DEMO_HIDDEN_SINCE_ISO },
-        'cc-demo-pg-2': { hidden: true, hiddenSinceIso: DEMO_HIDDEN_SINCE_ISO }
-    };
+    var DEMO_HIDDEN_PAGE_IDS = { p2: true, 'cc-demo-pg-2': true };
 
     function applyDemoProgressOverlay(blueprint) {
+        var hiddenSinceIso = demoHiddenSinceIso();
         return (blueprint || []).map(function (section) {
             return Object.assign({}, section, {
                 pages: (section.pages || []).map(function (page) {
-                    var ov = DEMO_PROGRESS_OVERRIDES[page.id];
-                    if (!ov) return page;
+                    if (!DEMO_HIDDEN_PAGE_IDS[page.id]) return page;
                     return Object.assign({}, page, {
-                        hidden: ov.hidden != null ? ov.hidden : page.hidden,
-                        hiddenSinceIso: ov.hiddenSinceIso != null ? ov.hiddenSinceIso : page.hiddenSinceIso
+                        hidden: true,
+                        hiddenSinceIso: page.hiddenSinceIso || hiddenSinceIso
                     });
                 })
             });
         });
+    }
+
+    /** Completada debe ser anterior al día en que se ocultó (RN-12). */
+    function clampCompletedBeforeHidden(completed, hiddenSinceIso) {
+        var parts = String(hiddenSinceIso || '')
+            .trim()
+            .split('-');
+        if (parts.length < 3) return completed;
+        var y = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10) - 1;
+        var d = parseInt(parts[2], 10);
+        if (isNaN(y) || isNaN(m) || isNaN(d)) return completed;
+        var hideStart = new Date(y, m, d, 0, 0, 0, 0);
+        if (completed.getTime() < hideStart.getTime()) return completed;
+        var out = new Date(completed);
+        out.setFullYear(y, m, d - 1);
+        return out;
     }
 
     function getCourseIndiceBlueprint() {
@@ -454,7 +558,7 @@
 
     function resolveHiddenSinceLabel(page) {
         if (!page.hidden) return '';
-        var iso = page.hiddenSinceIso || DEMO_HIDDEN_SINCE_ISO;
+        var iso = page.hiddenSinceIso || demoHiddenSinceIso();
         if (typeof window.formatDateDDMmmAAAA === 'function') {
             return window.formatDateDDMmmAAAA(iso) || '';
         }
@@ -473,9 +577,9 @@
         var total = flat.length;
         var pct = Math.max(0, Math.min(100, Number(progresoPercent) || 0));
         var done = completedPagesForPercent(pct, total);
-        var labels =
-            typeof window.ubitsBuildPageCompletionLabels === 'function'
-                ? window.ubitsBuildPageCompletionLabels({
+        var dates =
+            typeof window.ubitsBuildPageCompletionDates === 'function'
+                ? window.ubitsBuildPageCompletionDates({
                       fechaInicio: row && row.fechaInicio,
                       fechaFin: row && row.fechaFin,
                       completedCount: done,
@@ -491,7 +595,15 @@
             if (ref.hidden && st !== 'completada' && st !== 'completada-activa') st = 'bloqueada';
             stateMap[key] = st;
             if (st === 'completada' || st === 'completada-activa') {
-                if (labels[completedOrdinal]) labelMap[key] = labels[completedOrdinal];
+                var at = dates[completedOrdinal];
+                if (at && ref.hidden) {
+                    var page = blueprint[ref.si] && blueprint[ref.si].pages && blueprint[ref.si].pages[ref.pi];
+                    var hiddenIso = (page && page.hiddenSinceIso) || demoHiddenSinceIso();
+                    at = clampCompletedBeforeHidden(at, hiddenIso);
+                }
+                if (at && typeof window.ubitsFormatCompletedAtLabel === 'function') {
+                    labelMap[key] = window.ubitsFormatCompletedAtLabel(at);
+                }
                 completedOrdinal += 1;
             }
         });

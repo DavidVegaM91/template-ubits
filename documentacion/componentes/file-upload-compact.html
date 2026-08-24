@@ -75,10 +75,15 @@
                                     <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     <span class="ubits-switch__label">Mostrar encabezado</span>
                                 </label>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" role="switch" id="fuc-preview-multiple" aria-checked="false" aria-label="Múltiples archivos">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-switch__label">Múltiples archivos</span>
+                                </label>
                                 <span class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium);">Título y acciones (plantilla, informe). Desactiva para vista solo tile.</span>
                             </div>
 
-                            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: var(--gap-md); flex-wrap: wrap;">
+                            <div id="fuc-preview-thumb-row" style="margin-bottom: 20px; display: flex; align-items: center; gap: var(--gap-md); flex-wrap: wrap;">
                                 <label class="ubits-switch ubits-switch--md">
                                     <input type="checkbox" class="ubits-switch__input" role="switch" id="fuc-preview-show-thumb" checked aria-checked="true" aria-label="Mostrar miniatura en archivo cargado">
                                     <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
@@ -287,21 +292,60 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
 
     <script>
         var _fucDemoPreviewUrl = '../../images/Favicons/UBITS.jpg';
+        var FILE_UPLOAD_DEMO_MULTI = [
+            { name: 'brief-producto.pdf', sizeKb: 420 },
+            { name: 'politica-compliance.docx', sizeKb: 88.5 },
+            { name: 'notas-reunion.md', sizeKb: 12.2 }
+        ];
+        var _fucPreviewMultiple = false;
+        var _uploadingTimer = null;
+        var _fucPreviewCurrentState = 'empty';
 
-        document.addEventListener('DOMContentLoaded', function () {
-            bootDocsWorkspace();
+        function isFucMultiple() {
+            var sw = document.getElementById('fuc-preview-multiple');
+            return !!(sw && sw.checked);
+        }
+
+        function syncThumbRowVisibility() {
+            var row = document.getElementById('fuc-preview-thumb-row');
+            if (row) row.style.display = _fucPreviewMultiple ? 'none' : 'flex';
+        }
+
+        function syncPreviewCompactHeader() {
+            var root = document.getElementById('preview-file-upload-compact');
+            var sw = document.getElementById('fuc-preview-show-header');
+            if (!root || !sw) return;
+            var show = !!sw.checked;
+            sw.setAttribute('aria-checked', show ? 'true' : 'false');
+            if (typeof fileUploadCompactSetHeaderVisible === 'function') {
+                fileUploadCompactSetHeaderVisible(root, show);
+            } else {
+                root.classList.toggle('ubits-file-upload-compact--hide-header', !show);
+            }
+        }
+
+        function mountPreviewCompact() {
+            _fucPreviewMultiple = isFucMultiple();
+            syncThumbRowVisibility();
+            var thumbSw = document.getElementById('fuc-preview-show-thumb');
+            var showThumb = !!(thumbSw && thumbSw.checked) && !_fucPreviewMultiple;
             createFileUploadCompact({
                 containerId: 'preview-container',
                 id: 'preview-file-upload-compact',
                 title: 'Importar archivo',
-                accept: 'image/png,.png,.csv,text/csv',
+                accept: _fucPreviewMultiple
+                    ? '.pdf,.txt,.md,.doc,.docx,application/pdf,text/plain'
+                    : 'image/png,.png,.csv,text/csv',
                 maxSizeMb: 5,
-                formats: 'PNG, CSV · Hasta 5 MB',
-                icon: 'image',
+                formats: _fucPreviewMultiple
+                    ? 'PDF, TXT, MD, DOC, DOCX · Hasta 5 MB'
+                    : 'PNG, CSV · Hasta 5 MB',
+                icon: _fucPreviewMultiple ? 'file-lines' : 'image',
                 uploadButtonLabel: 'Subir',
                 changeButtonLabel: 'Cambiar',
-                previewThumbnail: true,
-                downloadButtons: [
+                multiple: _fucPreviewMultiple,
+                previewThumbnail: showThumb,
+                downloadButtons: _fucPreviewMultiple ? [] : [
                     {
                         label: 'Descargar plantilla',
                         icon: 'arrow-down-to-line',
@@ -314,30 +358,40 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
                     if (file) showToast('success', 'Archivo seleccionado: ' + file.name, { duration: 3500 });
                 }
             });
+            syncPreviewCompactHeader();
+        }
 
-            function syncPreviewCompactHeader() {
-                var root = document.getElementById('preview-file-upload-compact');
-                var sw = document.getElementById('fuc-preview-show-header');
-                if (!root || !sw) return;
-                var show = !!sw.checked;
-                sw.setAttribute('aria-checked', show ? 'true' : 'false');
-                if (typeof fileUploadCompactSetHeaderVisible === 'function') {
-                    fileUploadCompactSetHeaderVisible(root, show);
-                } else {
-                    root.classList.toggle('ubits-file-upload-compact--hide-header', !show);
-                }
+        function injectLoadedFiles(el) {
+            if (_fucPreviewMultiple) {
+                fileUploadCompactSetFiles(el, FILE_UPLOAD_DEMO_MULTI.slice());
+            } else {
+                fileUploadCompactSetFile(el, 'usuarios_carga_masiva.csv', 128.4);
             }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            bootDocsWorkspace();
+            mountPreviewCompact();
 
             var headerSwitch = document.getElementById('fuc-preview-show-header');
             if (headerSwitch) {
                 headerSwitch.addEventListener('change', syncPreviewCompactHeader);
             }
-            syncPreviewCompactHeader();
+
+            var multiSwitch = document.getElementById('fuc-preview-multiple');
+            if (multiSwitch) {
+                multiSwitch.addEventListener('change', function () {
+                    multiSwitch.setAttribute('aria-checked', multiSwitch.checked ? 'true' : 'false');
+                    if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+                    mountPreviewCompact();
+                    setPreviewState('empty');
+                });
+            }
 
             function syncPreviewThumb() {
                 var el = document.getElementById('preview-file-upload-compact');
                 var sw = document.getElementById('fuc-preview-show-thumb');
-                if (!el || !sw) return;
+                if (!el || !sw || _fucPreviewMultiple) return;
                 var show = !!sw.checked;
                 sw.setAttribute('aria-checked', show ? 'true' : 'false');
                 var thumb = el.querySelector('[data-file-upload-compact-thumb]');
@@ -370,9 +424,6 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             if (successSwitch) successSwitch.addEventListener('change', syncPreviewLoadedSuccess);
         });
 
-        var _uploadingTimer = null;
-        var _fucPreviewCurrentState = 'empty';
-
         function syncPreviewLoadedControlsVisibility() {
             var row = document.getElementById('fuc-preview-loaded-controls');
             if (row) row.style.display = _fucPreviewCurrentState === 'loaded' ? 'flex' : 'none';
@@ -399,6 +450,10 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
 
         function showDemoFile(el, opts) {
             opts = opts || {};
+            if (_fucPreviewMultiple) {
+                injectLoadedFiles(el);
+                return;
+            }
             var emptyEl = el.querySelector('[data-file-upload-compact-empty]');
             var filledEl = el.querySelector('[data-file-upload-compact-filled]');
             var nameEl = el.querySelector('[data-file-upload-compact-name]');
@@ -406,10 +461,13 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             var thumb = el.querySelector('[data-file-upload-compact-thumb]');
             var fileIcon = el.querySelector('[data-file-upload-compact-file-icon]');
             var previewImg = el.querySelector('[data-file-upload-compact-preview]');
+            if (typeof fileUploadCompactSetFile === 'function') {
+                fileUploadCompactSetFile(el, opts.name || 'usuarios_carga_masiva.csv', opts.sizeKb != null ? opts.sizeKb : 128.4);
+            }
             if (emptyEl) emptyEl.hidden = true;
             if (filledEl) filledEl.hidden = false;
-            if (nameEl) nameEl.textContent = opts.name || 'logo-empresa.png';
-            if (sizeEl) sizeEl.textContent = opts.size || '128 KB';
+            if (nameEl) nameEl.textContent = opts.name || 'usuarios_carga_masiva.csv';
+            if (sizeEl) sizeEl.textContent = opts.size || '128.4 KB';
             el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
             el._fileUploadCompactPreviewThumbnail = true;
             var showThumb = !opts.hideThumb &&
@@ -428,41 +486,35 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
                 if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
                 fileUploadCompactClearProgress(el);
                 fileUploadCompactClearProcessing(el);
-                var emptyEl = el.querySelector('[data-file-upload-compact-empty]');
-                var filledEl = el.querySelector('[data-file-upload-compact-filled]');
-                var helperEl = el.querySelector('[data-file-upload-compact-helper]');
-                var helperMsgEl = el.querySelector('[data-file-upload-compact-helper-msg]');
-                var errorBtn = el.querySelector('[data-file-upload-compact-error-report-header]');
-                var errorBtnInline = el.querySelector('[data-file-upload-compact-error-report-inline]');
-                if (emptyEl) {
-                    emptyEl.hidden = false;
-                    emptyEl.classList.remove('ubits-file-upload-compact__tile--invalid');
+                if (typeof fileUploadCompactClearFile === 'function') {
+                    fileUploadCompactClearFile(el);
                 }
-                if (filledEl) {
-                    filledEl.hidden = true;
-                    filledEl.classList.remove('ubits-file-upload-compact__tile--invalid');
-                }
-                if (helperEl) {
-                    helperEl.style.display = 'none';
-                    helperEl.classList.remove('ubits-file-upload-compact__helper--success');
-                }
-                if (helperMsgEl) helperMsgEl.innerHTML = '';
-                if (errorBtn) errorBtn.style.display = 'none';
-                if (errorBtnInline) errorBtnInline.style.display = 'none';
+                fileUploadCompactClearError(el);
+                fileUploadCompactShowErrorReport(el, false, { placement: 'header' });
+                fileUploadCompactShowErrorReport(el, false, { placement: 'inline' });
                 var removeBtn = el.querySelector('[data-file-upload-compact-remove]');
                 if (removeBtn) removeBtn.style.display = '';
+                el.querySelectorAll('[data-file-upload-compact-list-remove]').forEach(function (btn) {
+                    btn.style.display = '';
+                });
             },
             file: function (el, opts) {
                 previewStates.empty(el);
-                showDemoFile(el, opts);
+                if (_fucPreviewMultiple) {
+                    injectLoadedFiles(el);
+                } else {
+                    showDemoFile(el, opts);
+                }
             },
             loaded: function (el) {
                 if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
                 fileUploadCompactClearProgress(el);
                 fileUploadCompactClearProcessing(el);
                 previewStates.file(el);
-                el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
-                el._fileUploadCompactPreviewThumbnail = true;
+                if (!_fucPreviewMultiple) {
+                    el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
+                    el._fileUploadCompactPreviewThumbnail = true;
+                }
                 syncPreviewLoadedSuccess();
             },
             'file-errors': function (el) {
@@ -482,7 +534,9 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             },
             'error-type': function (el) {
                 previewStates.empty(el);
-                fileUploadCompactSetError(el, 'El archivo no es compatible. Solo se aceptan: PNG, CSV.');
+                fileUploadCompactSetError(el, _fucPreviewMultiple
+                    ? 'El archivo no es compatible. Solo se aceptan: .pdf, .txt, .md, .doc, .docx.'
+                    : 'El archivo no es compatible. Solo se aceptan: PNG, CSV.');
             },
             'error-size': function (el) {
                 previewStates.empty(el);
@@ -494,15 +548,29 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             },
             uploading: function (el) {
                 previewStates.file(el, { hideThumb: true });
-                el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
-                el._fileUploadCompactPreviewThumbnail = true;
+                if (!_fucPreviewMultiple) {
+                    el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
+                    el._fileUploadCompactPreviewThumbnail = true;
+                }
                 if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
-                var pct = 0;
+                if (_fucPreviewMultiple) {
+                    var pct = 0;
+                    _uploadingTimer = setInterval(function () {
+                        pct += 4;
+                        if (pct >= 100) {
+                            clearInterval(_uploadingTimer);
+                            _uploadingTimer = null;
+                            setPreviewState('loaded');
+                        }
+                    }, 30);
+                    return;
+                }
+                var singlePct = 0;
                 fileUploadCompactSetProgress(el, 0);
                 _uploadingTimer = setInterval(function () {
-                    pct += 1;
-                    fileUploadCompactSetProgress(el, pct);
-                    if (pct >= 100) {
+                    singlePct += 1;
+                    fileUploadCompactSetProgress(el, singlePct);
+                    if (singlePct >= 100) {
                         clearInterval(_uploadingTimer);
                         _uploadingTimer = null;
                         setPreviewState('loaded');
@@ -511,8 +579,10 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             },
             processing: function (el) {
                 previewStates.file(el, { hideThumb: true });
-                el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
-                el._fileUploadCompactPreviewThumbnail = true;
+                if (!_fucPreviewMultiple) {
+                    el._fileUploadCompactPreviewUrl = _fucDemoPreviewUrl;
+                    el._fileUploadCompactPreviewThumbnail = true;
+                }
                 if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
                 _uploadingTimer = fileUploadCompactAnimateProcessing(el, 5000, function () {
                     _uploadingTimer = null;
@@ -531,8 +601,6 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
                 btn.classList.toggle('active', btn.getAttribute('onclick') && btn.getAttribute('onclick').indexOf("'" + state + "'") !== -1);
             });
         }
-
-        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

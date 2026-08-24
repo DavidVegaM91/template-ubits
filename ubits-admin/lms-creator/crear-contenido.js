@@ -1351,7 +1351,8 @@
                 label: label,
                 tipo: readTipoFromPaginasItem(item),
                 active: item.classList.contains('is-active'),
-                hidden: !!hidden
+                hidden: !!hidden,
+                hiddenSinceIso: item.getAttribute('data-paginas-hidden-since') || ''
             };
         });
     }
@@ -1491,7 +1492,8 @@
                     id: String(p.pageKey || ''),
                     title: String(p.label || 'Página'),
                     tipo: p.tipo || 'blank-page',
-                    hidden: !!p.hidden
+                    hidden: !!p.hidden,
+                    hiddenSinceIso: p.hiddenSinceIso || ''
                 };
             });
         }
@@ -1543,7 +1545,8 @@
                         pageKey: p.pageKey,
                         tipo: p.tipo,
                         active: !!p.active,
-                        hidden: !!p.hidden
+                        hidden: !!p.hidden,
+                        hiddenSinceIso: p.hiddenSinceIso || ''
                     };
                 }),
                 active: !!s.active,
@@ -2254,6 +2257,16 @@
         return true;
     }
 
+    /** Nombre genérico de página = label del recurso (Video, Evaluación, PDF…). */
+    function defaultPageLabelForTipo(tipo) {
+        var t = String(tipo || '').trim();
+        if (t === 'evaluacion') t = 'evaluacion-final';
+        var meta = typeof window !== 'undefined' && window.RESOURCES_CARD_META
+            ? window.RESOURCES_CARD_META[t]
+            : null;
+        return meta && meta.label ? String(meta.label) : '';
+    }
+
     function getRecursosPaginasItemTitleForValidation(item) {
         if (!item) return '';
         if (item.classList.contains('is-active')) {
@@ -2553,7 +2566,16 @@
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
         );
         if (!inp || !activeLabel) return;
-        activeLabel.textContent = (inp.value || '').trim();
+        var raw = (inp.value || '').trim();
+        if (!raw) {
+            var item = activeLabel.closest('.ubits-paginas-creator__item');
+            var tipo = typeof window.readPaginasCreatorItemTipo === 'function'
+                ? window.readPaginasCreatorItemTipo(item)
+                : '';
+            raw = defaultPageLabelForTipo(tipo) || raw;
+            inp.value = raw;
+        }
+        activeLabel.textContent = raw;
     }
 
     function persistRecursosRightTitleToItemKey(pageKey) {
@@ -2886,7 +2908,7 @@
 
         recursosPageSeq += 1;
         var pageKey = 'cc-pg-' + recursosPageSeq;
-        var label = opts.label != null ? String(opts.label) : 'Título de la página';
+        var label = opts.label != null ? String(opts.label) : (defaultPageLabelForTipo(opts.tipo) || 'Título de la página');
         var tipo = opts.tipo || 'blank-page';
 
         list.querySelectorAll('.ubits-paginas-creator__item.is-active').forEach(function (el) {
@@ -2944,7 +2966,7 @@
             return recursosCreatePageWithType({
                 sectionEl: sectionEl,
                 tipo: tipo,
-                label: 'Título de la página',
+                label: defaultPageLabelForTipo(tipo) || 'Título de la página',
                 mountResource: false
             });
         }
@@ -2959,9 +2981,6 @@
             }
             renderCrearContenidoComplementary();
             refreshCrearContenidoPageSiguienteState();
-            if (typeof window.showToast === 'function') {
-                window.showToast('success', 'Página añadida.');
-            }
             void pageKey;
         }
 
@@ -3219,7 +3238,16 @@
         if (!item || !mount || !mount.contains(item)) return;
         if (!item.classList.contains('is-active')) return;
         var inp = document.getElementById('crear-contenido-recursos-page-title');
-        if (inp) inp.value = d.newLabel != null ? String(d.newLabel) : '';
+        var next = d.newLabel != null ? String(d.newLabel).trim() : '';
+        if (!next) {
+            var tipo = typeof window.readPaginasCreatorItemTipo === 'function'
+                ? window.readPaginasCreatorItemTipo(item)
+                : '';
+            next = defaultPageLabelForTipo(tipo) || next;
+            var lab = item.querySelector('.ubits-paginas-creator__label');
+            if (lab) lab.textContent = next;
+        }
+        if (inp) inp.value = next;
         refreshCrearContenidoPageSiguienteState();
         syncRecursosTitleValidationVisuals();
     }
@@ -3245,14 +3273,27 @@
                 }
                 return;
             }
+            if (ccIsEvalPageItem(item)) {
+                var pk =
+                    item.getAttribute('data-paginas-creator-key') ||
+                    '';
+                openOcultarEvaluacionModal(pk);
+                return;
+            }
             if (typeof window.setPaginasCreatorItemHidden === 'function') {
-                window.setPaginasCreatorItemHidden(item, true);
+                window.setPaginasCreatorItemHidden(item, true, ccTodayIsoLocal());
+            }
+            if (typeof window.ccConfigRefreshPesos === 'function') {
+                window.ccConfigRefreshPesos();
             }
             return;
         }
         if (d.action === 'mostrar') {
             if (typeof window.setPaginasCreatorItemHidden === 'function') {
                 window.setPaginasCreatorItemHidden(item, false);
+            }
+            if (typeof window.ccConfigRefreshPesos === 'function') {
+                window.ccConfigRefreshPesos();
             }
             return;
         }
@@ -3433,6 +3474,15 @@
                             }
                         }
                     });
+                }
+                return;
+            }
+
+            // 2b2. Presentación interactiva — studio V2 solo en playground React
+            var presentacionCard = ev.target.closest('[data-resources-card-type="presentacion-interactiva"]');
+            if (presentacionCard && !presentacionCard.disabled) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('info', 'Disponible en playground React');
                 }
                 return;
             }
@@ -4408,6 +4458,131 @@
     var CC_DEMO_PG_SCORM_MANUAL = 'cc-demo-pg-4';
     var CC_DEMO_PG_PDF = 'cc-demo-pg-5';
     var CC_DEMO_PG_EVAL_2 = 'cc-demo-pg-6';
+    var CC_DEMO_PG_EVAL_HIDDEN = 'cc-demo-pg-7';
+    var CC_MODAL_OCULTAR_EVAL = 'cc-ocultar-evaluacion-modal';
+    var CC_HASH_OCULTAR_EVAL = '#recursos/ocultar-evaluacion';
+    var _ccOcultarEvalPageKey = null;
+
+    function ccTodayIsoLocal() {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+    }
+
+    function ccDaysAgoIsoLocal(days) {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() - (Number(days) || 0));
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+    }
+
+    function ccIsEvalPageItem(item) {
+        if (!item) return false;
+        var pk = item.getAttribute('data-paginas-creator-key') || '';
+        if (window._ccEvalPageKeys && window._ccEvalPageKeys[pk]) return true;
+        var tipo =
+            typeof window.readPaginasCreatorItemTipo === 'function'
+                ? window.readPaginasCreatorItemTipo(item)
+                : '';
+        return String(tipo || '') === 'evaluacion';
+    }
+
+    function ccBuildOcultarEvalHash(pageKey) {
+        if (pageKey) return CC_HASH_OCULTAR_EVAL + '/' + encodeURIComponent(String(pageKey));
+        return CC_HASH_OCULTAR_EVAL;
+    }
+
+    function ccParseOcultarEvalHash(hash) {
+        var h = String(hash || '').replace(/^#/, '');
+        if (h === 'recursos/ocultar-evaluacion') return { open: true, pageKey: null };
+        var m = h.match(/^recursos\/ocultar-evaluacion\/([^/]+)$/i);
+        if (m) {
+            try {
+                return { open: true, pageKey: decodeURIComponent(m[1]) };
+            } catch (e) {
+                return { open: true, pageKey: m[1] };
+            }
+        }
+        return { open: false, pageKey: null };
+    }
+
+    function closeOcultarEvaluacionModal(keepPageKey) {
+        _ccOcultarEvalPageKey = null;
+        if (typeof window.closeModal === 'function') {
+            window.closeModal(CC_MODAL_OCULTAR_EVAL);
+        }
+        var next = keepPageKey
+            ? '#recursos/page/' + encodeURIComponent(String(keepPageKey))
+            : '#recursos';
+        if (typeof history.replaceState === 'function') {
+            history.replaceState(null, '', location.pathname + location.search + next);
+        }
+    }
+
+    function confirmOcultarEvaluacionModal() {
+        var pageKey = _ccOcultarEvalPageKey;
+        if (!pageKey) {
+            closeOcultarEvaluacionModal(null);
+            return;
+        }
+        var mount = getRecursosIndiceMount();
+        var item = mount
+            ? mount.querySelector(
+                  '.ubits-paginas-creator__item[data-paginas-creator-key="' +
+                      String(pageKey).replace(/"/g, '\\"') +
+                      '"]'
+              )
+            : null;
+        if (item && typeof window.setPaginasCreatorItemHidden === 'function') {
+            window.setPaginasCreatorItemHidden(item, true, ccTodayIsoLocal());
+        }
+        if (typeof window.ccConfigRefreshPesos === 'function') {
+            window.ccConfigRefreshPesos();
+        }
+        closeOcultarEvaluacionModal(pageKey);
+    }
+
+    function openOcultarEvaluacionModal(pageKey) {
+        if (!pageKey || typeof window.openModal !== 'function') return;
+        _ccOcultarEvalPageKey = String(pageKey);
+        var hash = ccBuildOcultarEvalHash(pageKey);
+        if (location.hash !== hash && typeof history.pushState === 'function') {
+            history.pushState(null, '', location.pathname + location.search + hash);
+        } else if (location.hash !== hash) {
+            location.hash = hash;
+        }
+        window.openModal({
+            overlayId: CC_MODAL_OCULTAR_EVAL,
+            title: 'Ocultar evaluación',
+            size: 'sm',
+            closeOnOverlayClick: false,
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                'Al ocultar una evaluación, su peso pasará a <strong>0%</strong> y el peso se redistribuirá equitativamente entre las evaluaciones restantes.' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-mod-ocultar-eval-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-mod-ocultar-eval-confirm"><span>Confirmar ocultación</span></button>'
+        });
+        var ov = document.getElementById(CC_MODAL_OCULTAR_EVAL);
+        if (!ov) return;
+        var cancel = ov.querySelector('#cc-mod-ocultar-eval-cancel');
+        var ok = ov.querySelector('#cc-mod-ocultar-eval-confirm');
+        if (cancel) {
+            cancel.addEventListener('click', function () {
+                closeOcultarEvaluacionModal(_ccOcultarEvalPageKey);
+            });
+        }
+        if (ok) {
+            ok.addEventListener('click', confirmOcultarEvaluacionModal);
+        }
+    }
 
     function isCrearContenidoEmptyForDemo() {
         if (window._ccDemoSeeded) return false;
@@ -4709,9 +4884,11 @@
                 'I-29',
                 'B-02'
             ]);
+            window.ccEvalSeedFixedBankIds(CC_DEMO_PG_EVAL_HIDDEN, ['B-27', 'B-30', 'I-08']);
         } else if (typeof window.ccEvalSeedStandardPage === 'function') {
             window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL_1, 5);
             window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL_2, 5);
+            window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL_HIDDEN, 3);
         }
         CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL_1] = {
             primaryType: 'evaluacion-final',
@@ -4725,13 +4902,19 @@
             hasComplementaryDownload: false,
             complementaryOrder: []
         };
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL_HIDDEN] = {
+            primaryType: 'evaluacion-final',
+            hasComplementaryText: false,
+            hasComplementaryDownload: false,
+            complementaryOrder: []
+        };
     }
 
     function seedCrearContenidoDemoRecursosIndice() {
         recursosUiDone = true;
         recursosSectionsEnabled = true;
         recursosSectionIdSeq = 3;
-        recursosPageSeq = 6;
+        recursosPageSeq = 7;
         recursosSectionMeta[CC_DEMO_SEC1] = { descriptionHtml: '' };
         recursosSectionMeta[CC_DEMO_SEC2] = {
             descriptionHtml:
@@ -4785,6 +4968,14 @@
                         pageKey: CC_DEMO_PG_EVAL_2,
                         tipo: 'evaluacion',
                         active: false
+                    },
+                    {
+                        label: 'Evaluación de cierre',
+                        pageKey: CC_DEMO_PG_EVAL_HIDDEN,
+                        tipo: 'evaluacion',
+                        active: false,
+                        hidden: true,
+                        hiddenSinceIso: ccDaysAgoIsoLocal(1)
                     }
                 ],
                 active: false
@@ -4797,6 +4988,7 @@
         setRecursosEditorVisible(true);
         syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL_1, 'evaluacion');
         syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL_2, 'evaluacion');
+        syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL_HIDDEN, 'evaluacion');
         syncRecursosPageCounter();
         refreshCrearContenidoPageSiguienteState();
     }
@@ -4885,6 +5077,7 @@
 
     window.ccGetRecursosIndiceBlueprintForLearner = recursosGetIndiceBlueprintForLearner;
     window.ccGetRecursosIndiceBlueprintForAdminProgress = recursosGetIndiceBlueprintForAdminProgress;
+    window.openOcultarEvaluacionModal = openOcultarEvaluacionModal;
 
     window.ccBuildCrearContenidoResourceFooterHtml = buildCrearContenidoResourceFooterHtml;
 

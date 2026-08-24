@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
     <title>Avatar | UBITS Playground</title>
-    
+
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-<link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
@@ -34,6 +36,76 @@
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
             padding: 24px !important;
+        }
+        .avatar-corner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            width: 52px;
+            height: 52px;
+            gap: 2px;
+            padding: 3px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--ubits-border-1);
+            background: var(--ubits-bg-1);
+            box-sizing: border-box;
+        }
+        .avatar-corner-grid__btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+            cursor: pointer;
+        }
+        .avatar-corner-grid__dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            box-sizing: border-box;
+            background: transparent;
+            border: 1.5px solid var(--ubits-border-2);
+            opacity: 0.55;
+        }
+        .avatar-corner-grid__btn[aria-pressed="true"] .avatar-corner-grid__dot {
+            background: var(--ubits-accent-brand);
+            border: 1.5px solid var(--ubits-accent-brand);
+            opacity: 1;
+        }
+        .avatar-switch-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .avatar-switch-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
+        }
+        .avatar-props-divider {
+            color: var(--ubits-fg-1-medium);
+            margin: 0 0 12px;
+            padding-top: 4px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        .avatar-control-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .avatar-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 96px;
         }
     </style>
 </head>
@@ -56,7 +128,7 @@
                                 Avatar
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Componente de avatar único (imagen, inicial o icono) y su variación Profile list: varios avatares superpuestos con opción +N cuando hay más personas.
+                                Cinco variantes de composición (Avatar único, Con nombre, Prueba social, Lista de perfiles, En botón) y propiedades transversales: tamaño, contenido, forma, presencia, anillos, insignias y más.
                             </p>
                         </div>
 
@@ -67,98 +139,204 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Usa los controles para cambiar tipo (avatar único / profile list), tamaño, variante (imagen o icono) y modo de rol (Admin / LMS Creator).
+                                Elige una variante (composición). Debajo combina propiedades transversales: tamaño, forma, contenido, presencia, etc.
                             </p>
-                            
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; padding-bottom: 32px;">
-                                <div id="avatar-preview" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; min-height: 60px;">
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; padding-bottom: 32px; overflow: visible;">
+                                <div id="avatar-preview" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: center; min-height: 96px; width: 100%; overflow: visible;">
                                     <!-- Se actualiza por JS -->
                                 </div>
                             </div>
-                            
+
                             <div style="margin-top: 24px;">
-                                <div style="margin-bottom: 16px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Tipo:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewType('avatar')">
+                                <!-- Variante -->
+                                <div class="avatar-control-row">
+                                    <span class="ubits-body-sm-bold avatar-control-row__label">Variante:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="unico" onclick="setComposition('unico')">
                                             <span>Avatar único</span>
                                         </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('profile-list')">
-                                            <span>Profile list</span>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="con-nombre" onclick="setComposition('con-nombre')">
+                                            <span>Con nombre</span>
+                                        </button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="prueba-social" onclick="setComposition('prueba-social')">
+                                            <span>Prueba social</span>
+                                        </button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="lista-perfiles" onclick="setComposition('lista-perfiles')">
+                                            <span>Lista de perfiles</span>
+                                        </button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="en-boton" onclick="setComposition('en-boton')">
+                                            <span>En botón</span>
                                         </button>
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 16px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Tamaño:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('xs')">
-                                            <span>XS (20px)</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('sm')">
-                                            <span>SM (28px)</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewSize('md')">
-                                            <span>MD (32px)</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('lg')">
-                                            <span>LG (48px)</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('xl')">
-                                            <span>XL (64px)</span>
-                                        </button>
+
+                                <p class="ubits-body-xs-regular avatar-props-divider">
+                                    Propiedades (se combinan entre sí; no son variantes)
+                                </p>
+
+                                <!-- Tamaño (hide en-boton) -->
+                                <div class="avatar-control-row" id="row-size">
+                                    <span class="ubits-body-sm-bold avatar-control-row__label">Tamaño:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-size">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="xs" onclick="setSize('xs')"><span>XS</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="sm" onclick="setSize('sm')"><span>SM</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="md" onclick="setSize('md')"><span>MD</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="lg" onclick="setSize('lg')"><span>LG</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="xl" onclick="setSize('xl')"><span>XL</span></button>
                                     </div>
                                 </div>
-                                <div id="avatar-variant-controls" style="margin-bottom: 16px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Variante (avatar único):</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('imagen')">
-                                            <span>Con imagen</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('icono')">
-                                            <span>Icono</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('inicial')">
-                                            <span>Inicial</span>
-                                        </button>
+
+                                <!-- Contenido + Forma + switches (unico + con-nombre) -->
+                                <div id="block-atom-props">
+                                    <div class="avatar-control-row" id="row-content">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Contenido:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-content">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="imagen" onclick="setContent('imagen')"><span>Imagen</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="iniciales" onclick="setContent('iniciales')"><span>Iniciales</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="icono" onclick="setContent('icono')"><span>Icono</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-shape">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Forma:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-shape">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="circle" onclick="setShape('circle')"><span>Círculo</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="rounded" onclick="setShape('rounded')"><span>Redondeado</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-switch-row" id="row-switches-atom">
+                                        <div class="avatar-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Presencia</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-presence" checked role="switch" onchange="setPresenceOn(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="avatar-switch-item" id="switch-grayscale-wrap">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Escala de grises</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-grayscale" role="switch" onchange="setGrayscale(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="avatar-switch-item" id="switch-loading-wrap">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cargando</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-loading" role="switch" onchange="setLoading(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-status">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Estado:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-status">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="online" onclick="setStatus('online')"><span>En línea</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="away" onclick="setStatus('away')"><span>Ausente</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="busy" onclick="setStatus('busy')"><span>Ocupado</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="offline" onclick="setStatus('offline')"><span>Desconectado</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-status-position">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Posición:</span>
+                                        <div class="avatar-corner-grid" role="group" aria-label="Posición en esquina" id="ctrl-status-position">
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="top-left" aria-label="Arriba izquierda" data-tooltip="Arriba izquierda" aria-pressed="false" onclick="setStatusPosition('top-left')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="top-right" aria-label="Arriba derecha" data-tooltip="Arriba derecha" aria-pressed="false" onclick="setStatusPosition('top-right')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="bottom-left" aria-label="Abajo izquierda" data-tooltip="Abajo izquierda" aria-pressed="false" onclick="setStatusPosition('bottom-left')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="bottom-right" aria-label="Abajo derecha" data-tooltip="Abajo derecha" aria-pressed="true" onclick="setStatusPosition('bottom-right')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="avatar-mode-controls" style="margin-bottom: 16px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Modo de rol:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewMode(null)">
-                                            <span>Colaborador (sin badge)</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewMode('admin')">
-                                            <span>Admin</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewMode('lms')">
-                                            <span>LMS Creator</span>
-                                        </button>
+
+                                <!-- Unico-only: tono, anillo, insignia -->
+                                <div id="block-unico-extras">
+                                    <div class="avatar-control-row" id="row-tone">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Tono:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-tone">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="muted" onclick="setFallbackTone('muted')"><span>Suave</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="brand" onclick="setFallbackTone('brand')"><span>Marca</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="solid" onclick="setFallbackTone('solid')"><span>Sólido</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-ring">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Anillo:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-ring">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="none" onclick="setRingMode('none')"><span>Sin</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="static" onclick="setRingMode('static')"><span>Estático</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="pulse" onclick="setRingMode('pulse')"><span>Pulso</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="spin" onclick="setRingMode('spin')"><span>Giro</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="gradient" onclick="setRingMode('gradient')"><span>Gradiente</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-badge">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Insignia:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-badge">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="none" onclick="setBadgeMode('none')"><span>Sin</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="single" onclick="setBadgeMode('single')"><span>Una</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="multi" onclick="setBadgeMode('multi')"><span>Varias</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-control-row" id="row-badge-position">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Posición:</span>
+                                        <div class="avatar-corner-grid" role="group" aria-label="Posición en esquina" id="ctrl-badge-position">
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="top-left" aria-label="Arriba izquierda" data-tooltip="Arriba izquierda" aria-pressed="false" onclick="setBadgePosition('top-left')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="top-right" aria-label="Arriba derecha" data-tooltip="Arriba derecha" aria-pressed="false" onclick="setBadgePosition('top-right')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="bottom-left" aria-label="Abajo izquierda" data-tooltip="Abajo izquierda" aria-pressed="false" onclick="setBadgePosition('bottom-left')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                            <button type="button" class="avatar-corner-grid__btn" data-value="bottom-right" aria-label="Abajo derecha" data-tooltip="Abajo derecha" aria-pressed="true" onclick="setBadgePosition('bottom-right')"><span class="avatar-corner-grid__dot" aria-hidden="true"></span></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="profile-list-count-controls" style="margin-bottom: 16px; display: none;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Cantidad (profile list):</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setProfileListCount(2)">
-                                            <span>2 personas</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setProfileListCount(3)">
-                                            <span>3 personas</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setProfileListCount(5)">
-                                            <span>5 personas (+2)</span>
-                                        </button>
+
+                                <!-- Social -->
+                                <div id="block-social" style="display: none;">
+                                    <div class="avatar-switch-row">
+                                        <div class="avatar-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Compacta (iniciales)</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-social-compact" role="switch" onchange="setSocialCompact(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 16px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Seleccionable:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewSelectable(false)">
-                                            <span>No</span>
-                                        </button>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSelectable(true)">
-                                            <span>Sí (elevación + selección)</span>
-                                        </button>
+
+                                <!-- Lista -->
+                                <div id="block-lista" style="display: none;">
+                                    <div class="avatar-control-row">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Hover grupo:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-group-hover">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="none" onclick="setGroupHover('none')"><span>Ninguno</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="spread" onclick="setGroupHover('spread')"><span>Separación</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="lift" onclick="setGroupHover('lift')"><span>Elevación</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-switch-row">
+                                        <div class="avatar-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tooltips</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-tooltips" checked role="switch" onchange="setShowTooltips(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="avatar-switch-item">
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Seleccionable</span>
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="switch-selectable" role="switch" onchange="setSelectable(this.checked)">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- En botón -->
+                                <div id="block-en-boton" style="display: none;">
+                                    <div class="avatar-control-row">
+                                        <span class="ubits-body-sm-bold avatar-control-row__label">Composición:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-button-embed">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="outline-sm" onclick="setButtonEmbed('outline-sm')"><span>Outline sm</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="pill-outline" onclick="setButtonEmbed('pill-outline')"><span>Píldora outline</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="pill-filled" onclick="setButtonEmbed('pill-filled')"><span>Píldora filled</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="grupo-accion" onclick="setButtonEmbed('grupo-accion')"><span>Grupo + botón</span></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -174,32 +352,27 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user-circle"></i></div>
                                     <div class="ubits-body-sm-bold">Avatar único</div>
-                                    <div class="ubits-body-sm-regular">Imagen, inicial o icono de usuario</div>
+                                    <div class="ubits-body-sm-regular">Imagen, iniciales o icono con presencia, anillos e insignias</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-a"></i></div>
-                                    <div class="ubits-body-sm-bold">Inicial</div>
-                                    <div class="ubits-body-sm-regular">Letra(s) cuando no hay foto: empresas, grupos o personas sin imagen</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-id-card"></i></div>
+                                    <div class="ubits-body-sm-bold">Con nombre</div>
+                                    <div class="ubits-body-sm-regular">renderAvatarLabel: avatar + título + descripción</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-users"></i></div>
-                                    <div class="ubits-body-sm-bold">Profile list</div>
-                                    <div class="ubits-body-sm-regular">Varios avatares superpuestos + chip +N</div>
+                                    <div class="ubits-body-sm-bold">Prueba social</div>
+                                    <div class="ubits-body-sm-regular">Grupo + etiqueta; modo compacto con iniciales</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
-                                    <div class="ubits-body-sm-bold">Tamaños</div>
-                                    <div class="ubits-body-sm-regular">XS (20px), SM (28px), MD (32px), LG (48px), XL (64px)</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Lista de perfiles</div>
+                                    <div class="ubits-body-sm-regular">Superposición, +N, hover, tooltips y selección</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-id-badge"></i></div>
-                                    <div class="ubits-body-sm-bold">Modo de rol</div>
-                                    <div class="ubits-body-sm-regular">Badge "Admin" (amber) o "LMS" (azul) para roles especiales. Colaborador no muestra badge.</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hand-pointer"></i></div>
-                                    <div class="ubits-body-sm-bold">Seleccionable (opt-in)</div>
-                                    <div class="ubits-body-sm-regular">Hover: sube sobre los demás; seleccionado = doble borde brand pegado (2px)</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Presencia y anillos</div>
+                                    <div class="ubits-body-sm-regular">Estados en línea / ausente / ocupado / desconectado; anillo estático, pulso, giro o gradiente</div>
                                 </div>
                             </div>
                         </div>
@@ -211,51 +384,50 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Copia y pega estos textos en Cursor AI. Reemplaza lo que está entre [corchetes] con tu información. Los tamaños (xs, sm, md, lg, xl) son los que ves arriba en el preview.
+                                Copia y pega estos textos en Cursor AI. Reemplaza lo que está entre [corchetes] con tu información. Usa renderAvatar, renderAvatarLabel, renderAvatarSocialProof o renderProfileList según la variante.
                             </p>
                             <div id="avatar-warning-alert" style="margin-bottom: 32px;"></div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Avatar único (una persona)</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Avatar único</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('avatar-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-1">En [ubicación], pon el componente Avatar de UBITS. La persona se llama [nombre] y la foto: [url, Unsplash o carpeta donde está]. Tamaño: [xs, sm, md, lg o xl].</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-1">En [ubicación], usa renderAvatar({ nombre: '[nombre]', avatar: '[url]' }, { size: '[xs|sm|md|lg|xl]', shape: '[circle|rounded]', status: '[online|away|busy|offline]', statusPosition: 'bottom-right', ring: [true|'pulse'|'spin'|'gradient'], badgeIcon: 'far fa-check', fallbackTone: '[muted|brand|solid]' }). Incluye avatar.css + avatar.js.</code></pre>
                                 </div>
                             </div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Profile list (varias personas)</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Con nombre / Prueba social</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('avatar-prompt-2')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-2">En [ubicación], pon el componente Profile list de UBITS con las personas asignadas a [este plan / esta tarea]. Muestra hasta 3 avatares visibles y si hay más, el chip +N (popover con nombres al clic). Tooltips con nombre al hover incluidos por defecto. Tamaño: [xs, sm, md, lg o xl]. Solo renderProfileList + avatar.js; no reimplementar popover ni tooltips a mano.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-2">En [ubicación], usa renderAvatarLabel(persona, { title: '[nombre]', description: '[rol · estado]', size: 'md', status: 'online' }) o renderAvatarSocialProof(personas, { label: '[texto]', size: 'sm', maxVisible: 4, initialsOnly: false }). No reimplementes el markup a mano.</code></pre>
                                 </div>
                             </div>
 
                             <div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Avatar fijo (sin datos dinámicos)</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Lista de perfiles</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('avatar-prompt-3')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-3">En [ubicación], pon un Avatar de UBITS con una sola imagen fija. Imagen: [url, Unsplash o carpeta donde está]. Nombre (para accesibilidad): [nombre]. Tamaño: [xs, sm, md, lg o xl]. Usa HTML directo como en la documentación técnica de esta página.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-3">En [ubicación], usa renderProfileList(personas, { size: '[xs|sm|md|lg|xl]', maxVisible: 3, showTooltip: true, hoverSpread: false, hoverLift: false, selectable: false, overflowMode: 'count' }). Después llama wireProfileLists('[selector]') si hay tooltips. Solo avatar.js; no reimplementes popover ni tooltips a mano.</code></pre>
                                 </div>
                             </div>
                         </div>
 
-                        
                     </div>
                 </div>
             </div>
@@ -263,43 +435,328 @@
     </div>
 
     <div id="ubits-toast-container"></div>
-<div id="profile-menu-container"></div>
+    <div id="profile-menu-container"></div>
 
     <script src="../../components/sidebar.js"></script>
-<script src="../../components/profile-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
-        var previewType = 'avatar';
-        var previewSize = 'md';
-        var previewVariant = 'imagen';
-        var profileListCount = 3;
-        var previewMode = null;
-        var previewSelectable = false;
-        var previewSelectedIndex = 0;
-        var previewAvatarSelected = true;
+        var composition = 'unico';
+        var size = 'lg';
+        var content = 'imagen';
+        var shape = 'circle';
+        var grayscale = false;
+        var loading = false;
+        var fallbackTone = 'brand';
+        var presenceOn = true;
+        var status = 'online';
+        var statusPosition = 'bottom-right';
+        var ringMode = 'none';
+        var badgeMode = 'none';
+        var badgePosition = 'bottom-right';
+        var socialCompact = false;
+        var groupHover = 'none';
+        var showTooltips = true;
+        var selectable = false;
+        var selectedProfileIndex = 0;
+        var buttonEmbed = 'outline-sm';
 
-        var demoPersonaImagen = {
-            nombre: 'Ana García',
-            avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop'
-        };
-        var demoPersonaIcono = { nombre: '', avatar: null };
-        var demoPersonas = [
+        var DEMO_PERSONAS = [
             { nombre: 'Ana García', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop' },
             { nombre: 'Luis Pérez', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop' },
             { nombre: 'María López', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop' },
             { nombre: 'Carlos Ruiz', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
             { nombre: 'Elena Díaz', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' }
         ];
+        var PROFILE_STATUSES = ['online', 'busy', 'away', undefined, 'offline'];
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function profileItems() {
+            return DEMO_PERSONAS.map(function (p, i) {
+                var item = { nombre: p.nombre, avatar: p.avatar };
+                if (PROFILE_STATUSES[i]) item.status = PROFILE_STATUSES[i];
+                return item;
+            });
+        }
+
+        function setActiveInGroup(groupId, value) {
+            var group = document.getElementById(groupId);
+            if (!group) return;
+            group.querySelectorAll('[data-value]').forEach(function (btn) {
+                var isActive = btn.getAttribute('data-value') === value;
+                btn.classList.toggle('active', isActive);
+                if (btn.hasAttribute('aria-pressed')) {
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                }
+            });
+        }
+
+        function syncVisibility() {
+            var isUnico = composition === 'unico';
+            var isLabel = composition === 'con-nombre';
+            var isSocial = composition === 'prueba-social';
+            var isList = composition === 'lista-perfiles';
+            var isEnBoton = composition === 'en-boton';
+            var showAtomProps = isUnico || isLabel;
+
+            document.getElementById('row-size').style.display = isEnBoton ? 'none' : 'flex';
+            document.getElementById('block-atom-props').style.display = showAtomProps ? 'block' : 'none';
+            document.getElementById('switch-grayscale-wrap').style.display = isUnico ? 'flex' : 'none';
+            document.getElementById('switch-loading-wrap').style.display = isUnico ? 'flex' : 'none';
+            document.getElementById('row-status').style.display = (showAtomProps && presenceOn) ? 'flex' : 'none';
+            document.getElementById('row-status-position').style.display = (isUnico && presenceOn) ? 'flex' : 'none';
+            document.getElementById('block-unico-extras').style.display = isUnico ? 'block' : 'none';
+            document.getElementById('row-tone').style.display = (isUnico && content !== 'imagen') ? 'flex' : 'none';
+            document.getElementById('row-badge-position').style.display = (isUnico && badgeMode === 'single') ? 'flex' : 'none';
+            document.getElementById('block-social').style.display = isSocial ? 'block' : 'none';
+            document.getElementById('block-lista').style.display = isList ? 'block' : 'none';
+            document.getElementById('block-en-boton').style.display = isEnBoton ? 'block' : 'none';
+
+            var preview = document.getElementById('avatar-preview');
+            var needsHoverPad = isList && (groupHover !== 'none' || selectable);
+            preview.style.minHeight = needsHoverPad ? '112px' : '96px';
+            preview.style.paddingTop = needsHoverPad ? '8px' : '0';
+        }
+
+        function ringValue() {
+            if (ringMode === 'none') return undefined;
+            if (ringMode === 'static') return true;
+            return ringMode;
+        }
+
+        function buildPersonaForContent() {
+            if (content === 'imagen') {
+                return { nombre: DEMO_PERSONAS[0].nombre, avatar: DEMO_PERSONAS[0].avatar };
+            }
+            if (content === 'iniciales') {
+                return { nombre: 'Ana García', avatar: null };
+            }
+            return { nombre: '', avatar: null };
+        }
+
+        function updateAvatarPreview() {
+            syncVisibility();
+            var container = document.getElementById('avatar-preview');
+            var isUnico = composition === 'unico';
+            var isLabel = composition === 'con-nombre';
+            var isSocial = composition === 'prueba-social';
+            var isList = composition === 'lista-perfiles';
+            var isEnBoton = composition === 'en-boton';
+            var html = '';
+
+            if (isUnico) {
+                var persona = buildPersonaForContent();
+                var opts = {
+                    size: size,
+                    shape: shape,
+                    grayscale: grayscale,
+                    loading: loading,
+                    alt: content === 'icono' ? '' : 'Ana García'
+                };
+                if (content === 'iniciales') opts.initials = 'AG';
+                if (content !== 'imagen') opts.fallbackTone = fallbackTone;
+                if (presenceOn) {
+                    opts.status = status;
+                    opts.statusPosition = statusPosition;
+                }
+                var ring = ringValue();
+                if (ring !== undefined) opts.ring = ring;
+                if (badgeMode === 'single') {
+                    opts.badgeIcon = 'far fa-check';
+                    opts.badgePosition = badgePosition;
+                } else if (badgeMode === 'multi') {
+                    opts.badges = [
+                        { icon: 'far fa-check', position: 'bottom-right' },
+                        { icon: 'far fa-star', position: 'top-right' }
+                    ];
+                }
+                html = renderAvatar(persona, opts);
+            } else if (isLabel) {
+                var labelPersona = buildPersonaForContent();
+                var labelOpts = {
+                    title: 'Ana García',
+                    description: 'Product Designer · En línea',
+                    size: size,
+                    shape: shape,
+                    alt: content === 'icono' ? '' : 'Ana García'
+                };
+                if (content === 'iniciales') labelOpts.initials = 'AG';
+                if (content === 'icono') labelOpts.initialsOnly = true;
+                if (presenceOn) labelOpts.status = status;
+                html = renderAvatarLabel(labelPersona, labelOpts);
+            } else if (isSocial) {
+                var socialSize;
+                if (socialCompact) {
+                    socialSize = size === 'xl' ? 'md' : (size === 'lg' ? 'sm' : size);
+                } else {
+                    socialSize = size === 'xl' ? 'lg' : size;
+                }
+                var socialItems = socialCompact
+                    ? DEMO_PERSONAS.map(function (p) { return { nombre: p.nombre, avatar: null }; })
+                    : profileItems();
+                html = renderAvatarSocialProof(socialItems, {
+                    label: socialCompact ? 'Equipo de producto' : 'Más de 1.200 personas ya se unieron',
+                    size: socialSize,
+                    maxVisible: 4,
+                    initialsOnly: socialCompact
+                });
+            } else if (isList) {
+                var listItems;
+                if (selectable) {
+                    listItems = DEMO_PERSONAS.map(function (p, i) {
+                        return Object.assign({}, p, { selected: i === selectedProfileIndex });
+                    });
+                } else {
+                    listItems = profileItems();
+                }
+                var maxVisible = (selectable || groupHover !== 'none') ? 4 : 3;
+                html = renderProfileList(listItems, {
+                    size: size,
+                    maxVisible: maxVisible,
+                    hoverSpread: groupHover === 'spread',
+                    hoverLift: groupHover === 'lift' || selectable,
+                    showTooltip: showTooltips,
+                    selectable: selectable
+                });
+            } else if (isEnBoton) {
+                if (buttonEmbed === 'grupo-accion') {
+                    var groupList = renderProfileList(
+                        DEMO_PERSONAS.map(function (p) { return { nombre: p.nombre, avatar: p.avatar }; }),
+                        { size: 'sm', maxVisible: 3, overflowMode: 'icon', showTooltip: true }
+                    );
+                    html = '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+                        groupList +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">' +
+                        '<i class="far fa-user-plus"></i><span>Invitar</span></button></div>';
+                } else {
+                    var filled = buttonEmbed === 'pill-filled';
+                    var pill = buttonEmbed === 'pill-outline' || filled;
+                    var variantClass = filled ? 'ubits-button--primary' : 'ubits-button--secondary';
+                    var pillClass = pill ? ' ubits-button--pill' : '';
+                    var leadingAvatar = renderAvatar(
+                        { nombre: 'Ana García', avatar: DEMO_PERSONAS[0].avatar },
+                        { size: 'xs', alt: 'Ana García' }
+                    );
+                    html = '<button type="button" class="ubits-button ' + variantClass + ' ubits-button--sm' + pillClass + ' ubits-button--has-leading">' +
+                        '<span class="ubits-button__leading">' + leadingAvatar + '</span>' +
+                        '<span>Ana García</span></button>';
+                }
+            }
+
+            container.innerHTML = html;
+
+            if (isList && selectable) {
+                container.querySelectorAll('.ubits-profile-list__avatar').forEach(function (el, i) {
+                    el.addEventListener('click', function () {
+                        selectedProfileIndex = i;
+                        updateAvatarPreview();
+                    });
+                });
+            }
+
+            if ((isList || isSocial || (isEnBoton && buttonEmbed === 'grupo-accion')) && typeof wireProfileLists === 'function') {
+                wireProfileLists('#avatar-preview');
+            }
+
+            if (typeof initTooltip === 'function') {
+                initTooltip('#ctrl-status-position [data-tooltip], #ctrl-badge-position [data-tooltip]');
+            }
+        }
+
+        function setComposition(id) {
+            composition = id;
+            setActiveInGroup('ctrl-composition', id);
+            updateAvatarPreview();
+        }
+        function setSize(v) {
+            size = v;
+            setActiveInGroup('ctrl-size', v);
+            updateAvatarPreview();
+        }
+        function setContent(v) {
+            content = v;
+            setActiveInGroup('ctrl-content', v);
+            updateAvatarPreview();
+        }
+        function setShape(v) {
+            shape = v;
+            setActiveInGroup('ctrl-shape', v);
+            updateAvatarPreview();
+        }
+        function setPresenceOn(v) {
+            presenceOn = !!v;
+            updateAvatarPreview();
+        }
+        function setGrayscale(v) {
+            grayscale = !!v;
+            updateAvatarPreview();
+        }
+        function setLoading(v) {
+            loading = !!v;
+            updateAvatarPreview();
+        }
+        function setStatus(v) {
+            status = v;
+            setActiveInGroup('ctrl-status', v);
+            updateAvatarPreview();
+        }
+        function setStatusPosition(v) {
+            statusPosition = v;
+            setActiveInGroup('ctrl-status-position', v);
+            updateAvatarPreview();
+        }
+        function setFallbackTone(v) {
+            fallbackTone = v;
+            setActiveInGroup('ctrl-tone', v);
+            updateAvatarPreview();
+        }
+        function setRingMode(v) {
+            ringMode = v;
+            setActiveInGroup('ctrl-ring', v);
+            updateAvatarPreview();
+        }
+        function setBadgeMode(v) {
+            badgeMode = v;
+            setActiveInGroup('ctrl-badge', v);
+            updateAvatarPreview();
+        }
+        function setBadgePosition(v) {
+            badgePosition = v;
+            setActiveInGroup('ctrl-badge-position', v);
+            updateAvatarPreview();
+        }
+        function setSocialCompact(v) {
+            socialCompact = !!v;
+            updateAvatarPreview();
+        }
+        function setGroupHover(v) {
+            groupHover = v;
+            setActiveInGroup('ctrl-group-hover', v);
+            updateAvatarPreview();
+        }
+        function setShowTooltips(v) {
+            showTooltips = !!v;
+            updateAvatarPreview();
+        }
+        function setSelectable(v) {
+            selectable = !!v;
+            updateAvatarPreview();
+        }
+        function setButtonEmbed(v) {
+            buttonEmbed = v;
+            setActiveInGroup('ctrl-button-embed', v);
+            updateAvatarPreview();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
             bootDocsWorkspace();
-            setTimeout(function() {
-                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) {
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
                     item.classList.remove('active');
                 });
                 var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
@@ -314,142 +771,19 @@
             updateAvatarPreview();
         });
 
-        function updateAvatarPreview() {
-            var container = document.getElementById('avatar-preview');
-            var modeControls = document.getElementById('avatar-mode-controls');
-            if (previewType === 'avatar') {
-                var persona = previewVariant === 'imagen' ? demoPersonaImagen : demoPersonaIcono;
-                var opts = { size: previewSize };
-                if (previewVariant === 'inicial') {
-                    persona = { nombre: 'Ana García', avatar: null };
-                    opts.initials = 'AG';
-                }
-                if (previewMode) opts.mode = previewMode;
-                if (previewSelectable) {
-                    opts.selectable = true;
-                    opts.selected = previewAvatarSelected;
-                }
-                container.innerHTML = renderAvatar(persona, opts);
-                if (previewSelectable) {
-                    var avatarEl = container.querySelector('.ubits-avatar--selectable');
-                    if (avatarEl) {
-                        avatarEl.addEventListener('click', function () {
-                            previewAvatarSelected = !previewAvatarSelected;
-                            updateAvatarPreview();
-                        });
-                    }
-                }
-                if (modeControls) modeControls.style.display = 'block';
-            } else {
-                var list = demoPersonas.slice(0, profileListCount).map(function (p, i) {
-                    return Object.assign({}, p, { selected: previewSelectable && i === previewSelectedIndex });
-                });
-                container.innerHTML = renderProfileList(list, { size: previewSize, maxVisible: 3, selectable: previewSelectable });
-                if (previewSelectable) {
-                    container.querySelectorAll('.ubits-profile-list__avatar').forEach(function (el, i) {
-                        el.addEventListener('click', function () {
-                            previewSelectedIndex = i;
-                            updateAvatarPreview();
-                        });
-                    });
-                }
-                if (modeControls) modeControls.style.display = 'none';
-            }
-            if (previewType === 'profile-list' && typeof wireProfileLists === 'function') {
-                wireProfileLists('#avatar-preview');
-            }
-        }
-
-        function setPreviewType(type) {
-            previewType = type;
-            document.querySelectorAll('[onclick^="setPreviewType"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            document.getElementById('avatar-variant-controls').style.display = type === 'avatar' ? 'block' : 'none';
-            document.getElementById('profile-list-count-controls').style.display = type === 'profile-list' ? 'block' : 'none';
-            updateAvatarPreview();
-        }
-
-        function setPreviewSize(size) {
-            previewSize = size;
-            document.querySelectorAll('[onclick^="setPreviewSize"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            updateAvatarPreview();
-        }
-
-        function setPreviewVariant(variant) {
-            previewVariant = variant;
-            document.querySelectorAll('[onclick^="setPreviewVariant"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            updateAvatarPreview();
-        }
-
-        function setPreviewMode(mode) {
-            previewMode = mode;
-            document.querySelectorAll('[onclick^="setPreviewMode"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            updateAvatarPreview();
-        }
-
-        function setProfileListCount(n) {
-            profileListCount = n;
-            document.querySelectorAll('[onclick^="setProfileListCount"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            updateAvatarPreview();
-        }
-
-        function setPreviewSelectable(enabled) {
-            previewSelectable = enabled;
-            document.querySelectorAll('[onclick^="setPreviewSelectable"]').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.preview-control-btn').classList.add('active');
-            updateAvatarPreview();
-        }
-
-        
-
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             var text = el.textContent;
-            navigator.clipboard.writeText(text).then(function() {
+            navigator.clipboard.writeText(text).then(function () {
                 var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
                 var icon = btn.querySelector('i');
                 var span = btn.querySelector('span');
                 icon.className = 'far fa-check';
                 span.textContent = 'Copiado';
                 showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
-                setTimeout(function() {
+                setTimeout(function () {
                     icon.className = 'far fa-copy';
                     span.textContent = 'Copiar';
-                }, 2000);
-            });
-        }
-
-        function copyCode(elementId) {
-            var el = document.getElementById(elementId);
-            var text = el.textContent;
-            navigator.clipboard.writeText(text).then(function() {
-                var btn = event.target.closest('button');
-                var icon = btn.querySelector('i');
-                var span = btn.querySelector('span');
-                var origIcon = icon.className;
-                var origText = span.textContent;
-                icon.className = 'far fa-check';
-                span.textContent = 'Copiado!';
-                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 3500 });
-                setTimeout(function() {
-                    icon.className = origIcon;
-                    span.textContent = origText;
                 }, 2000);
             });
         }
