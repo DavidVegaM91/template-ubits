@@ -324,9 +324,10 @@
         icon: 'fa-user-plus',
         badge: 'Nuevo',
         children: [
-          { id: 'seldash', label: 'Dashboard', href: '#' },
-          { id: 'vacantes', label: 'Vacantes', href: '#' },
-          { id: 'plantillasrecl', label: 'Plantillas', href: '#' },
+          { id: 'seldash', label: 'Dashboard', href: 'ubits-admin/seleccion/dashboard.html' },
+          { id: 'onboarding', label: 'Onboarding', href: 'ubits-admin/seleccion/onboarding.html' },
+          { id: 'vacantes', label: 'Vacantes', href: 'ubits-admin/seleccion/vacantes.html' },
+          { id: 'plantillasrecl', label: 'Plantillas', href: 'ubits-admin/seleccion/plantillas.html' },
         ],
       },
       {
@@ -345,23 +346,19 @@
                 label: 'Universidad corporativa',
                 href: 'ubits-admin/lms-creator/personalizacion/personalizacion-u-corporativa.html',
               },
-              { id: 'recursos-ia', label: 'Recursos IA', href: 'ubits-admin/lms-creator/recursos-ia.html' },
+              { id: 'recursos-ia', label: 'LMS AI', href: 'ubits-admin/lms-creator/recursos-ia.html' },
             ],
           },
           {
             id: 'planes',
-            label: 'Planes de formación',
+            label: 'Planes de Formación',
             children: [
               {
                 id: 'planes-lista',
                 label: 'Planes',
                 href: 'ubits-admin/lms-creator/planes-formacion/planes-contenidos.html',
               },
-              {
-                id: 'grupos',
-                label: 'Grupos',
-                href: 'ubits-admin/lms-creator/planes-formacion/grupos.html',
-              },
+              { id: 'grupos', label: 'Grupos', href: 'ubits-admin/lms-creator/planes-formacion/grupos.html' },
             ],
           },
           {
@@ -369,28 +366,28 @@
             label: 'Certificados',
             children: [
               {
-                id: 'cert-descarga',
+                id: 'certificados-descarga',
                 label: 'Descarga',
                 href: 'ubits-admin/lms-creator/certificados/certificados.html',
               },
               {
-                id: 'cert-config',
+                id: 'certificados-config',
                 label: 'Configuración',
                 href: 'ubits-admin/lms-creator/certificados/certificados-configuracion.html',
               },
             ],
           },
-          { id: 'reportes', label: 'Reportes', href: '#' },
           {
             id: 'diagnostico',
             label: 'Diagnóstico',
             href: 'ubits-admin/diagnostico/admin-diagnostico.html',
           },
+          { id: 'reportes', label: 'Reportes', href: 'ubits-admin/lms-creator/reportes-aprendizaje.html' },
         ],
       },
       {
         id: 'desempeno',
-        label: 'Desempeño',
+        label: 'Desempeño y cultura',
         icon: 'fa-bars-progress',
         children: [
           {
@@ -425,7 +422,7 @@
       },
       {
         id: 'avisos',
-        label: 'Avisos',
+        label: 'Avisos internos',
         icon: 'fa-bullhorn',
         href: 'ubits-admin/empresa/comunicaciones.html',
       },
@@ -617,10 +614,17 @@
     lmsai: 'recursos-ia',
     'recursos-ia': 'recursos-ia',
     'lms-ai': 'recursos-ia',
+    'lms-creator': 'contenidos',
+    lms: 'contenidos',
     'planes-formacion': 'planes-lista',
     'planes-contenidos': 'planes-lista',
+    'planes-lista': 'planes-lista',
     grupos: 'grupos',
-    certificados: 'cert-descarga',
+    certificados: 'certificados-descarga',
+    'certificados-descarga': 'certificados-descarga',
+    'certificados-config': 'certificados-config',
+    'cert-descarga': 'certificados-descarga',
+    'cert-config': 'certificados-config',
     personalizacion: 'u-corporativa',
     'u-corporativa': 'u-corporativa',
     seguimiento: 'u-corporativa',
@@ -640,6 +644,7 @@
     reclutamiento: 'seleccion',
     recldash: 'seldash',
     seldash: 'seldash',
+    onboarding: 'onboarding',
     vacantes: 'vacantes',
     plantillasrecl: 'plantillasrecl',
     tareas: 'tareas',
@@ -654,8 +659,6 @@
     'tareas-lista': 'tareas-lista',
     planes: 'planes',
     plantillas: 'plantillas',
-    empresa: 'home',
-    'lms-creator': 'contenidos',
   };
 
   /**
@@ -696,9 +699,14 @@
     'categorias.html': 'categorias',
     'planes-contenidos.html': 'planes-lista',
     'grupos.html': 'grupos',
-    'certificados.html': 'cert-descarga',
-    'certificados-configuracion.html': 'cert-config',
+    'certificados.html': 'certificados-descarga',
+    'certificados-configuracion.html': 'certificados-config',
     'personalizacion-u-corporativa.html': 'u-corporativa',
+    'onboarding.html': 'onboarding',
+    'dashboard.html': 'seldash',
+    'vacantes.html': 'vacantes',
+    'plantillas.html': 'plantillasrecl',
+    'reportes-aprendizaje.html': 'reportes',
     'documentacion.html': 'inicio',
     'guia-prompts.html': 'guia-prompts',
     'sitemap.html': 'sitemap',
@@ -706,7 +714,7 @@
     'iconos.html': 'foundations/icons',
     'tipografia.html': 'foundations/typography',
     'componentes.html': 'components-index',
-    'personalizacion-seguimiento.html': 'seguimiento',
+    'personalizacion-seguimiento.html': 'u-corporativa',
     'ia-panel-demo.html': 'recursos-ia',
     'recursos-ia.html': 'recursos-ia',
   };
@@ -763,6 +771,8 @@
         aprendizaje: 'catalogo',
         tareas: 'tareas-lista',
         planes: 'planes',
+        plantillas: 'plantillas',
+        seguimiento: 'seguimiento',
         desempeno: 'eval360',
         'desempeño': 'eval360',
       };

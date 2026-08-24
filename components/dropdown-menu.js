@@ -94,6 +94,7 @@
      * @param {string} [config.footerSecondaryId] - ID del botón secundario.
      * @param {string} [config.footerPrimaryId] - ID del botón primario.
      * @param {string} [config.customBodyHtml] - HTML personalizado para el cuerpo (inputs, formularios). Si se define, se muestra en lugar de la lista de opciones.
+     * @param {string} [config.headerHtml] - Cabecera opcional sobre la lista (perfil, notificaciones…).
      * @param {boolean} [config.hasMultiSelectSummary=false] - Tras el autocomplete (si hay): botón xs (solo visible si hay ≥1 checkbox marcado) que alterna entre modo filtro y "solo seleccionados". En solo seleccionados la lista usa altura ~5 filas con scroll (.ubits-dropdown-menu__options--selected-only-scroll). Sin panel aparte. Tras insertar el HTML, llamar initDropdownMultiSelectSummary(overlayId, { anchorElement, applyListVisibility, searchInput? }).
      * @param {string} [config.multiSelectSummaryToggleShowLabel] - Texto botón colapsado (default: Ver seleccionados).
      * @param {string} [config.multiSelectSummaryToggleHideLabel] - Texto botón expandido (default: Ocultar seleccionados).
@@ -117,16 +118,25 @@
         var footerPrimaryLabel = config.footerPrimaryLabel != null ? config.footerPrimaryLabel : '';
         var footerSecondaryId = config.footerSecondaryId || overlayId + '-footer-secondary';
         var footerPrimaryId = config.footerPrimaryId || overlayId + '-footer-primary';
+        var headerHtml = config.headerHtml != null ? config.headerHtml : '';
 
         function markedChosenBadgeHtml() {
             return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i></span>';
         }
 
         var optionsHtml = options.map(function (opt, index) {
+            if (opt.divider) {
+                return '<hr class="ubits-dropdown-menu__divider">';
+            }
+            if (opt.isSectionLabel || opt.sectionLabel) {
+                var sectionText = escapeHtml(opt.text != null ? String(opt.text) : (opt.label != null ? String(opt.label) : ''));
+                return '<div class="ubits-dropdown-menu__section-label" role="presentation">' + sectionText + '</div>';
+            }
             var value = opt.value != null ? escapeHtml(String(opt.value)) : '';
             var text = escapeHtml(opt.text != null ? String(opt.text) : '');
             var selectedClass = opt.selected && !opt.alreadyChosen ? ' ubits-dropdown-menu__option--selected' : '';
             var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
+            var dangerClass = opt.danger ? ' ubits-dropdown-menu__option--danger' : '';
             if (radioGroup) {
                 var radioChecked = opt.selected ? ' checked' : '';
                 var badgeRadio = opt.alreadyChosen ? markedChosenBadgeHtml() : '';
@@ -166,11 +176,27 @@
             if (isRichDropdownOption(opt)) {
                 return renderDropdownMenuOptionButtonHtml(opt, opt.selected ? opt.value : null);
             }
-            var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + right;
+            var shortcutHtml = opt.shortcut
+                ? '<span class="ubits-dropdown-menu__option-shortcut" aria-hidden="true">' + escapeHtml(String(opt.shortcut)) + '</span>'
+                : '';
+            var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + shortcutHtml + right;
             if (opt.checkbox) {
-                return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
+                return '<div class="ubits-dropdown-menu__option' + selectedClass + dangerClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
             }
-            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + '" data-value="' + value + '">' + inner + '</button>';
+            if (opt.submenu && opt.submenu.length) {
+                var submenuHtml = opt.submenu.map(function (sub) {
+                    var subText = escapeHtml(sub.text != null ? String(sub.text) : '');
+                    var subVal = sub.value != null ? escapeHtml(String(sub.value)) : '';
+                    var subLeft = sub.leftIcon ? '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(sub.leftIcon) + '"></i></span>' : '';
+                    var subDanger = sub.danger ? ' ubits-dropdown-menu__option--danger' : '';
+                    return '<button type="button" class="ubits-dropdown-menu__option' + subDanger + '" data-value="' + subVal + '">' + subLeft + '<span class="ubits-dropdown-menu__option-text">' + subText + '</span></button>';
+                }).join('');
+                var chevron = '<span class="ubits-dropdown-menu__option-right"><i class="far fa-chevron-right"></i></span>';
+                return '<div class="ubits-dropdown-menu__submenu-wrap">' +
+                    '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--submenu-trigger' + dangerClass + markedClass + selectedClass + '" data-value="' + value + '">' + inner + chevron + '</button>' +
+                    '<div class="ubits-dropdown-menu__submenu-panel">' + submenuHtml + '</div></div>';
+            }
+            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + dangerClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');
 
         var searchInputId = overlayId + '-autocomplete-input';
@@ -201,12 +227,13 @@
 
         var optionsAttrs = hasMultiSelectSummary ? ' id="' + escapeHtml(optionsListId) + '"' : '';
         var hasRichOptions = options.some(isRichDropdownOption);
-        var contentClass = 'ubits-dropdown-menu__content' + (hasRichOptions ? ' ubits-dropdown-menu__content--rich-options' : '');
+        var contentClass = 'ubits-dropdown-menu__content' + (hasRichOptions ? ' ubits-dropdown-menu__content--rich-options' : '') + (config.contentWide ? ' ubits-dropdown-menu__content--wide' : '');
         var bodyBlock = customBodyHtml
             ? '<div class="ubits-dropdown-menu__custom-body">' + customBodyHtml + '</div>'
             : '<div class="ubits-dropdown-menu__options"' + optionsAttrs + '>' + optionsHtml + '</div>';
         return '<div class="ubits-dropdown-menu__overlay" id="' + escapeHtml(overlayId) + '" style="display: none;" aria-hidden="true">' +
             '<div class="' + contentClass + '" id="' + escapeHtml(contentId) + '" onclick="event.stopPropagation();">' +
+            (headerHtml ? '<div class="ubits-dropdown-menu__header">' + headerHtml + '</div>' : '') +
             autocompleteBlock +
             summaryBlock +
             bodyBlock +
@@ -388,7 +415,7 @@
      * Horizontal: alineado al ancla; si se sale por la derecha o izquierda, se ajusta para no salir nunca.
      * @param {string} overlayId - ID del overlay.
      * @param {Object|HTMLElement} position - { top, left } en px, o elemento ancla (getBoundingClientRect()).
-     * @param {Object} [options] - { alignRight: true } para alinear siempre la derecha del dropdown con la derecha del botón.
+     * @param {Object} [options] - { alignRight: true, placement: 'bottom-start'|'bottom-end'|'top-start'|'top-end', minWidthFromAnchor: true }
      */
     function openDropdownMenu(overlayId, position, options) {
         var overlay = document.getElementById(overlayId);
@@ -401,6 +428,7 @@
 
         options = options || {};
         var alignRight = options.alignRight === true;
+        var placement = options.placement != null ? String(options.placement) : (alignRight ? 'bottom-end' : 'bottom-start');
         var minWidthFromAnchor = options.minWidthFromAnchor === true;
 
         var gap = 4;
@@ -413,8 +441,9 @@
 
         if (position && typeof position.getBoundingClientRect === 'function') {
             rect = position.getBoundingClientRect();
-            top = rect.bottom + gap;
-            left = rect.left;
+            var preferTop = placement.indexOf('top') === 0;
+            top = preferTop ? rect.top - gap : rect.bottom + gap;
+            left = (placement === 'bottom-end' || placement === 'top-end') ? rect.right : rect.left;
         } else {
             if (position && typeof position.top !== 'undefined' && typeof position.left !== 'undefined') {
                 top = position.top;
@@ -435,16 +464,29 @@
         var contentHeight = content.offsetHeight;
 
         if (rect) {
+            var preferTop = placement.indexOf('top') === 0;
             var spaceBelow = vh - rect.bottom - gap - viewportPadding;
             var spaceAbove = rect.top - gap - viewportPadding;
-            if (spaceBelow < contentHeight && spaceAbove >= contentHeight) {
+            if (preferTop) {
                 top = rect.top - contentHeight - gap;
-            } else if (spaceBelow < contentHeight && spaceAbove < contentHeight) {
-                top = Math.max(viewportPadding, vh - contentHeight - viewportPadding);
+                if (spaceAbove < contentHeight && spaceBelow >= contentHeight) {
+                    top = rect.bottom + gap;
+                } else if (spaceAbove < contentHeight && spaceBelow < contentHeight) {
+                    top = Math.max(viewportPadding, vh - contentHeight - viewportPadding);
+                }
+            } else {
+                top = rect.bottom + gap;
+                if (spaceBelow < contentHeight && spaceAbove >= contentHeight) {
+                    top = rect.top - contentHeight - gap;
+                } else if (spaceBelow < contentHeight && spaceAbove < contentHeight) {
+                    top = Math.max(viewportPadding, vh - contentHeight - viewportPadding);
+                }
             }
             content.style.top = Math.max(viewportPadding, Math.min(vh - contentHeight - viewportPadding, top)) + 'px';
-            if (alignRight || left + contentWidth > vw - viewportPadding) {
+            if (placement === 'bottom-end' || placement === 'top-end' || alignRight) {
                 left = rect.right - contentWidth;
+            } else {
+                left = rect.left;
             }
         }
 

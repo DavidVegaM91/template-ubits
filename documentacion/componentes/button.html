@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/attention-badge.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <style>
         .preview-control-btn.active {
             background: var(--ubits-accent-brand) !important;
@@ -60,6 +62,27 @@
             align-items: center;
             gap: var(--gap-sm);
         }
+        .btn-kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--ubits-border-1);
+            background: var(--ubits-bg-2);
+            font-family: inherit;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-regular);
+            color: var(--ubits-fg-1-medium);
+            line-height: 1;
+        }
+        .btn-kbd-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -80,7 +103,7 @@
                                 Button
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Botón de acción UBITS. Variantes de jerarquía visual y propiedades ortogonales: tamaño, contenido, píldora, carga, badge, enlace y más.
+                                Botón de acción UBITS. Composiciones ReUI visibles en el playground y propiedades ortogonales que aplican a cada una.
                             </p>
                         </div>
 
@@ -90,40 +113,39 @@
                                 Preview del componente
                             </h2>
                             <p id="button-preview-intro" class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Elige la variante visual. Debajo combina propiedades: tamaño, contenido, forma, carga, badge… Las propiedades no son variantes.
+                                Elige una composición ReUI. Debajo aparecen solo las propiedades que aplican a esa composición.
                             </p>
 
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; overflow: visible;">
                                 <div id="button-preview" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 96px; width: 100%; overflow: visible; gap: 12px;"></div>
                             </div>
 
-                            <div style="margin-top: 24px;">
+                            <div style="margin-top: 24px;" id="button-controls">
                                 <div class="btn-control-row">
                                     <span class="ubits-body-sm-bold btn-control-row__label">Variante:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-variant">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="primary" onclick="setVariant('primary')"><span>Primario</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="secondary" onclick="setVariant('secondary')"><span>Secundario</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="tertiary" onclick="setVariant('tertiary')"><span>Terciario</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="active" onclick="setVariant('active')"><span>Activo</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="error" onclick="setVariant('error')"><span>Error</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="disabled" onclick="setVariant('disabled')"><span>Disabled</span></button>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition"></div>
+                                </div>
+
+                                <div id="block-hierarchy">
+                                    <div class="btn-control-row" id="row-hierarchy">
+                                        <span class="ubits-body-sm-bold btn-control-row__label">Jerarquía:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-hierarchy"></div>
+                                    </div>
+                                    <div class="btn-control-row" id="row-error-sub" style="display: none;">
+                                        <span class="ubits-body-sm-bold btn-control-row__label">Estilo error:</span>
+                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-error-sub">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="error" onclick="setErrorSub('error')"><span>Primario</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="error-secondary" onclick="setErrorSub('error-secondary')"><span>Secundario</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="error-tertiary" onclick="setErrorSub('error-tertiary')"><span>Terciario</span></button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="btn-control-row" id="row-error-sub" style="display: none;">
-                                    <span class="ubits-body-sm-bold btn-control-row__label">Estilo error:</span>
-                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-error-sub">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="error" onclick="setErrorSub('error')"><span>Primario</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="error-secondary" onclick="setErrorSub('error-secondary')"><span>Secundario</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="error-tertiary" onclick="setErrorSub('error-tertiary')"><span>Terciario</span></button>
-                                    </div>
-                                </div>
-
-                                <p class="ubits-body-xs-regular btn-props-divider">
-                                    Propiedades (se combinan entre sí; no son variantes)
+                                <p class="ubits-body-xs-regular btn-props-divider" id="props-divider" style="display: none;">
+                                    Propiedades de esta composición
                                 </p>
 
-                                <div class="btn-control-row" id="row-size">
+                                <div class="btn-control-row" id="row-size" style="display: none;">
                                     <span class="ubits-body-sm-bold btn-control-row__label">Tamaño:</span>
                                     <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-size">
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="xs" onclick="setSize('xs')"><span>XS</span></button>
@@ -133,15 +155,39 @@
                                     </div>
                                 </div>
 
-                                <div class="btn-control-row">
+                                <div class="btn-control-row" id="row-content" style="display: none;">
                                     <span class="ubits-body-sm-bold btn-control-row__label">Contenido:</span>
                                     <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-content">
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="texto" onclick="setContent('texto')"><span>Texto</span></button>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="icono-texto" onclick="setContent('icono-texto')"><span>Icono + texto</span></button>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="solo-icono" onclick="setContent('solo-icono')"><span>Solo icono</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="avatar" onclick="setContent('avatar')"><span>Con avatar</span></button>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="grupo-accion" onclick="setContent('grupo-accion')"><span>Grupo + acción</span></button>
                                     </div>
+                                </div>
+
+                                <div class="btn-control-row" id="row-icon-pos" style="display: none;">
+                                    <span class="ubits-body-sm-bold btn-control-row__label">Icono:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-icon-pos">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="start" onclick="setIconPos('start')"><span>Izquierda</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="end" onclick="setIconPos('end')"><span>Derecha</span></button>
+                                    </div>
+                                </div>
+
+                                <div class="btn-control-row" id="row-status-dot" style="display: none;">
+                                    <span class="ubits-body-sm-bold btn-control-row__label">Punto:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-status-dot">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="start" onclick="setStatusDotPos('start')"><span>Izquierda</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="end" onclick="setStatusDotPos('end')"><span>Derecha</span></button>
+                                    </div>
+                                </div>
+
+                                <div class="btn-control-row" id="row-inline-count" style="display: none;">
+                                    <span class="ubits-body-sm-bold btn-control-row__label">Conteo:</span>
+                                    <input type="number" id="inline-count-input" min="0" max="9999" value="456" aria-label="Número de conteo inline" style="width: 72px; padding: 6px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: 13px; color: var(--ubits-fg-1-high); background: var(--ubits-bg-1);" onchange="onInlineCountChange()" oninput="onInlineCountChange()">
+                                </div>
+
+                                <div class="btn-control-row" id="row-trailing-badge" style="display: none;">
+                                    <span class="ubits-body-sm-bold btn-control-row__label">Badge inline:</span>
+                                    <input type="number" id="trailing-badge-input" min="1" max="999" value="12" aria-label="Número del badge inline" style="width: 72px; padding: 6px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: 13px; color: var(--ubits-fg-1-high); background: var(--ubits-bg-1);" onchange="onTrailingBadgeChange()" oninput="onTrailingBadgeChange()">
                                 </div>
 
                                 <div class="btn-control-row" id="row-avatar-style" style="display: none;">
@@ -153,62 +199,64 @@
                                     </div>
                                 </div>
 
-                                <div id="block-atom-props">
-                                    <div class="btn-switch-row">
-                                        <div class="btn-switch-item" id="switch-pill">
-                                            <label class="ubits-switch ubits-switch--sm">
-                                                <input type="checkbox" class="ubits-switch__input" id="pill-toggle" role="switch" onchange="updateButtonPreview()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Píldora</span>
-                                        </div>
-                                        <div class="btn-switch-item">
-                                            <label class="ubits-switch ubits-switch--sm">
-                                                <input type="checkbox" class="ubits-switch__input" id="loading-toggle" role="switch" onchange="updateButtonPreview()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cargando</span>
-                                        </div>
-                                        <div class="btn-switch-item">
-                                            <label class="ubits-switch ubits-switch--sm">
-                                                <input type="checkbox" class="ubits-switch__input" id="fullwidth-toggle" role="switch" onchange="updateButtonPreview()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ancho completo</span>
-                                        </div>
-                                        <div class="btn-switch-item" id="switch-trailing">
-                                            <label class="ubits-switch ubits-switch--sm">
-                                                <input type="checkbox" class="ubits-switch__input" id="trailing-toggle" role="switch" onchange="updateButtonPreview()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icono final</span>
-                                        </div>
-                                        <div class="btn-switch-item">
-                                            <label class="ubits-switch ubits-switch--sm">
-                                                <input type="checkbox" class="ubits-switch__input" id="link-toggle" role="switch" onchange="updateButtonPreview()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Como enlace (href)</span>
-                                        </div>
+                                <div class="btn-switch-row" id="block-switches" style="display: none;">
+                                    <div class="btn-switch-item" id="switch-pill" style="display: none;">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="pill-toggle" role="switch" onchange="updateButtonPreview()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Píldora</span>
                                     </div>
+                                    <div class="btn-switch-item" id="switch-loading" style="display: none;">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="loading-toggle" role="switch" onchange="updateButtonPreview()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cargando</span>
+                                    </div>
+                                    <div class="btn-switch-item" id="switch-fullwidth" style="display: none;">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="fullwidth-toggle" role="switch" onchange="updateButtonPreview()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ancho completo</span>
+                                    </div>
+                                    <div class="btn-switch-item" id="switch-link-disabled" style="display: none;">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="link-disabled-toggle" role="switch" onchange="updateButtonPreview()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Disabled</span>
+                                    </div>
+                                </div>
 
-                                    <div class="btn-control-row">
-                                        <span class="ubits-body-sm-bold btn-control-row__label">Badge:</span>
-                                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap; align-items: center;" id="ctrl-badge">
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="none" onclick="setBadgeMode('none')"><span>Sin</span></button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="dot" onclick="setBadgeMode('dot')"><span>Puntito</span></button>
-                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="number" onclick="setBadgeMode('number')"><span>Número</span></button>
-                                            <input type="number" id="badge-number-input" min="1" max="999" value="3" aria-label="Número del badge" style="width: 48px; padding: 4px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: 13px; color: var(--ubits-fg-1-high); background: var(--ubits-bg-1); display: none;" onchange="updateButtonPreview()" oninput="updateButtonPreview()">
-                                            <div class="btn-switch-item" id="switch-badge-max" style="display: none;">
-                                                <label class="ubits-switch ubits-switch--sm">
-                                                    <input type="checkbox" class="ubits-switch__input" id="badge-max-toggle" role="switch" onchange="onBadgeMaxToggle()">
-                                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                                </label>
-                                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tope 99+</span>
-                                            </div>
+                                <div class="btn-control-row" id="row-badge-corner" style="display: none;">
+                                    <span class="ubits-body-sm-bold btn-control-row__label">Badge esquina:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap; align-items: center;" id="ctrl-badge">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="none" onclick="setBadgeMode('none')"><span>Sin</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="dot" onclick="setBadgeMode('dot')"><span>Puntito</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="number" onclick="setBadgeMode('number')"><span>Número</span></button>
+                                        <input type="number" id="badge-number-input" min="1" max="999" value="3" aria-label="Número del badge" style="width: 48px; padding: 4px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: 13px; color: var(--ubits-fg-1-high); background: var(--ubits-bg-1); display: none;" onchange="updateButtonPreview()" oninput="updateButtonPreview()">
+                                        <div class="btn-switch-item" id="switch-badge-max" style="display: none;">
+                                            <label class="ubits-switch ubits-switch--sm">
+                                                <input type="checkbox" class="ubits-switch__input" id="badge-max-toggle" role="switch" onchange="onBadgeMaxToggle()">
+                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            </label>
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tope 99+</span>
                                         </div>
                                     </div>
                                 </div>
+
+                                <p class="ubits-body-xs-regular" id="hint-async" style="display: none; color: var(--ubits-fg-1-medium); margin: 0 0 12px;">
+                                    Haz clic en el preview para ver loading → éxito.
+                                </p>
+                                <p class="ubits-body-xs-regular" id="hint-no-props" style="display: none; color: var(--ubits-fg-1-medium); margin: 0 0 12px;">
+                                    Esta composición no tiene más propiedades — el preview es la referencia completa.
+                                </p>
+                                <p class="ubits-body-xs-regular" id="hint-motion" style="color: var(--ubits-fg-1-medium); margin: 8px 0 0; line-height: 1.5;">
+                                    Motions oficiales (como el badge IA al descontar tokens): «Volver» usa <code style="font-size: 0.9em;">ubits-button--motion-back</code>.
+                                    Próxima oleada: hamburger, expandir, hover reveal y theme toggle. Login social Remix queda ❌.
+                                </p>
                             </div>
                         </div>
 
@@ -219,24 +267,24 @@
                             </h2>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                                    <div class="ubits-body-sm-bold">Variantes</div>
-                                    <div class="ubits-body-sm-regular">Primario, secundario, terciario, activo y error (3 estilos)</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">15 composiciones</div>
+                                    <div class="ubits-body-sm-regular">Enlace, Volver, conteos, badges, async, avatar, grupo…</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
                                     <div class="ubits-body-sm-bold">Propiedades</div>
-                                    <div class="ubits-body-sm-regular">Tamaño, contenido, píldora, cargando, ancho completo, icono final, enlace</div>
+                                    <div class="ubits-body-sm-regular">Knobs por composición: tamaño, jerarquía, badge, carga…</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user-circle"></i></div>
-                                    <div class="ubits-body-sm-bold">Con avatar / grupo</div>
-                                    <div class="ubits-body-sm-regular">Leading con Avatar y composición ProfileList + Invitar</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-link"></i></div>
+                                    <div class="ubits-body-sm-bold">Enlace / Volver</div>
+                                    <div class="ubits-body-sm-regular">Variante link + motion back en chevron</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bell"></i></div>
                                     <div class="ubits-body-sm-bold">Badge</div>
-                                    <div class="ubits-body-sm-regular">Puntito, número y tope visual 99+</div>
+                                    <div class="ubits-body-sm-regular">Esquina (attention-badge), inline (badge-tag) y conteo</div>
                                 </div>
                             </div>
                         </div>
@@ -255,10 +303,65 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/avatar.js"></script>
+    <script src="../../components/badge-tag.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
+        var COMPOSITIONS = [
+            { id: 'accion', label: 'Acción estándar' },
+            { id: 'enlace', label: 'Enlace' },
+            { id: 'volver', label: 'Volver' },
+            { id: 'me-gusta', label: 'Me gusta + conteo' },
+            { id: 'estrella', label: 'Estrella + conteo' },
+            { id: 'badge-inline', label: 'Badge inline' },
+            { id: 'notificacion', label: 'Notificación' },
+            { id: 'punto-vivo', label: 'Punto en vivo' },
+            { id: 'badge-nuevo', label: 'Badge «Nuevo»' },
+            { id: 'atajos', label: 'Atajos teclado' },
+            { id: 'copiar', label: 'Copiar' },
+            { id: 'copiar-icono', label: 'Copiar solo icono' },
+            { id: 'async', label: 'Async guardar' },
+            { id: 'con-avatar', label: 'Con avatar' },
+            { id: 'grupo-accion', label: 'Grupo + acción' }
+        ];
+
+        var COMPOSITION_CONFIG = {
+            accion: { hierarchy: 'full', size: true, content: true, iconPos: true, statusDotPos: false, pill: true, loading: true, fullWidth: true, badgeCorner: true, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            enlace: { hierarchy: 'none', size: true, content: false, iconPos: true, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            volver: { hierarchy: 'none', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            'me-gusta': { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: true, trailingBadgeNum: false, avatarStyle: false },
+            estrella: { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: true, trailingBadgeNum: false, avatarStyle: false },
+            'badge-inline': { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: true, avatarStyle: false },
+            notificacion: { hierarchy: 'full', size: true, content: true, iconPos: false, statusDotPos: false, pill: false, loading: true, fullWidth: false, badgeCorner: true, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            'punto-vivo': { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: true, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            'badge-nuevo': { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            atajos: { hierarchy: 'basic', size: true, content: false, iconPos: true, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            copiar: { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            'copiar-icono': { hierarchy: 'basic', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            async: { hierarchy: 'async', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false },
+            'con-avatar': { hierarchy: 'none', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: true, fullWidth: true, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: true },
+            'grupo-accion': { hierarchy: 'none', size: true, content: false, iconPos: false, statusDotPos: false, pill: false, loading: false, fullWidth: false, badgeCorner: false, inlineCount: false, trailingBadgeNum: false, avatarStyle: false }
+        };
+
+        var VARIANTS_FULL = [
+            { id: 'primary', label: 'Primario' },
+            { id: 'secondary', label: 'Secundario' },
+            { id: 'tertiary', label: 'Terciario' },
+            { id: 'active', label: 'Activo' },
+            { id: 'error', label: 'Error' },
+            { id: 'disabled', label: 'Disabled' }
+        ];
+        var VARIANTS_BASIC = [
+            { id: 'secondary', label: 'Secundario' },
+            { id: 'tertiary', label: 'Terciario' },
+            { id: 'disabled', label: 'Disabled' }
+        ];
+        var VARIANTS_ASYNC = [
+            { id: 'primary', label: 'Primario' },
+            { id: 'secondary', label: 'Secundario' }
+        ];
+
         var DEMO_AVATAR = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop';
         var DEMO_PERSONAS = [
             { nombre: 'Ana García', avatar: DEMO_AVATAR },
@@ -269,20 +372,30 @@
         ];
 
         var state = {
+            composition: 'accion',
             variant: 'primary',
             errorSub: 'error',
             size: 'md',
             content: 'icono-texto',
-            avatarStyle: 'outline',
+            iconPos: 'start',
+            statusDotPos: 'start',
             pill: false,
             loading: false,
             fullWidth: false,
-            trailing: false,
-            asLink: false,
             badgeMode: 'none',
             badgeNumber: 3,
-            badgeMaxOverflow: false
+            badgeMaxOverflow: false,
+            inlineCount: 456,
+            trailingBadgeNum: 12,
+            linkDisabled: false,
+            avatarStyle: 'outline',
+            copied: false,
+            asyncPhase: 'idle'
         };
+
+        function getCfg() {
+            return COMPOSITION_CONFIG[state.composition] || COMPOSITION_CONFIG.accion;
+        }
 
         function setActiveInGroup(groupId, value) {
             var group = document.getElementById(groupId);
@@ -292,17 +405,163 @@
             });
         }
 
+        function formatCount(n) {
+            return Number(n).toLocaleString('es-CO');
+        }
+
+        function resolveVariantClass() {
+            var cfg = getCfg();
+            if (cfg.hierarchy === 'basic') {
+                if (state.variant === 'disabled') return 'ubits-button--primary';
+                return state.variant === 'tertiary' ? 'ubits-button--tertiary' : 'ubits-button--secondary';
+            }
+            if (cfg.hierarchy === 'async') {
+                return state.variant === 'secondary' ? 'ubits-button--secondary' : 'ubits-button--primary';
+            }
+            if (state.variant === 'disabled') return 'ubits-button--primary';
+            if (state.variant === 'error') return 'ubits-button--' + state.errorSub;
+            return 'ubits-button--' + state.variant;
+        }
+
+        function isDisabled() {
+            var cfg = getCfg();
+            if (state.composition === 'async' && state.asyncPhase === 'loading') return true;
+            if (state.variant === 'disabled') return true;
+            if ((state.composition === 'enlace' || state.composition === 'volver') && state.linkDisabled) return true;
+            return false;
+        }
+
+        function cornerBadgeHtml() {
+            if (state.badgeMode === 'none') return '';
+            var attnBase = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+            if (state.badgeMode === 'dot') {
+                return '<span class="' + attnBase + ' ubits-attention-badge--dot-only" aria-hidden="true"></span>';
+            }
+            var display = state.badgeMaxOverflow ? '99+' : String(Math.max(1, Math.min(999, state.badgeNumber)));
+            var circleClass = display.length === 1 ? ' ubits-attention-badge--circle' : '';
+            return '<span class="' + attnBase + circleClass + '">' + display + '</span>';
+        }
+
+        function statusDotHtml() {
+            return '<span class="ubits-button__status-dot" aria-hidden="true"><span class="ubits-button__status-dot-pulse"></span></span>';
+        }
+
+        function shortcutKeysHtml() {
+            return '<span class="ubits-button__trailing"><span class="btn-kbd-group"><kbd class="btn-kbd">⌘</kbd><kbd class="btn-kbd">K</kbd></span></span>';
+        }
+
+        function trailingBadgeHtml() {
+            if (typeof createUbitsBadgeTag !== 'function') return '';
+            return '<span class="ubits-button__trailing">' + createUbitsBadgeTag({
+                variant: state.composition === 'badge-nuevo' ? 'soft' : 'outlined',
+                color: state.composition === 'badge-nuevo' ? 'success' : 'error',
+                size: 'xs',
+                text: state.composition === 'badge-nuevo' ? 'Nuevo' : String(state.trailingBadgeNum)
+            }) + '</span>';
+        }
+
+        function buildHierarchyButtons() {
+            var cfg = getCfg();
+            var list = cfg.hierarchy === 'full' ? VARIANTS_FULL : cfg.hierarchy === 'basic' ? VARIANTS_BASIC : cfg.hierarchy === 'async' ? VARIANTS_ASYNC : [];
+            var container = document.getElementById('ctrl-hierarchy');
+            container.innerHTML = list.map(function (v) {
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' +
+                    (state.variant === v.id ? ' active' : '') +
+                    '" data-value="' + v.id + '" onclick="setVariant(\'' + v.id + '\')"><span>' + v.label + '</span></button>';
+            }).join('');
+        }
+
+        function buildCompositionButtons() {
+            var container = document.getElementById('ctrl-composition');
+            container.innerHTML = COMPOSITIONS.map(function (c) {
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' +
+                    (state.composition === c.id ? ' active' : '') +
+                    '" data-value="' + c.id + '" onclick="setComposition(\'' + c.id + '\')"><span>' + c.label + '</span></button>';
+            }).join('');
+        }
+
+        function hasAnyPropKnob() {
+            var cfg = getCfg();
+            return cfg.hierarchy !== 'none' || cfg.size || cfg.content || cfg.iconPos || cfg.statusDotPos ||
+                cfg.pill || cfg.loading || cfg.fullWidth || cfg.badgeCorner || cfg.inlineCount ||
+                cfg.trailingBadgeNum || cfg.avatarStyle || state.composition === 'enlace' ||
+                state.composition === 'volver';
+        }
+
+        function syncControlsVisibility() {
+            var cfg = getCfg();
+            var showHierarchy = cfg.hierarchy !== 'none';
+            document.getElementById('block-hierarchy').style.display = showHierarchy ? 'block' : 'none';
+            document.getElementById('row-error-sub').style.display = (cfg.hierarchy === 'full' && state.variant === 'error') ? 'flex' : 'none';
+
+            var anyProps = hasAnyPropKnob();
+            document.getElementById('props-divider').style.display = anyProps ? 'block' : 'none';
+            document.getElementById('row-size').style.display = cfg.size ? 'flex' : 'none';
+            document.getElementById('row-content').style.display = cfg.content ? 'flex' : 'none';
+            document.getElementById('row-icon-pos').style.display = cfg.iconPos ? 'flex' : 'none';
+            document.getElementById('row-status-dot').style.display = cfg.statusDotPos ? 'flex' : 'none';
+            document.getElementById('row-inline-count').style.display = cfg.inlineCount ? 'flex' : 'none';
+            document.getElementById('row-trailing-badge').style.display = cfg.trailingBadgeNum ? 'flex' : 'none';
+            document.getElementById('row-avatar-style').style.display = cfg.avatarStyle ? 'flex' : 'none';
+            document.getElementById('row-badge-corner').style.display = cfg.badgeCorner ? 'flex' : 'none';
+
+            var showSwitches = cfg.pill || cfg.loading || cfg.fullWidth || state.composition === 'enlace' || state.composition === 'volver';
+            document.getElementById('block-switches').style.display = showSwitches ? 'flex' : 'none';
+            document.getElementById('switch-pill').style.display = cfg.pill ? 'flex' : 'none';
+            document.getElementById('switch-loading').style.display = cfg.loading ? 'flex' : 'none';
+            document.getElementById('switch-fullwidth').style.display = cfg.fullWidth ? 'flex' : 'none';
+            document.getElementById('switch-link-disabled').style.display =
+                (state.composition === 'enlace' || state.composition === 'volver') ? 'flex' : 'none';
+
+            var numInput = document.getElementById('badge-number-input');
+            var maxRow = document.getElementById('switch-badge-max');
+            if (state.badgeMode === 'number') {
+                maxRow.style.display = 'flex';
+                numInput.style.display = state.badgeMaxOverflow ? 'none' : 'inline-block';
+            } else {
+                maxRow.style.display = 'none';
+                numInput.style.display = 'none';
+            }
+
+            document.getElementById('hint-async').style.display = state.composition === 'async' ? 'block' : 'none';
+            document.getElementById('hint-no-props').style.display = !anyProps && state.composition !== 'async' ? 'block' : 'none';
+        }
+
+        function readSwitchState() {
+            state.pill = document.getElementById('pill-toggle').checked;
+            state.loading = document.getElementById('loading-toggle').checked;
+            state.fullWidth = document.getElementById('fullwidth-toggle').checked;
+            state.linkDisabled = document.getElementById('link-disabled-toggle').checked;
+            state.badgeMaxOverflow = document.getElementById('badge-max-toggle').checked;
+            state.badgeNumber = Math.max(1, Math.min(999, parseInt(document.getElementById('badge-number-input').value, 10) || 1));
+            state.inlineCount = Math.max(0, Math.min(9999, parseInt(document.getElementById('inline-count-input').value, 10) || 0));
+            state.trailingBadgeNum = Math.max(1, Math.min(999, parseInt(document.getElementById('trailing-badge-input').value, 10) || 1));
+        }
+
+        function setComposition(id) {
+            state.composition = id;
+            state.copied = false;
+            state.asyncPhase = 'idle';
+            setActiveInGroup('ctrl-composition', id);
+            var cfg = getCfg();
+            if (cfg.hierarchy === 'basic' && ['primary', 'active', 'error', 'error-secondary', 'error-tertiary'].indexOf(state.variant) !== -1) {
+                state.variant = 'secondary';
+            }
+            if (cfg.hierarchy === 'async' && !['primary', 'secondary'].includes(state.variant)) {
+                state.variant = 'primary';
+            }
+            if (id === 'me-gusta') state.inlineCount = 456;
+            if (id === 'estrella') state.inlineCount = 128;
+            document.getElementById('inline-count-input').value = state.inlineCount;
+            buildHierarchyButtons();
+            syncControlsVisibility();
+            updateButtonPreview();
+        }
+
         function setVariant(v) {
             state.variant = v;
-            setActiveInGroup('ctrl-variant', v);
-            document.getElementById('row-error-sub').style.display = v === 'error' ? 'flex' : 'none';
-            if (v === 'disabled' || state.loading) {
-                var linkToggle = document.getElementById('link-toggle');
-                if (linkToggle && linkToggle.checked) {
-                    linkToggle.checked = false;
-                    state.asLink = false;
-                }
-            }
+            setActiveInGroup('ctrl-hierarchy', v);
+            document.getElementById('row-error-sub').style.display = (getCfg().hierarchy === 'full' && v === 'error') ? 'flex' : 'none';
             updateButtonPreview();
         }
 
@@ -324,6 +583,18 @@
             updateButtonPreview();
         }
 
+        function setIconPos(v) {
+            state.iconPos = v;
+            setActiveInGroup('ctrl-icon-pos', v);
+            updateButtonPreview();
+        }
+
+        function setStatusDotPos(v) {
+            state.statusDotPos = v;
+            setActiveInGroup('ctrl-status-dot', v);
+            updateButtonPreview();
+        }
+
         function setAvatarStyle(v) {
             state.avatarStyle = v;
             setActiveInGroup('ctrl-avatar-style', v);
@@ -336,164 +607,242 @@
             setActiveInGroup('ctrl-badge', v);
             var maxToggle = document.getElementById('badge-max-toggle');
             if (maxToggle && v !== 'number') maxToggle.checked = false;
+            syncControlsVisibility();
             updateButtonPreview();
         }
 
         function onBadgeMaxToggle() {
             state.badgeMaxOverflow = document.getElementById('badge-max-toggle').checked;
+            syncControlsVisibility();
             updateButtonPreview();
         }
 
-        function resolveVariantClass() {
-            if (state.variant === 'disabled') return 'ubits-button--primary';
-            if (state.variant === 'error') return 'ubits-button--' + state.errorSub;
-            return 'ubits-button--' + state.variant;
+        function onInlineCountChange() {
+            state.inlineCount = Math.max(0, Math.min(9999, parseInt(document.getElementById('inline-count-input').value, 10) || 0));
+            updateButtonPreview();
         }
 
-        function badgeHtml() {
-            if (state.badgeMode === 'none') return '';
-            var attnBase = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
-            if (state.badgeMode === 'dot') {
-                return '<span class="' + attnBase + ' ubits-attention-badge--dot-only" aria-hidden="true"></span>';
-            }
-            var display;
-            if (state.badgeMaxOverflow) {
-                display = '99+';
-            } else {
-                var n = Math.max(1, Math.min(999, parseInt(document.getElementById('badge-number-input').value, 10) || 1));
-                state.badgeNumber = n;
-                display = String(n);
-            }
-            var circleClass = display.length === 1 ? ' ubits-attention-badge--circle' : '';
-            return '<span class="' + attnBase + circleClass + '">' + display + '</span>';
+        function onTrailingBadgeChange() {
+            state.trailingBadgeNum = Math.max(1, Math.min(999, parseInt(document.getElementById('trailing-badge-input').value, 10) || 1));
+            updateButtonPreview();
         }
 
-        function updateVisibility() {
-            var withAvatar = state.content === 'avatar';
-            var withGroup = state.content === 'grupo-accion';
-            var iconOnly = state.content === 'solo-icono';
-
-            document.getElementById('row-size').style.display = (!withAvatar && !withGroup) ? 'flex' : 'none';
-            document.getElementById('row-avatar-style').style.display = withAvatar ? 'flex' : 'none';
-            document.getElementById('block-atom-props').style.display = withGroup ? 'none' : 'block';
-            document.getElementById('switch-pill').style.display = withAvatar ? 'none' : 'flex';
-            document.getElementById('switch-trailing').style.display = (!withAvatar && !iconOnly) ? 'flex' : 'none';
-
-            var numInput = document.getElementById('badge-number-input');
-            var maxRow = document.getElementById('switch-badge-max');
-            if (state.badgeMode === 'number') {
-                maxRow.style.display = 'flex';
-                numInput.style.display = state.badgeMaxOverflow ? 'none' : 'inline-block';
-            } else {
-                maxRow.style.display = 'none';
-                numInput.style.display = 'none';
-            }
-
-            var linkToggle = document.getElementById('link-toggle');
-            if (linkToggle) {
-                linkToggle.disabled = state.variant === 'disabled' || document.getElementById('loading-toggle').checked;
-            }
+        function inviteSize() {
+            return (state.size === 'xs' || state.size === 'lg') ? 'sm' : state.size;
         }
 
-        function updateButtonPreview() {
-            state.pill = document.getElementById('pill-toggle').checked;
-            state.loading = document.getElementById('loading-toggle').checked;
-            state.fullWidth = document.getElementById('fullwidth-toggle').checked;
-            state.trailing = document.getElementById('trailing-toggle').checked;
-            state.asLink = document.getElementById('link-toggle').checked && state.variant !== 'disabled' && !state.loading;
-            state.badgeMaxOverflow = document.getElementById('badge-max-toggle').checked;
+        function buildPreviewHtml() {
+            readSwitchState();
+            var comp = state.composition;
+            var disabled = isDisabled();
+            var containerInner = '';
 
-            updateVisibility();
-
-            var container = document.getElementById('button-preview');
-            var withAvatar = state.content === 'avatar';
-            var withGroup = state.content === 'grupo-accion';
-            var iconOnly = state.content === 'solo-icono';
-            var showIcon = state.content === 'icono-texto' || iconOnly;
-            var disabled = state.variant === 'disabled' || state.loading;
-
-            var intro = document.getElementById('button-preview-intro');
-            if (intro) {
-                intro.textContent = state.asLink && !disabled
-                    ? 'Modo enlace: se ve igual que el botón, pero en el DOM es un <a href>. Abajo del preview verás el detalle.'
-                    : 'Elige la variante visual. Debajo combina propiedades: tamaño, contenido, forma, carga, badge… Las propiedades no son variantes.';
-            }
-
-            function wrapPreview(btnHtml) {
-                var linkHint = state.asLink && !disabled
-                    ? '<p class="ubits-body-xs-regular" style="margin:0;text-align:center;color:var(--ubits-fg-1-medium);max-width:320px;">Renderizado como enlace (&lt;a href=&quot;#ejemplo&quot;&gt;). Misma apariencia que el botón; en producto usarías una URL real.</p>'
-                    : '';
-                return btnHtml + linkHint;
-            }
-
-            if (withGroup) {
+            if (comp === 'grupo-accion') {
                 var groupList = typeof renderProfileList === 'function'
                     ? renderProfileList(
                         DEMO_PERSONAS.map(function (p) { return { nombre: p.nombre, avatar: p.avatar }; }),
                         { size: 'sm', maxVisible: 3, overflowMode: 'icon', showTooltip: true }
                     )
                     : '';
-                container.innerHTML =
-                    '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+                return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
                     groupList +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--' + inviteSize() + '">' +
                     '<i class="far fa-user-plus"></i><span>Invitar</span></button></div>';
-                if (typeof wireProfileLists === 'function') wireProfileLists('#button-preview');
-                if (typeof initTooltip === 'function') initTooltip('#button-preview [data-tooltip]');
-                return;
             }
 
-            var tag = state.asLink && !disabled ? 'a' : 'button';
-            var hrefAttr = tag === 'a' ? ' href="#ejemplo"' : '';
-            var clickAttr = tag === 'a' ? ' onclick="event.preventDefault(); return false;"' : '';
-            var typeAttr = tag === 'button' ? ' type="button"' : '';
-            var disabledAttr = (tag === 'button' && disabled) ? ' disabled' : '';
-            var ariaBusy = state.loading ? ' aria-busy="true"' : '';
-            var ariaLabel = iconOnly ? ' aria-label="Confirmar"' : (state.loading ? ' aria-label="Botón de acción (cargando)"' : '');
-
+            var tag = 'button';
+            var hrefAttr = '';
+            var clickAttr = '';
+            var typeAttr = ' type="button"';
+            var disabledAttr = disabled ? ' disabled' : '';
+            var ariaDisabled = '';
             var classes = ['ubits-button'];
-            if (withAvatar) {
-                classes.push(state.avatarStyle === 'pill-filled' ? 'ubits-button--primary' : 'ubits-button--secondary');
-                classes.push('ubits-button--sm');
+            var inner = '';
+            var ariaLabel = '';
+            var extraAttrs = '';
+            var idAttr = ' id="btn-preview-interactive"';
+
+            if (comp === 'enlace' || comp === 'volver') {
+                if (!disabled) {
+                    tag = 'a';
+                    hrefAttr = ' href="#"';
+                    clickAttr = ' onclick="event.preventDefault(); return false;"';
+                    typeAttr = '';
+                    idAttr = '';
+                } else {
+                    ariaDisabled = ' aria-disabled="true"';
+                }
+                classes.push('ubits-button--link', 'ubits-button--' + state.size);
+                if (comp === 'volver') classes.push('ubits-button--motion-back');
+            } else if (comp === 'con-avatar') {
+                var filled = state.avatarStyle === 'pill-filled';
+                classes.push(filled ? 'ubits-button--primary' : 'ubits-button--secondary');
+                classes.push('ubits-button--' + state.size);
                 classes.push('ubits-button--has-leading');
                 if (state.avatarStyle !== 'outline') classes.push('ubits-button--pill');
+                if (state.fullWidth) classes.push('ubits-button--full-width');
+                if (state.loading) classes.push('ubits-button--loading');
             } else {
                 classes.push(resolveVariantClass());
                 classes.push('ubits-button--' + state.size);
+            }
+
+            if (comp === 'accion') {
+                var iconOnly = state.content === 'solo-icono';
+                var showIcon = state.content === 'icono-texto' || iconOnly;
                 if (iconOnly) classes.push('ubits-button--icon-only');
                 if (state.pill) classes.push('ubits-button--pill');
+                if (state.fullWidth) classes.push('ubits-button--full-width');
+                if (state.loading) classes.push('ubits-button--loading');
+                if (state.loading) {
+                    inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
+                } else {
+                    if (showIcon && state.iconPos === 'start') inner += '<i class="far fa-check" aria-hidden="true"></i>';
+                    if (!iconOnly) inner += '<span>Botón de acción</span>';
+                    if (showIcon && state.iconPos === 'end') inner += '<i class="far fa-check" aria-hidden="true"></i>';
+                }
+                if (!state.loading) inner += cornerBadgeHtml();
+                ariaLabel = iconOnly ? ' aria-label="Confirmar"' : (state.loading ? ' aria-label="Botón de acción (cargando)"' : '');
+            } else if (comp === 'enlace') {
+                if (state.iconPos === 'start') inner += '<i class="far fa-circle-question" aria-hidden="true"></i>';
+                inner += '<span class="ubits-button__link-label">Centro de ayuda</span>';
+                if (state.iconPos === 'end') inner += '<i class="far fa-circle-question" aria-hidden="true"></i>';
+            } else if (comp === 'volver') {
+                inner += '<i class="far fa-chevron-left ubits-button__motion-back-icon" aria-hidden="true"></i>';
+                inner += '<span class="ubits-button__link-label">Volver</span>';
+            } else if (comp === 'me-gusta') {
+                classes.push('ubits-button--has-inline-count');
+                inner += '<i class="far fa-thumbs-up" aria-hidden="true"></i>';
+                inner += '<span class="ubits-button__inline-count-group">' +
+                    '<span class="ubits-button__inline-count-label">Me gusta</span>' +
+                    '<span class="ubits-button__inline-count" aria-hidden="true">' + formatCount(state.inlineCount) + '</span></span>';
+            } else if (comp === 'estrella') {
+                classes.push('ubits-button--has-inline-count');
+                inner += '<i class="far fa-star" aria-hidden="true"></i>';
+                inner += '<span class="ubits-button__inline-count-group">' +
+                    '<span class="ubits-button__inline-count-label">Favorito</span>' +
+                    '<span class="ubits-button__inline-count" aria-hidden="true">' + formatCount(state.inlineCount) + '</span></span>';
+            } else if (comp === 'badge-inline') {
+                classes.push('ubits-button--has-trailing');
+                inner += '<span>Mensajes</span>' + trailingBadgeHtml();
+                ariaLabel = ' aria-label="Mensajes (' + state.trailingBadgeNum + ')"';
+            } else if (comp === 'notificacion') {
+                var nIconOnly = state.content === 'solo-icono';
+                if (nIconOnly) classes.push('ubits-button--icon-only');
+                if (state.loading) classes.push('ubits-button--loading');
+                if (state.loading) {
+                    inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
+                } else {
+                    inner += '<i class="far fa-bell" aria-hidden="true"></i>';
+                    if (!nIconOnly) inner += '<span>Bandeja</span>';
+                    inner += cornerBadgeHtml();
+                }
+                ariaLabel = ' aria-label="Notificaciones"';
+            } else if (comp === 'punto-vivo') {
+                if (state.statusDotPos === 'start') inner += statusDotHtml();
+                inner += '<span>En vivo</span>';
+                if (state.statusDotPos === 'end') inner += statusDotHtml();
+                ariaLabel = ' aria-label="En vivo"';
+            } else if (comp === 'badge-nuevo') {
+                classes.push('ubits-button--has-trailing');
+                inner += '<span>Actualizaciones</span>' + trailingBadgeHtml();
+                ariaLabel = ' aria-label="Actualizaciones (nuevo)"';
+            } else if (comp === 'atajos') {
+                classes.push('ubits-button--has-trailing');
+                if (state.iconPos === 'start') inner += '<i class="far fa-search" aria-hidden="true"></i>';
+                inner += '<span>Buscar</span>';
+                if (state.iconPos === 'end') inner += '<i class="far fa-search" aria-hidden="true"></i>';
+                inner += shortcutKeysHtml();
+                ariaLabel = ' aria-label="Buscar (⌘ K)"';
+            } else if (comp === 'copiar') {
+                inner += '<i class="far ' + (state.copied ? 'fa-check' : 'fa-copy') + '" aria-hidden="true"></i>';
+                inner += '<span>' + (state.copied ? 'Copiado' : 'Copiar') + '</span>';
+                ariaLabel = ' aria-label="' + (state.copied ? 'Copiado' : 'Copiar') + '"';
+                extraAttrs = ' data-action="copy"';
+            } else if (comp === 'copiar-icono') {
+                classes.push('ubits-button--icon-only');
+                inner += '<i class="far ' + (state.copied ? 'fa-check' : 'fa-copy') + '" aria-hidden="true"></i>';
+                ariaLabel = ' aria-label="' + (state.copied ? 'Copiado' : 'Copiar') + '"';
+                extraAttrs = ' data-action="copy"';
+            } else if (comp === 'async') {
+                var loadingAsync = state.asyncPhase === 'loading';
+                if (loadingAsync) {
+                    classes.push('ubits-button--loading');
+                    inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
+                    inner += '<span>Guardando…</span>';
+                    disabledAttr = ' disabled';
+                } else if (state.asyncPhase === 'success') {
+                    inner += '<i class="far fa-check" aria-hidden="true"></i>';
+                    inner += '<span>Guardado</span>';
+                } else {
+                    inner += '<span>Guardar cambios</span>';
+                }
+                extraAttrs = ' data-action="async" aria-live="polite"';
+            } else if (comp === 'con-avatar') {
+                if (state.loading) {
+                    inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
+                } else {
+                    var leadingAvatar = typeof renderAvatar === 'function'
+                        ? renderAvatar({ nombre: 'Ana García', avatar: DEMO_AVATAR }, { size: 'xs', alt: 'Ana García' })
+                        : '';
+                    inner += '<span class="ubits-button__leading">' + leadingAvatar + '</span>';
+                    inner += '<span>Ana García</span>';
+                }
             }
-            if (state.fullWidth) classes.push('ubits-button--full-width');
-            if (state.loading) classes.push('ubits-button--loading');
 
-            var inner = '';
-            if (state.loading) {
-                inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
-            } else if (withAvatar) {
-                var leadingAvatar = typeof renderAvatar === 'function'
-                    ? renderAvatar({ nombre: 'Ana García', avatar: DEMO_AVATAR }, { size: 'xs', alt: 'Ana García' })
-                    : '';
-                inner += '<span class="ubits-button__leading">' + leadingAvatar + '</span>';
-                inner += '<span>Ana García</span>';
-            } else {
-                if (showIcon) inner += '<i class="far fa-check" aria-hidden="true"></i>';
-                if (!iconOnly) inner += '<span>Botón de acción</span>';
-                if (state.trailing && !iconOnly) inner += '<i class="far fa-angle-down" aria-hidden="true"></i>';
-            }
-            if (!state.loading) inner += badgeHtml();
-
-            var btnHtml = '<' + tag + typeAttr + hrefAttr + clickAttr + disabledAttr + ariaBusy + ariaLabel +
+            var btnHtml = '<' + tag + typeAttr + hrefAttr + clickAttr + disabledAttr + ariaDisabled + ariaLabel + extraAttrs + idAttr +
                 ' class="' + classes.join(' ') + '">' + inner + '</' + tag + '>';
 
-            if (state.fullWidth) {
-                container.innerHTML = wrapPreview('<div style="width:100%;max-width:360px;">' + btnHtml + '</div>');
-            } else {
-                container.innerHTML = wrapPreview(btnHtml);
+            if ((comp === 'accion' || comp === 'con-avatar') && state.fullWidth) {
+                return '<div style="width:100%;max-width:360px;">' + btnHtml + '</div>';
             }
+            return btnHtml;
+        }
+
+        function wirePreviewActions() {
+            var btn = document.getElementById('btn-preview-interactive');
+            if (!btn) return;
+            btn.onclick = function (e) {
+                if (state.composition === 'copiar' || state.composition === 'copiar-icono') {
+                    state.copied = true;
+                    updateButtonPreview();
+                    window.setTimeout(function () {
+                        state.copied = false;
+                        updateButtonPreview();
+                    }, 1500);
+                    e.preventDefault();
+                } else if (state.composition === 'async' && state.asyncPhase === 'idle') {
+                    state.asyncPhase = 'loading';
+                    updateButtonPreview();
+                    window.setTimeout(function () {
+                        state.asyncPhase = 'success';
+                        updateButtonPreview();
+                        window.setTimeout(function () {
+                            state.asyncPhase = 'idle';
+                            updateButtonPreview();
+                        }, 2000);
+                    }, 900);
+                    e.preventDefault();
+                }
+            };
+        }
+
+        function updateButtonPreview() {
+            syncControlsVisibility();
+            var container = document.getElementById('button-preview');
+            container.innerHTML = buildPreviewHtml();
+            if (state.composition === 'grupo-accion') {
+                if (typeof wireProfileLists === 'function') wireProfileLists('#button-preview');
+                if (typeof initTooltip === 'function') initTooltip('#button-preview [data-tooltip]');
+            }
+            wirePreviewActions();
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             bootDocsWorkspace();
+            buildCompositionButtons();
+            buildHierarchyButtons();
+            syncControlsVisibility();
             updateButtonPreview();
         });
     </script>

@@ -17,9 +17,36 @@
     <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
-    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        .dd-control-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .dd-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 96px;
+        }
+        .dd-props-divider {
+            color: var(--ubits-fg-1-medium);
+            margin: 0 0 12px;
+            padding-top: 4px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+    </style>
     <script src="../../components/input.js"></script>
+    <script src="../../components/avatar.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/tooltip.js"></script>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -47,46 +74,16 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Abre el menú con el botón de abajo. Usa los controles para probar búsqueda, pie con cancelar y aplicar, y el tipo de filas. En <strong>Lista simple</strong> una fila lleva el estado <em>activo</em> del menú (texto en semibold, mismo fondo que las demás). En <strong>Ya elegidos (como crear tarea)</strong> verás filas con barra de acento y «Seleccionado»: es el mismo criterio visual que el listado del Input autocomplete cuando un valor ya está en chips u otro contexto, no una lista con casillas alternando fondos.
+                                Elige una <strong>composición</strong> y abre el menú. Cada fila del selector debe poder verse sin tocar código — paridad con React <code>/design-system</code> → Dropdown Menu.
                             </p>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
-                                <div id="dropdown-menu-preview">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger">
-                                        <i class="far fa-chevron-down"></i>
-                                        <span>Abrir menú</span>
-                                    </button>
-                                </div>
+                            <div id="dropdown-menu-preview-stage" style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                                <div id="dropdown-menu-preview"></div>
                                 <div id="dropdown-menu-container"></div>
                             </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px; align-items: flex-end;">
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mostrar bloques</span>
-                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" class="ubits-checkbox__input" id="preview-autocomplete">
-                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
-                                        <span class="ubits-checkbox__label">Input de búsqueda</span>
-                                    </label>
-                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" class="ubits-checkbox__input" id="preview-footer" checked>
-                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
-                                        <span class="ubits-checkbox__label">Footer (Cancelar / Aplicar)</span>
-                                    </label>
-                                </div>
-                                <div id="preview-opciones-tipo-container" style="min-width: 200px;"></div>
-                            </div>
-                        </div>
-
-                        <!-- Preview: filtrar plan (texto + meta + status-tag) -->
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-filter" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Filtrar plan (texto + meta + status-tag)
-                            </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; max-width: 800px;">
-                                Variante enriquecida para selects de plan en Zona de estudio. Cada opción lleva <strong>texto</strong> (nombre del plan), <strong>metaText</strong> (p. ej. «2 de 8 contenidos» o «50% de avance») y <strong>statusTag</strong> (componente <code>ubits-status-tag</code>). En el preview de arriba elige <strong>Filtrar plan</strong> en «En las opciones»; abajo está el mismo patrón montado con <code>createInput</code> type select (como en producto).
-                            </p>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); max-width: 480px;">
-                                <div id="dropdown-demo-plan-filter-select"></div>
+                            <div style="margin-top: 24px;">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Composición</p>
+                                <div id="dropdown-composition-btns" class="dd-control-row"></div>
+                                <div id="dropdown-extra-knobs" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end;"></div>
                             </div>
                         </div>
 
@@ -202,225 +199,407 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
         document.addEventListener('DOMContentLoaded', function() {
             bootDocsWorkspace();
             var container = document.getElementById('dropdown-menu-container');
-            var trigger = document.getElementById('dropdown-menu-trigger');
-            if (!container || !trigger || typeof getDropdownMenuHtml !== 'function') return;
+            var previewRoot = document.getElementById('dropdown-menu-preview');
+            var compBtnsRoot = document.getElementById('dropdown-composition-btns');
+            var knobsRoot = document.getElementById('dropdown-extra-knobs');
+            var stage = document.getElementById('dropdown-menu-preview-stage');
+            if (!container || !previewRoot || !compBtnsRoot || typeof getDropdownMenuHtml !== 'function') return;
 
             var overlayId = 'dropdown-demo-overlay';
-            var previewOpcionesTipoInput = null;
+            var composition = 'acciones-estandar';
+            var showSearch = false;
+            var showFooter = true;
+            var placement = 'bottom-start';
 
-            var opcionesTipoSelectOptions = [
-                { value: 'ninguno', text: 'Lista simple (una opción resaltada)' },
-                { value: 'plan-filter', text: 'Filtrar plan (texto + meta + tag)' },
-                { value: 'iconos', text: 'Iconos' },
-                { value: 'checklist', text: 'Checklist (checkbox)' },
-                { value: 'marcados', text: 'Ya elegidos (como crear tarea)' },
-                { value: 'switches', text: 'Switches' },
-                { value: 'radios', text: 'Radios (radioGroup)' },
-                { value: 'inputs', text: 'Inputs' }
+            var COMPOSITIONS = [
+                { id: 'acciones-estandar', label: 'Acciones estándar' },
+                { id: 'con-iconos', label: 'Con iconos' },
+                { id: 'con-atajos', label: 'Con atajos' },
+                { id: 'submenus', label: 'Submenús' },
+                { id: 'checklist', label: 'Checklist' },
+                { id: 'radios', label: 'Radios' },
+                { id: 'acciones-kebab', label: 'Acciones kebab' },
+                { id: 'compartir-exportar', label: 'Compartir / exportar' },
+                { id: 'acciones-rapidas', label: 'Acciones rápidas' },
+                { id: 'con-busqueda', label: 'Con búsqueda' },
+                { id: 'enriquecido', label: 'Enriquecido (plan)' },
+                { id: 'ya-elegidos', label: 'Ya elegidos' },
+                { id: 'posiciones', label: 'Posiciones' },
+                { id: 'perfil-usuario', label: 'Perfil de usuario' },
+                { id: 'notificaciones', label: 'Notificaciones' },
+                { id: 'perfil-tema-estado', label: 'Perfil + tema + estado' },
+                { id: 'selector-ia', label: 'Selector IA' }
             ];
 
-            function opcionesTipoTextToValue(text) {
-                var opt = opcionesTipoSelectOptions.find(function(o) { return o.text === text; });
-                return opt ? opt.value : 'ninguno';
+            var FOOTER_COMPS = { checklist: true, radios: true, 'con-busqueda': true };
+            var NO_SEARCH_KNOB = { 'con-busqueda': true, enriquecido: true, 'acciones-kebab': true, 'acciones-rapidas': true, 'compartir-exportar': true, posiciones: true, 'perfil-usuario': true, notificaciones: true, 'perfil-tema-estado': true, 'selector-ia': true, submenus: true };
+
+            function profileHeaderHtml() {
+                return '<div class="ubits-dropdown-menu__profile-header">' +
+                    (typeof renderAvatar === 'function' ? renderAvatar({ nombre: 'María Alejandra Sánchez', avatar: '../../images/Profile-image.jpg' }, { size: 'md' }) : '') +
+                    '<div class="ubits-dropdown-menu__profile-meta"><span class="ubits-body-sm-bold" style="color:var(--ubits-fg-1-high);">María Alejandra Sánchez</span>' +
+                    '<span class="ubits-body-xs-regular" style="color:var(--ubits-fg-1-medium);">masanchez@fiqsha.demo</span></div></div>';
             }
 
-            function getPreviewState() {
-                var opcionesTipo = 'ninguno';
-                if (previewOpcionesTipoInput && typeof previewOpcionesTipoInput.getValue === 'function') {
-                    opcionesTipo = opcionesTipoTextToValue(previewOpcionesTipoInput.getValue());
+            function notificationsBodyHtml() {
+                return '<div class="ubits-dropdown-menu__header-row"><span class="ubits-body-sm-bold" style="color:var(--ubits-fg-1-high);">Notificaciones</span>' +
+                    '<button type="button" class="ubits-dropdown-menu__header-action">Marcar todas como leídas</button></div>' +
+                    '<button type="button" class="ubits-dropdown-menu__notification-item"><span class="ubits-dropdown-menu__notification-body">' +
+                    '<span class="ubits-body-sm-regular">Sarah comentó en Design System v2</span><span class="ubits-body-xs-regular" style="color:var(--ubits-fg-1-medium);">Hace 2 min</span></span>' +
+                    '<span class="ubits-dropdown-menu__notification-dot"></span></button>' +
+                    '<button type="button" class="ubits-dropdown-menu__notification-item"><span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);">Ver todas las notificaciones</span></button>';
+            }
+
+            function buildOptions(comp) {
+                switch (comp) {
+                    case 'acciones-estandar':
+                        return [
+                            { text: 'Mi cuenta', isSectionLabel: true },
+                            { text: 'Perfil', value: 'profile' },
+                            { text: 'Facturación', value: 'billing' },
+                            { text: 'Configuración', value: 'settings', selected: true },
+                            { divider: true },
+                            { text: 'GitHub', value: 'github' },
+                            { text: 'Soporte', value: 'support' },
+                            { text: 'API', value: 'api', disabled: true }
+                        ];
+                    case 'con-iconos':
+                        return [
+                            { text: 'Perfil', value: 'profile', leftIcon: 'user' },
+                            { text: 'Facturación', value: 'billing', leftIcon: 'credit-card' },
+                            { text: 'Configuración', value: 'settings', leftIcon: 'gear', selected: true },
+                            { divider: true },
+                            { text: 'Equipo', value: 'team', leftIcon: 'users' },
+                            { text: 'Invitar usuarios', value: 'invite', leftIcon: 'user-plus', rightIcon: 'chevron-right' }
+                        ];
+                    case 'con-atajos':
+                        return [
+                            { text: 'Mi cuenta', isSectionLabel: true },
+                            { text: 'Perfil', value: 'profile', shortcut: '⇧⌘P' },
+                            { text: 'Facturación', value: 'billing', shortcut: '⌘B' },
+                            { text: 'Configuración', value: 'settings', shortcut: '⌘S', selected: true },
+                            { divider: true },
+                            { text: 'Cerrar sesión', value: 'logout', shortcut: '⇧⌘Q', danger: true }
+                        ];
+                    case 'submenus':
+                        return [
+                            { text: 'Equipo', value: 'team' },
+                            { text: 'Invitar usuarios', value: 'invite', submenu: [
+                                { text: 'Correo', value: 'email', leftIcon: 'envelope' },
+                                { text: 'Mensaje', value: 'message', leftIcon: 'comment' },
+                                { divider: true },
+                                { text: 'Más opciones', value: 'more', leftIcon: 'ellipsis' }
+                            ]},
+                            { text: 'Nuevo equipo', value: 'new-team', shortcut: '⌘T' }
+                        ];
+                    case 'checklist':
+                        return [
+                            { text: 'Barra de estado', value: 'status', checkbox: true, selected: true },
+                            { text: 'Barra de actividad', value: 'activity', checkbox: true },
+                            { text: 'Panel lateral', value: 'panel', checkbox: true, selected: true }
+                        ];
+                    case 'radios':
+                        return [
+                            { text: 'Pedro', value: 'pedro', selected: false },
+                            { text: 'Ana', value: 'ana', selected: true },
+                            { text: 'Carlos', value: 'carlos', selected: false }
+                        ];
+                    case 'acciones-kebab':
+                        return [
+                            { text: 'Acciones', isSectionLabel: true },
+                            { text: 'Editar', value: 'edit', leftIcon: 'pen', shortcut: '⌘E' },
+                            { text: 'Duplicar', value: 'duplicate', leftIcon: 'copy', shortcut: '⌘D' },
+                            { text: 'Mover a', value: 'move', leftIcon: 'arrow-right', submenu: [
+                                { text: 'Proyectos', value: 'projects', leftIcon: 'folder' },
+                                { text: 'Archivo', value: 'archive', leftIcon: 'box-archive' },
+                                { text: 'Favoritos', value: 'favorites', leftIcon: 'star' }
+                            ]},
+                            { divider: true },
+                            { text: 'Compartir', value: 'share', leftIcon: 'share-nodes' },
+                            { text: 'Copiar enlace', value: 'link', leftIcon: 'link' },
+                            { divider: true },
+                            { text: 'Eliminar', value: 'delete', leftIcon: 'trash', shortcut: '⌘⌫', danger: true }
+                        ];
+                    case 'compartir-exportar':
+                        return [
+                            { text: 'Compartir vía', isSectionLabel: true },
+                            { text: 'Correo', value: 'email', leftIcon: 'envelope' },
+                            { text: 'Mensaje', value: 'message', leftIcon: 'comment' },
+                            { text: 'Copiar enlace', value: 'link', leftIcon: 'link' },
+                            { divider: true },
+                            { text: 'Exportar como', isSectionLabel: true },
+                            { text: 'PDF', value: 'pdf', leftIcon: 'file-lines' },
+                            { text: 'CSV', value: 'csv', leftIcon: 'file-spreadsheet' },
+                            { text: 'PNG', value: 'png', leftIcon: 'image' },
+                            { divider: true },
+                            { text: 'Imprimir', value: 'print', leftIcon: 'print' }
+                        ];
+                    case 'acciones-rapidas':
+                        return [
+                            { text: 'Configuración', value: 'settings', leftIcon: 'gear' },
+                            { text: 'Compartir', value: 'share', leftIcon: 'share-nodes' },
+                            { divider: true },
+                            { text: 'Eliminar', value: 'remove', leftIcon: 'trash', danger: true }
+                        ];
+                    case 'perfil-usuario':
+                        return [
+                            { text: 'Ver como colaborador', value: 'switch', leftIcon: 'right-left' },
+                            { text: 'Design system', value: 'ds', leftIcon: 'book' },
+                            { divider: true },
+                            { text: 'Cerrar sesión', value: 'logout', leftIcon: 'sign-out-alt', shortcut: '⇧⌘Q', danger: true }
+                        ];
+                    case 'selector-ia':
+                        return [
+                            { text: 'Modelo', isSectionLabel: true },
+                            { text: 'GPT-5.4', value: 'gpt', leftIcon: 'sparkles', selected: true },
+                            { text: 'Claude 4.6 Opus', value: 'claude', leftIcon: 'brain' },
+                            { text: 'Gemini 3.1 Pro', value: 'gemini', leftIcon: 'gem' }
+                        ];
+                    case 'perfil-tema-estado':
+                        return [
+                            { text: 'Disponible', value: 'status', leftIcon: 'circle', submenu: [
+                                { text: 'Disponible', value: 'available' },
+                                { text: 'Ausente', value: 'away' },
+                                { text: 'Ocupado', value: 'busy' },
+                                { text: 'Desconectado', value: 'offline' }
+                            ]},
+                            { divider: true },
+                            { text: 'Configuración', value: 'settings', leftIcon: 'gear' },
+                            { text: 'Centro de ayuda', value: 'help', leftIcon: 'life-ring' },
+                            { divider: true },
+                            { text: 'Cerrar sesión', value: 'logout', leftIcon: 'sign-out-alt', danger: true }
+                        ];
+                    case 'notificaciones':
+                        return [];
+                    case 'con-busqueda':
+                        return [
+                            { text: 'Ana María López', value: '1', avatar: '../../images/Profile-image.jpg' },
+                            { text: 'Carlos Ruiz', value: '2' },
+                            { text: 'Equipo de diseño', value: '3', leftIcon: 'users' },
+                            { text: 'María González', value: '4' },
+                            { text: 'Otra persona o grupo', value: '5' }
+                        ];
+                    case 'enriquecido':
+                        return [
+                            { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' }, selected: true },
+                            { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                            { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                            { value: '4', text: 'Área Marketing 2025 Q1', metaText: '3 de 15 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } }
+                        ];
+                    case 'ya-elegidos':
+                        return [
+                            { text: 'Ana María López', value: '1', avatar: '../../images/Profile-image.jpg', alreadyChosen: true },
+                            { text: 'Carlos Ruiz', value: '2' },
+                            { text: 'Equipo de diseño', value: '3', leftIcon: 'users', alreadyChosen: true },
+                            { text: 'Otra persona o grupo', value: '4' }
+                        ];
+                    case 'posiciones':
+                        return [
+                            { text: 'Perfil', value: 'profile', leftIcon: 'user' },
+                            { text: 'Configuración', value: 'settings', leftIcon: 'gear', selected: true },
+                            { text: 'Cerrar sesión', value: 'logout', leftIcon: 'right-from-bracket', danger: true }
+                        ];
+                    default:
+                        return [];
                 }
-                return {
-                    autocomplete: document.getElementById('preview-autocomplete') && document.getElementById('preview-autocomplete').checked,
-                    footer: document.getElementById('preview-footer') && document.getElementById('preview-footer').checked,
-                    opcionesTipo: opcionesTipo
+            }
+
+            function renderTrigger() {
+                var html = '';
+                if (composition === 'acciones-kebab') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="dropdown-menu-trigger" data-tooltip="Más acciones" aria-label="Más acciones"><i class="far fa-ellipsis-vertical"></i></button>';
+                } else if (composition === 'compartir-exportar') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-share-nodes"></i><span>Compartir</span></button>';
+                } else if (composition === 'acciones-rapidas') {
+                    html = '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="dropdown-menu-trigger" data-tooltip="Más opciones" aria-label="Más opciones"><i class="far fa-ellipsis"></i></button>';
+                } else if (composition === 'enriquecido') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Filtrar plan</span></button>';
+                } else if (composition === 'submenus') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Con submenú</span></button>';
+                } else if (composition === 'notificaciones') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-button--pill" id="dropdown-menu-trigger" data-tooltip="Notificaciones" aria-label="Notificaciones"><i class="far fa-bell"></i></button>';
+                } else if (composition === 'perfil-usuario' || composition === 'perfil-tema-estado') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>María Alejandra</span></button>';
+                } else if (composition === 'selector-ia') {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Seleccionar modelo</span></button>';
+                } else {
+                    html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Abrir menú</span></button>';
+                }
+                previewRoot.innerHTML = html;
+                if (stage) {
+                    stage.style.padding = composition === 'posiciones' ? '48px 24px' : '24px';
+                    stage.style.display = composition === 'posiciones' ? 'flex' : 'block';
+                    stage.style.justifyContent = composition === 'posiciones' ? 'center' : '';
+                }
+                var trigger = document.getElementById('dropdown-menu-trigger');
+                if (trigger) {
+                    trigger.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        renderDropdown();
+                        openDropdownMenu(overlayId, trigger, { placement: composition === 'posiciones' ? placement : (composition === 'acciones-kebab' ? 'bottom-end' : 'bottom-start') });
+                    });
+                }
+            }
+
+            function bindSearchFilter() {
+                var overlay = document.getElementById(overlayId);
+                var searchInput = document.getElementById(overlayId + '-autocomplete-input');
+                var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
+                if (!searchInput || !searchClear || !overlay) return;
+                searchClear.style.pointerEvents = 'auto';
+                function filterPreviewOptions(q) {
+                    var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
+                    var qn = (q || '').toLowerCase().trim();
+                    opts.forEach(function(opt) {
+                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label') || opt.querySelector('.ubits-checkbox__label');
+                        var text = textEl ? textEl.textContent : '';
+                        opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
+                    });
+                }
+                function toggleClear() {
+                    searchClear.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+                }
+                searchClear.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    searchInput.value = '';
+                    toggleClear();
+                    filterPreviewOptions('');
+                    searchInput.focus();
                 };
-            }
-
-            function buildOptions(s) {
-                var opt1 = { text: 'Más reciente primero', value: 'desc' };
-                var opt2 = { text: 'Más reciente al final', value: 'asc', selected: true };
-                var opt3 = { text: 'Sin orden', value: 'none' };
-                var t = s.opcionesTipo || 'ninguno';
-                if (t === 'radios') {
-                    return [opt1, opt2, opt3];
-                }
-                if (t === 'plan-filter') {
-                    return [
-                        { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' }, selected: true },
-                        { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                        { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                        { value: '4', text: 'Área Marketing 2025 Q1', metaText: '3 de 15 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } },
-                        { value: '5', text: 'Área Producto 2024 Q4', metaText: '4 de 16 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } }
-                    ];
-                }
-                if (t === 'iconos') {
-                    opt1.leftIcon = 'arrow-up';
-                    opt2.leftIcon = 'arrow-down';
-                    opt3.leftIcon = 'filter';
-                    opt3.rightIcon = 'chevron-right';
-                } else if (t === 'checklist') {
-                    opt1.checkbox = true;
-                    opt2.checkbox = true;
-                    opt2.selected = true;
-                    opt3.checkbox = true;
-                } else if (t === 'marcados') {
-                    return [
-                        { text: 'Ana María López', value: '1', avatar: '../../images/Profile-image.jpg', alreadyChosen: true },
-                        { text: 'Carlos Ruiz', value: '2' },
-                        { text: 'Equipo de diseño', value: '3', leftIcon: 'users', alreadyChosen: true },
-                        { text: 'Otra persona o grupo', value: '4' }
-                    ];
-                } else if (t === 'switches') {
-                    opt1.switch = true;
-                    opt2.switch = true;
-                    opt2.selected = true;
-                    opt3.switch = true;
-                }
-                return [opt1, opt2, opt3];
-            }
-
-            function getCustomBodyHtmlForInputs() {
-                return '<div class="dropdown-demo-custom-body" style="display:flex;flex-direction:column;gap:var(--gap-md);">' +
-                    '<div id="dropdown-demo-estado-container"></div>' +
-                    '<div id="dropdown-demo-prioridad-container"></div>' +
-                    '</div>';
+                searchInput.oninput = function() {
+                    toggleClear();
+                    filterPreviewOptions(this.value);
+                };
             }
 
             function renderDropdown() {
-                var s = getPreviewState();
+                var searchEnabled = composition === 'con-busqueda' || showSearch;
+                var footerEnabled = FOOTER_COMPS[composition] && showFooter;
                 var config = {
                     overlayId: overlayId,
-                    hasAutocomplete: s.opcionesTipo !== 'inputs' && s.autocomplete,
+                    options: buildOptions(composition),
+                    hasAutocomplete: searchEnabled,
                     autocompletePlaceholder: 'Buscar...'
                 };
-                if (s.opcionesTipo === 'inputs') {
-                    config.customBodyHtml = getCustomBodyHtmlForInputs();
-                    config.options = [];
-                } else {
-                    config.options = buildOptions(s);
-                }
-                if (s.opcionesTipo === 'radios') {
+                if (composition === 'radios') {
                     config.radioGroup = true;
                     config.radioName = overlayId + '-radio';
                 }
-                if (s.footer) {
+                if (footerEnabled) {
                     config.footerSecondaryLabel = 'Cancelar';
                     config.footerPrimaryLabel = 'Aplicar';
                 }
+                if (composition === 'perfil-usuario' || composition === 'perfil-tema-estado') {
+                    config.headerHtml = profileHeaderHtml();
+                    config.contentWide = true;
+                }
+                if (composition === 'notificaciones') {
+                    config.customBodyHtml = notificationsBodyHtml();
+                    config.options = [];
+                    config.contentWide = true;
+                }
+                if (composition === 'selector-ia') {
+                    config.contentWide = true;
+                }
                 container.innerHTML = getDropdownMenuHtml(config);
-
-                if (s.opcionesTipo === 'inputs' && typeof createInput === 'function') {
-                    createInput({
-                        containerId: 'dropdown-demo-estado-container',
-                        type: 'select',
-                        label: 'Estado',
-                        placeholder: 'Seleccionar...',
-                        selectOptions: [{ value: '', text: 'Todos' }, { value: 'activo', text: 'Activo' }, { value: 'cerrado', text: 'Cerrado' }],
-                        value: '',
-                        size: 'sm'
-                    });
-                    createInput({
-                        containerId: 'dropdown-demo-prioridad-container',
-                        type: 'select',
-                        label: 'Prioridad',
-                        placeholder: 'Seleccionar...',
-                        selectOptions: [{ value: '', text: 'Todas' }, { value: 'alta', text: 'Alta' }, { value: 'media', text: 'Media' }, { value: 'baja', text: 'Baja' }],
-                        value: '',
-                        size: 'sm'
-                    });
-                }
-
-                if (s.autocomplete && s.opcionesTipo !== 'inputs') {
-                    var overlay = document.getElementById(overlayId);
-                    var searchInput = document.getElementById(overlayId + '-autocomplete-input');
-                    var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
-                    if (searchInput && searchClear && overlay) {
-                        searchClear.style.pointerEvents = 'auto';
-                        function filterPreviewOptions(q) {
-                            var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
-                            var qn = (q || '').toLowerCase().trim();
-                            opts.forEach(function(opt) {
-                                var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label') || opt.querySelector('.ubits-checkbox__label');
-                                var text = textEl ? textEl.textContent : '';
-                                opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
-                            });
-                        }
-                        function toggleClear() {
-                            searchClear.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-                        }
-                        searchClear.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            searchInput.value = '';
-                            toggleClear();
-                            filterPreviewOptions('');
-                            searchInput.focus();
-                        });
-                        searchInput.addEventListener('input', function() {
-                            toggleClear();
-                            filterPreviewOptions(this.value);
-                        });
-                        searchInput.addEventListener('focus', function() {
-                            filterPreviewOptions(searchInput.value);
-                        });
-                    }
-                }
-
                 var overlay = document.getElementById(overlayId);
                 if (overlay) {
-                    overlay.addEventListener('click', function(e) {
+                    overlay.onclick = function(e) {
                         if (e.target === overlay) closeDropdownMenu(overlayId);
-                    });
+                    };
                 }
                 var btnSecondary = document.getElementById(overlayId + '-footer-secondary');
                 var btnPrimary = document.getElementById(overlayId + '-footer-primary');
-                if (btnSecondary) btnSecondary.addEventListener('click', function() { closeDropdownMenu(overlayId); });
-                if (btnPrimary) btnPrimary.addEventListener('click', function() { closeDropdownMenu(overlayId); });
+                if (btnSecondary) btnSecondary.onclick = function() { closeDropdownMenu(overlayId); };
+                if (btnPrimary) btnPrimary.onclick = function() { closeDropdownMenu(overlayId); };
+                if (searchEnabled) bindSearchFilter();
             }
 
-            if (typeof createInput === 'function') {
-                previewOpcionesTipoInput = createInput({
-                    containerId: 'preview-opciones-tipo-container',
-                    type: 'select',
-                    label: 'En las opciones (solo una)',
-                    placeholder: 'Selecciona...',
-                    selectOptions: opcionesTipoSelectOptions,
-                    value: 'ninguno',
-                    onChange: function () {
-                        renderDropdown();
+            function renderKnobs() {
+                if (!knobsRoot) return;
+                knobsRoot.innerHTML = '';
+                var showSearchKnob = !NO_SEARCH_KNOB[composition];
+                var showFooterKnob = !!FOOTER_COMPS[composition];
+                if (!showSearchKnob && !showFooterKnob && composition !== 'posiciones') return;
+
+                if (showSearchKnob || showFooterKnob) {
+                    var block = document.createElement('div');
+                    block.style.display = 'flex';
+                    block.style.flexDirection = 'column';
+                    block.style.gap = '8px';
+                    var title = document.createElement('span');
+                    title.className = 'ubits-body-sm-bold';
+                    title.style.color = 'var(--ubits-fg-1-high)';
+                    title.textContent = 'Mostrar bloques';
+                    block.appendChild(title);
+                    if (showSearchKnob) {
+                        block.innerHTML += '<label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);"><input type="checkbox" class="ubits-checkbox__input" id="preview-autocomplete"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Input de búsqueda</span></label>';
                     }
+                    if (showFooterKnob) {
+                        block.innerHTML += '<label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);"><input type="checkbox" class="ubits-checkbox__input" id="preview-footer" checked><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Footer (Cancelar / Aplicar)</span></label>';
+                    }
+                    knobsRoot.appendChild(block);
+                    var searchEl = document.getElementById('preview-autocomplete');
+                    var footerEl = document.getElementById('preview-footer');
+                    if (searchEl) {
+                        searchEl.checked = showSearch;
+                        searchEl.onchange = function() { showSearch = searchEl.checked; renderDropdown(); };
+                    }
+                    if (footerEl) {
+                        footerEl.checked = showFooter;
+                        footerEl.onchange = function() { showFooter = footerEl.checked; renderDropdown(); };
+                    }
+                }
+
+                if (composition === 'posiciones' && typeof createInput === 'function') {
+                    var wrap = document.createElement('div');
+                    wrap.style.minWidth = '220px';
+                    wrap.id = 'preview-placement-container';
+                    knobsRoot.appendChild(wrap);
+                    createInput({
+                        containerId: 'preview-placement-container',
+                        type: 'select',
+                        label: 'Posición del panel',
+                        placeholder: 'Selecciona...',
+                        selectOptions: [
+                            { value: 'bottom-start', text: 'Abajo · inicio' },
+                            { value: 'bottom-end', text: 'Abajo · fin' },
+                            { value: 'top-start', text: 'Arriba · inicio' },
+                            { value: 'top-end', text: 'Arriba · fin' }
+                        ],
+                        value: placement,
+                        size: 'sm',
+                        onChange: function(val) {
+                            var map = { 'Abajo · inicio': 'bottom-start', 'Abajo · fin': 'bottom-end', 'Arriba · inicio': 'top-start', 'Arriba · fin': 'top-end' };
+                            placement = map[val] || 'bottom-start';
+                        }
+                    });
+                }
+            }
+
+            function renderCompositionBtns() {
+                compBtnsRoot.innerHTML = '';
+                COMPOSITIONS.forEach(function(c) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'ubits-button ubits-button--secondary ubits-button--xs preview-control-btn' + (composition === c.id ? ' active' : '');
+                    btn.innerHTML = '<span>' + c.label + '</span>';
+                    btn.onclick = function() {
+                        composition = c.id;
+                        renderCompositionBtns();
+                        renderTrigger();
+                        renderKnobs();
+                        renderDropdown();
+                    };
+                    compBtnsRoot.appendChild(btn);
                 });
             }
 
-            var previewAutocompleteEl = document.getElementById('preview-autocomplete');
-            var previewFooterEl = document.getElementById('preview-footer');
-            if (previewAutocompleteEl) previewAutocompleteEl.addEventListener('change', renderDropdown);
-            if (previewFooterEl) previewFooterEl.addEventListener('change', renderDropdown);
-
+            renderCompositionBtns();
+            renderTrigger();
+            renderKnobs();
             renderDropdown();
-            trigger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                renderDropdown();
-                openDropdownMenu(overlayId, trigger);
-            });
-
-            if (typeof createInput === 'function') {
-                createInput({
-                    containerId: 'dropdown-demo-plan-filter-select',
-                    type: 'select',
-                    label: 'Filtrar por plan',
-                    placeholder: 'Seleccionar plan',
-                    size: 'md',
-                    value: '1',
-                    selectOptions: [
-                        { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                        { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                        { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                        { value: '4', text: 'Área Marketing 2025 Q1', metaText: '50% de avance', statusTag: { text: 'No vigente', variant: 'neutral' } },
-                        { value: '5', text: 'UX 2024 semestre 1', metaText: '100% de avance', statusTag: { text: 'No vigente', variant: 'neutral' } }
-                    ]
-                });
-            }
         });
         
         function copyPrompt(promptId) {
