@@ -23,33 +23,10 @@ class UBITSAlert {
      */
     create() {
         const { type, message, closable } = this.options;
-        
-        // Get the appropriate icon for the alert type
-        const iconClass = this.getIconClass(type);
-        
-        // Create the alert element
-        this.element = document.createElement('div');
-        this.element.className = `ubits-alert ubits-alert--${type}`;
-        this.element.setAttribute('role', 'alert');
-        this.element.setAttribute('aria-live', 'polite');
-        
-        // Create the content structure
-        this.element.innerHTML = `
-            <div class="ubits-alert__icon">
-                <i class="far ${iconClass}"></i>
-            </div>
-            <div class="ubits-alert__content">
-                <div class="ubits-alert__text">
-                    ${message}
-                </div>
-            </div>
-            ${closable ? `
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Cerrar alerta" data-tooltip="Cerrar alerta" data-alert-dismiss="true">
-                    <i class="far fa-xmark"></i>
-                </button>
-            ` : ''}
-        `;
-        
+        const wrap = document.createElement('div');
+        wrap.innerHTML = buildAlertHtml(type, message, { noClose: !closable });
+        this.element = wrap.firstElementChild;
+
         // Add event listeners
         this.addEventListeners();
         
@@ -137,7 +114,8 @@ class UBITSAlert {
      */
     updateMessage(newMessage) {
         if (this.element) {
-            const textElement = this.element.querySelector('.ubits-alert__text');
+            const textElement = this.element.querySelector('.ubits-alert__description')
+                || this.element.querySelector('.ubits-alert__text');
             if (textElement) {
                 textElement.textContent = newMessage;
             }
@@ -243,29 +221,28 @@ class UBITSAlertManager {
 window.UBITSAlert = UBITSAlert;
 window.UBITSAlertManager = UBITSAlertManager;
 
-// Simple helper function that actually works
-function showAlert(type, message, options = {}) {
-    const containerId = options.containerId;
-    const container = containerId ? document.getElementById(containerId) : document.body;
-    
-    if (!container) {
-        console.error('Alert container not found:', containerId);
-        return null;
+const ALERT_ICON_MAP = {
+    success: 'fa-check-circle',
+    info: 'fa-info-circle',
+    warning: 'fa-exclamation-triangle',
+    error: 'fa-times-circle',
+    ia: 'fa-sparkles',
+    invert: 'fa-bell',
+    neutral: 'fa-info-circle',
+};
+
+function getAlertIconClass(type, options = {}) {
+    if (options.icon) {
+        return String(options.icon).replace(/^far\s+/, '').replace(/^fas\s+/, '');
     }
-    
-    const iconMap = {
-        'success': 'fa-check-circle',
-        'info': 'fa-info-circle', 
-        'warning': 'fa-exclamation-triangle',
-        'error': 'fa-times-circle',
-        'ia': 'fa-sparkles',
-        'invert': 'fa-bell',
-        'neutral': 'fa-info-circle'
-    };
-    
-    const iconClass = options.icon
-        ? String(options.icon).replace(/^far\s+/, '').replace(/^fas\s+/, '')
-        : (iconMap[type] || 'fa-info-circle');
+    return ALERT_ICON_MAP[type] || ALERT_ICON_MAP.info;
+}
+
+/**
+ * Markup canónico del alert (ReUI grid). Reutilizable en strings embebidos o showAlert().
+ */
+function buildAlertHtml(type, message, options = {}) {
+    const iconClass = getAlertIconClass(type, options);
     const hasActions = Boolean(options.actionsHtml);
     const hasClose = !options.noClose;
     const hasMedia = Boolean(options.leadingHtml) || !options.noIcon;
@@ -273,6 +250,10 @@ function showAlert(type, message, options = {}) {
     const hasTitle = Boolean(titleHtml);
     const hasDesc = Boolean(message);
     const hasTitleDesc = hasTitle && hasDesc;
+    const extraClass = options.extraClass ? String(options.extraClass).trim() : '';
+    const rootId = options.rootId ? ` id="${options.rootId}"` : '';
+    const role = options.role || 'alert';
+    const ariaLive = options.ariaLive != null ? options.ariaLive : 'polite';
 
     const mods = [
         hasMedia ? 'ubits-alert--has-media' : 'ubits-alert--no-icon',
@@ -283,6 +264,7 @@ function showAlert(type, message, options = {}) {
         options.clampDescription ? 'ubits-alert--clamp-description' : '',
         options.leadingHtml ? 'ubits-alert--with-leading' : '',
         !hasClose ? 'ubits-alert--no-close' : '',
+        extraClass,
     ].filter(Boolean).join(' ');
 
     let media = '';
@@ -304,32 +286,47 @@ function showAlert(type, message, options = {}) {
         ? `<div class="ubits-alert__dismiss"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Cerrar alerta" data-tooltip="Cerrar alerta" data-alert-dismiss="true"><i class="far fa-xmark"></i></button></div>`
         : '';
 
-    const alertHTML = `
-        <div class="ubits-alert ubits-alert--${type} ${mods}" role="alert" aria-live="polite">
-            ${media}
-            ${titleEl}
-            ${descEl}
-            ${trailing}
-            ${dismissBtn}
-        </div>
-    `;
-    
-    container.innerHTML = alertHTML;
-    
-    if (hasClose) {
-        const closeBtn = container.querySelector('[data-alert-dismiss]');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                if (typeof options.onClose === 'function') {
-                    options.onClose();
-                } else {
-                    container.innerHTML = '';
-                }
-            });
+    return `<div class="ubits-alert ubits-alert--${type} ${mods}"${rootId} role="${role}" aria-live="${ariaLive}">${media}${titleEl}${descEl}${trailing}${dismissBtn}</div>`;
+}
+
+function wireAlertDismiss(root, onClose) {
+    const rootEl = typeof root === 'string' ? document.getElementById(root) : root;
+    if (!rootEl) return;
+    const closeBtn = rootEl.querySelector('[data-alert-dismiss]');
+    if (!closeBtn || closeBtn.dataset.alertDismissWired === '1') return;
+    closeBtn.dataset.alertDismissWired = '1';
+    closeBtn.addEventListener('click', () => {
+        if (typeof onClose === 'function') {
+            onClose();
+        } else if (rootEl.parentNode) {
+            rootEl.remove();
         }
+    });
+}
+
+function showAlert(type, message, options = {}) {
+    const containerId = options.containerId;
+    const container = containerId ? document.getElementById(containerId) : document.body;
+
+    if (!container) {
+        console.error('Alert container not found:', containerId);
+        return null;
     }
-    
-    return { element: container.firstElementChild, container };
+
+    container.innerHTML = buildAlertHtml(type, message, options);
+    const alertEl = container.firstElementChild;
+
+    if (!options.noClose && alertEl) {
+        wireAlertDismiss(alertEl, () => {
+            if (typeof options.onClose === 'function') {
+                options.onClose();
+            } else {
+                container.innerHTML = '';
+            }
+        });
+    }
+
+    return { element: alertEl, container };
 }
 
 /**
@@ -354,64 +351,13 @@ function showAlertStack(containerOrId, items = [], gap = 'sm', variant = 'separa
     stack.setAttribute('role', 'region');
     stack.setAttribute('aria-label', 'Alertas');
 
-    const iconMap = {
-        success: 'fa-check-circle',
-        info: 'fa-info-circle',
-        warning: 'fa-exclamation-triangle',
-        error: 'fa-times-circle',
-        ia: 'fa-sparkles',
-        invert: 'fa-bell',
-        neutral: 'fa-info-circle'
-    };
-
     stack.innerHTML = items.map((item) => {
         const type = item.type || 'info';
-        const opts = item.options || {};
-        const iconClass = opts.icon
-            ? String(opts.icon).replace(/^far\s+/, '').replace(/^fas\s+/, '')
-            : (iconMap[type] || 'fa-info-circle');
-        const hasActions = Boolean(opts.actionsHtml);
-        const hasClose = opts.noClose === false;
-        const hasMedia = Boolean(opts.leadingHtml) || !opts.noIcon;
-        const titleHtml = opts.titleHtml || opts.title || '';
-        const hasTitle = Boolean(titleHtml);
-        const hasDesc = Boolean(item.message);
-        const mods = [
-            hasMedia ? 'ubits-alert--has-media' : 'ubits-alert--no-icon',
-            hasClose ? 'ubits-alert--dismissible' : '',
-            hasActions ? 'ubits-alert--has-actions' : '',
-            (hasTitle && hasDesc) ? 'ubits-alert--has-title-desc' : '',
-            opts.blockText ? 'ubits-alert--block-text' : '',
-            opts.leadingHtml ? 'ubits-alert--with-leading' : '',
-            !hasClose ? 'ubits-alert--no-close' : '',
-        ].filter(Boolean).join(' ');
-
-        let media = '';
-        if (opts.leadingHtml) {
-            media = `<div class="ubits-alert__media"><div class="ubits-alert__leading">${opts.leadingHtml}</div></div>`;
-        } else if (!opts.noIcon) {
-            media = `<div class="ubits-alert__media"><div class="ubits-alert__icon"><i class="far ${iconClass}"></i></div></div>`;
+        const opts = { ...(item.options || {}) };
+        if (opts.noClose !== false) {
+            opts.noClose = true;
         }
-
-        const titleEl = hasTitle ? `<div class="ubits-alert__title">${titleHtml}</div>` : '';
-        const descEl = hasDesc ? `<div class="ubits-alert__description">${item.message}</div>` : '';
-        let trailing = '';
-        if (hasActions) {
-            trailing = `<div class="ubits-alert__trailing"><div class="ubits-alert__actions">${opts.actionsHtml}</div></div>`;
-        }
-        const dismissBtn = hasClose
-            ? '<div class="ubits-alert__dismiss"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Cerrar alerta" data-tooltip="Cerrar alerta" data-alert-dismiss="true"><i class="far fa-xmark"></i></button></div>'
-            : '';
-
-        return `
-            <div class="ubits-alert ubits-alert--${type} ${mods}" role="alert">
-                ${media}
-                ${titleEl}
-                ${descEl}
-                ${trailing}
-                ${dismissBtn}
-            </div>
-        `;
+        return buildAlertHtml(type, item.message, opts);
     }).join('');
 
     container.innerHTML = '';
@@ -419,7 +365,9 @@ function showAlertStack(containerOrId, items = [], gap = 'sm', variant = 'separa
     return { element: stack, container };
 }
 
-// Make helper function available globally
+// Make helper functions available globally
+window.buildAlertHtml = buildAlertHtml;
+window.wireAlertDismiss = wireAlertDismiss;
 window.showAlert = showAlert;
 window.showAlertStack = showAlertStack;
 
@@ -483,6 +431,6 @@ window.showAlertStack = showAlertStack;
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { UBITSAlert, UBITSAlertManager, showAlert, showAlertStack };
+    module.exports = { UBITSAlert, UBITSAlertManager, buildAlertHtml, wireAlertDismiss, showAlert, showAlertStack };
 }
 

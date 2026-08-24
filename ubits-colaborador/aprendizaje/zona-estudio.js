@@ -182,23 +182,11 @@
             'Este plan se venció hace ' + escapeHtml(haceText) + '.';
 
         alertEl.hidden = false;
-        if (typeof showAlert === 'function') {
-            var alertResult = showAlert('error', message, {
-                containerId: prefix + '-plan-vencido-alert',
-                noClose: true
-            });
-            if (alertResult && alertResult.element) {
-                alertResult.element.classList.add('ubits-alert--block-text');
-            }
-        } else {
-            alertEl.innerHTML =
-                '<div class="ubits-alert ubits-alert--error ubits-alert--no-close ubits-alert--block-text" role="alert">' +
-                    '<div class="ubits-alert__icon"><i class="far fa-times-circle"></i></div>' +
-                    '<div class="ubits-alert__content">' +
-                        '<div class="ubits-alert__text">' + message + '</div>' +
-                    '</div>' +
-                '</div>';
-        }
+        showAlert('error', message, {
+            containerId: prefix + '-plan-vencido-alert',
+            noClose: true,
+            blockText: true
+        });
     }
 
     function getEstadoTagVariant(estado) {

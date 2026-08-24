@@ -738,13 +738,12 @@
     }
 
     function buildConfirmacionAlertNote() {
-        return (
-            '<div class="ubits-alert ubits-alert--warning ubits-alert--no-close ubits-alert--block-text certificados-modal-alert">' +
-            '<div class="ubits-alert__icon"><i class="far fa-triangle-exclamation"></i></div>' +
-            '<div class="ubits-alert__content">' +
-            '<div class="ubits-alert__text">El enlace de descarga <span class="ubits-alert__emphasis">estará disponible por 2 días.</span> Después de ese tiempo, deberás volver a generar la solicitud desde esta plataforma.</div>' +
-            '</div></div>'
-        );
+        return buildAlertHtml('warning', 'El enlace de descarga <span class="ubits-alert__emphasis">estará disponible por 2 días.</span> Después de ese tiempo, deberás volver a generar la solicitud desde esta plataforma.', {
+            noClose: true,
+            blockText: true,
+            extraClass: 'certificados-modal-alert',
+            icon: 'fa-triangle-exclamation'
+        });
     }
 
     function modalRow(iconClass, label, value) {

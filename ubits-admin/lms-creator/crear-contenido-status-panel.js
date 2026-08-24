@@ -49,30 +49,18 @@
 
     function showReadyAlert(type, pageKey) {
         var mount = ensureReadyAlertsMount();
-        var alertEl = document.createElement('div');
-        alertEl.className = 'ubits-alert ubits-alert--success ubits-alert--with-action';
-        alertEl.setAttribute('role', 'alert');
-        alertEl.innerHTML =
-            '<div class="ubits-alert__icon"><i class="far fa-check-circle"></i></div>' +
-            '<div class="ubits-alert__content">' +
-            '<span class="ubits-alert__text">' + readyAlertCopy(type) + '</span>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-alert__action">' +
-            '<span>Ver página</span>' +
-            '</button>' +
-            '</div>' +
-            '<button type="button" class="ubits-alert__close" aria-label="Cerrar alerta">' +
-            '<i class="far fa-times"></i>' +
-            '</button>';
-        var actionBtn = alertEl.querySelector('.ubits-alert__action');
-        var closeBtn = alertEl.querySelector('.ubits-alert__close');
+        var wrap = document.createElement('div');
+        wrap.innerHTML = buildAlertHtml('success', readyAlertCopy(type), {
+            actionsHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-status-ready-action"><span>Ver página</span></button>'
+        });
+        var alertEl = wrap.firstElementChild;
+        wireAlertDismiss(alertEl, function () {
+            if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
+        });
+        var actionBtn = alertEl.querySelector('.ubits-status-ready-action');
         if (actionBtn) {
             actionBtn.addEventListener('click', function () {
                 goToGeneratedPage(pageKey);
-                if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
-            });
-        }
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function () {
                 if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
             });
         }

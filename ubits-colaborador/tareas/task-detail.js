@@ -682,14 +682,7 @@
         var showPlanAlert = !selectedPlanValue;
         var planAlertHtml = showPlanAlert
             ? '<div id="task-detail-plan-alert-wrap" class="task-detail-plan-alert-wrap">' +
-              '<div class="ubits-alert ubits-alert--info ubits-alert--no-close" role="status">' +
-              '<div class="ubits-alert__icon">' +
-              '<i class="far fa-info-circle"></i>' +
-              '</div>' +
-              '<div class="ubits-alert__content">' +
-              '<div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div>' +
-              '</div>' +
-              '</div>' +
+              buildAlertHtml('info', 'Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.', { noClose: true, role: 'status' }) +
               '</div>'
             : '';
         var html =

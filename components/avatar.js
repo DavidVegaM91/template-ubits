@@ -72,7 +72,7 @@ function normalizeAvatarUrlForPage(avatar) {
  * @param {string} [persona.name] - Nombre (alternativo a nombre)
  * @param {string|null} [persona.avatar] - URL de la imagen del avatar
  * @param {Object} [options] - Opciones del avatar
- * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
+ * @param {string} [options.size='md'] - Tamaño: '2xs' (14px), 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
  * @param {string} [options.alt] - Texto alternativo para la imagen (por defecto usa el nombre)
  * @param {string} [options.initials] - Letra(s) inicial(es) si no hay imagen. Máx. 2 caracteres.
  * @param {boolean} [options.showTooltip=false] - Si true, añade data-tooltip con el nombre (requiere initTooltip del componente tooltip)
@@ -83,7 +83,7 @@ function normalizeAvatarUrlForPage(avatar) {
  */
 function renderAvatar(persona, options) {
     const opts = options || {};
-    const size = (opts.size && ['xs', 'sm', 'md', 'lg', 'xl'].includes(opts.size)) ? opts.size : 'md';
+    const size = (opts.size && ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'].includes(opts.size)) ? opts.size : 'md';
     const sizeClass = `ubits-avatar--${size}`;
     const selectableClass = opts.selectable ? ' ubits-avatar--selectable' : '';
     const selectedClass = opts.selectable && opts.selected ? ' ubits-avatar--selected' : '';
@@ -149,7 +149,7 @@ function renderAvatar(persona, options) {
  *
  * @param {Array<Object>} personas - Array de objetos { nombre/name, avatar }
  * @param {Object} [options] - Opciones
- * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
+ * @param {string} [options.size='md'] - Tamaño: '2xs' (14px), 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
  * @param {number} [options.maxVisible=3] - Número de avatares visibles antes del chip +N
  * @param {boolean} [options.showTooltip=true] - Tooltip con nombre en cada avatar visible (requiere initTooltip o wireProfileLists)
  * @param {number} [options.tooltipDelay=300] - Delay en ms del tooltip
@@ -161,7 +161,7 @@ function renderAvatar(persona, options) {
  */
 function renderProfileList(personas, options) {
     const opts = options || {};
-    const size = (opts.size && ['xs', 'sm', 'md', 'lg', 'xl'].includes(opts.size)) ? opts.size : 'md';
+    const size = (opts.size && ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'].includes(opts.size)) ? opts.size : 'md';
     const maxVisible = typeof opts.maxVisible === 'number' && opts.maxVisible > 0 ? opts.maxVisible : 3;
     const selectable = opts.selectable === true;
     const showTooltip = opts.showTooltip !== false;

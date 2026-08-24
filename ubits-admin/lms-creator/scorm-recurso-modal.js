@@ -1828,10 +1828,11 @@
                 ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
             );
         } else if (pageKey) {
-            /* Crear: solo Editar SCORM — T1 sin Eliminar bajo recurso montado. */
+            /* Crear: Editar SCORM + Reemplazar (mismo tipo). T1 sin Eliminar. */
             footerHtml =
                 '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-reemplazar-recurso"><i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button>' +
                 '</div>';
         } else {
             footerHtml = '';

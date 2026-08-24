@@ -599,16 +599,7 @@ function renderTemplateDrawer() {
                         </div>
                     </div>
 
-                    ${templateDrawerState.error ? `
-                        <div class="ubits-alert ubits-alert--error">
-                            <div class="ubits-alert__icon">
-                                <i class="far fa-exclamation-circle"></i>
-                            </div>
-                            <div class="ubits-alert__content">
-                                <div class="ubits-alert__text">${escapeHtml(templateDrawerState.error)}</div>
-                            </div>
-                        </div>
-                    ` : ''}
+                    ${templateDrawerState.error ? buildAlertHtml('error', escapeHtml(templateDrawerState.error), { noClose: true }) : ''}
                 </form>
             </div>`;
         bodyEl.innerHTML = bodyContent;
@@ -1466,14 +1457,7 @@ function renderPlanDrawer() {
     var bodyContent = `
         <div class="template-drawer-body">
             <form id="plan-form" onsubmit="handlePlanSubmit(event)">
-                ${planDrawerState.error ? `
-                    <div class="ubits-alert ubits-alert--error plan-alert-spaced">
-                        <div class="ubits-alert__icon"><i class="far fa-exclamation-circle"></i></div>
-                        <div class="ubits-alert__content">
-                            <div class="ubits-alert__text">${escapeHtml(planDrawerState.error)}</div>
-                        </div>
-                    </div>
-                ` : ''}
+                ${planDrawerState.error ? buildAlertHtml('error', escapeHtml(planDrawerState.error), { noClose: true, extraClass: 'plan-alert-spaced' }) : ''}
 
                 <div class="plan-accordion ${open === 1 ? 'plan-accordion--open' : ''}" data-accordion="1">
                     <div class="plan-accordion__header" onclick="togglePlanAccordion(1)">
@@ -2523,10 +2507,7 @@ function openTaskCreateDrawerV2() {
         '      <div id="task-create-v2-type-wrap" class="task-create-v2__field-wrap task-create-v2__field-wrap--type"></div>' +
         '    </div>' +
         '  </div>' +
-        '  <div id="task-create-v2-plan-alert" class="ubits-alert ubits-alert--info ubits-alert--no-close" style="display:flex">' +
-        '    <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>' +
-        '    <div class="ubits-alert__content"><div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div></div>' +
-        '  </div>' +
+        '  ' + buildAlertHtml('info', 'Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.', { noClose: true, rootId: 'task-create-v2-plan-alert' }) +
         '  <div id="task-create-v2-learning-box" class="task-create-v2__learning-box" style="display:none">' +
         '    <div id="task-create-v2-learning-wrap"></div>' +
         '    <div id="task-create-v2-learning-card-wrap" class="task-create-v2__learning-card-wrap"></div>' +

@@ -152,9 +152,6 @@
     line-height: 1.45;
     color: inherit;
 }
-.ubits-alert--block-text .ubits-alert__text { display: block; }
-.ubits-alert--has-title-desc .ubits-alert__text { grid-row: 2; }
-
 /* Cerrar: absolute top-right. Acciones: grid (angosto abajo, sm+ derecha). */
 .ubits-alert--dismissible {
     padding-right: calc(var(--padding-md) + 28px);
@@ -196,7 +193,48 @@
     align-items: center;
 }
 
+/* Angosto (<640): acciones debajo del texto */
+@media (max-width: 639px) {
+    .ubits-alert--has-actions:not(.ubits-alert--has-media) {
+        grid-template-columns: 0 1fr;
+    }
+
+    .ubits-alert__trailing {
+        grid-column: 2;
+        grid-row: auto;
+        margin-top: var(--gap-sm);
+        justify-content: flex-start;
+        align-self: stretch;
+        max-width: 100%;
+    }
+
+    .ubits-alert--has-title-desc .ubits-alert__trailing {
+        grid-row: auto;
+    }
+
+    .ubits-alert--dismissible.ubits-alert--has-actions .ubits-alert__trailing {
+        margin-right: 0;
+    }
+
+    .ubits-alert__trailing,
+    .ubits-alert__actions {
+        flex-wrap: wrap;
+    }
+
+    .ubits-alert--has-title-desc.ubits-alert--dismissible .ubits-alert__title {
+        padding-right: 28px;
+    }
+}
+
 @media (min-width: 640px) {
+    .ubits-alert--has-media.ubits-alert--has-actions {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .ubits-alert--has-actions:not(.ubits-alert--has-media) {
+        grid-template-columns: 0 1fr auto;
+    }
+
     .ubits-alert__trailing {
         grid-column: 3;
         grid-row: 1;
@@ -456,26 +494,6 @@
 
 .ubits-alert-stack--joined > .ubits-alert + .ubits-alert {
     border-top: 1px solid var(--ubits-border-1);
-}
-
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
-
-@media (max-width: 768px) {
-    .ubits-alert {
-        padding: var(--padding-md);
-        gap: var(--gap-md);
-    }
-    
-    .ubits-alert__content {
-        gap: var(--gap-md);
-    }
-    
-    .ubits-alert__text {
-        font-size: var(--font-size-sm);
-        line-height: 20px;
-    }
 }
 
 /* ========================================

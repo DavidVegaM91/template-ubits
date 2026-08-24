@@ -325,6 +325,7 @@
 
 .ubits-badge-tag--sm {
     min-height: 28px;
+    height: 28px;
     padding: 4px 8px;
     font-size: 13px;
     gap: var(--gap-sm);
@@ -341,6 +342,7 @@
 
 .ubits-badge-tag--md {
     min-height: 32px;
+    height: 32px;
     padding: 6px 10px;
     font-size: 14px;
     gap: var(--gap-sm);
@@ -521,6 +523,32 @@
 .ubits-badge-tag--xs .ubits-badge-tag__image { width: 12px; height: 12px; }
 .ubits-badge-tag--lg .ubits-badge-tag__image { width: 16px; height: 16px; }
 .ubits-badge-tag--xl .ubits-badge-tag__image { width: 18px; height: 18px; }
+
+/* Avatar embebido — paridad ReUI (14px en sm) y escala alineada a __image */
+.ubits-badge-tag--with-avatar .ubits-avatar,
+.ubits-badge-tag--with-avatar .ubits-avatar-shell > .ubits-avatar {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+}
+
+.ubits-badge-tag--xs.ubits-badge-tag--with-avatar .ubits-avatar,
+.ubits-badge-tag--xs.ubits-badge-tag--with-avatar .ubits-avatar-shell > .ubits-avatar {
+    width: 12px;
+    height: 12px;
+}
+
+.ubits-badge-tag--lg.ubits-badge-tag--with-avatar .ubits-avatar,
+.ubits-badge-tag--lg.ubits-badge-tag--with-avatar .ubits-avatar-shell > .ubits-avatar {
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-badge-tag--xl.ubits-badge-tag--with-avatar .ubits-avatar,
+.ubits-badge-tag--xl.ubits-badge-tag--with-avatar .ubits-avatar-shell > .ubits-avatar {
+    width: 18px;
+    height: 18px;
+}
 
 .ubits-badge-tag--removable {
     padding-right: 2px;

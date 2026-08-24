@@ -1760,23 +1760,16 @@
         if (existing) existing.remove();
         var bar = rootEl.querySelector('.cc-eval-config-bar');
         if (!bar || !bar.parentNode) return;
-        // Usar el componente oficial ubits-alert con variante IA y con-acción
-        var banner = document.createElement('div');
-        banner.id = 'cc-eval-undo-banner';
-        banner.className = 'ubits-alert ubits-alert--ia ubits-alert--with-action';
-        banner.setAttribute('role', 'status');
-        banner.innerHTML =
-            '<div class="ubits-alert__icon"><i class="far fa-sparkles"></i></div>' +
-            '<div class="ubits-alert__content">' +
-            '<span class="ubits-alert__text ubits-body-sm-semibold">' + count + ' preguntas generadas por IA</span>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-alert__action cc-eval-undo-btn">' +
-            '<span>Deshacer</span>' +
-            '</button>' +
-            '</div>' +
-            '<button type="button" class="ubits-alert__close cc-eval-undo-close" aria-label="Cerrar">' +
-            '<i class="far fa-times"></i>' +
-            '</button>';
+        var wrap = document.createElement('div');
+        wrap.innerHTML = buildAlertHtml('ia', '<span class="ubits-body-sm-semibold">' + count + ' preguntas generadas por IA</span>', {
+            rootId: 'cc-eval-undo-banner',
+            role: 'status',
+            blockText: true,
+            actionsHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs cc-eval-undo-btn"><span>Deshacer</span></button>'
+        });
+        var banner = wrap.firstElementChild;
         bar.parentNode.insertBefore(banner, bar.nextSibling);
+        wireAlertDismiss(banner, function () { banner.remove(); });
         banner.querySelector('.cc-eval-undo-btn').addEventListener('click', function () {
             openUndoAiGeneratedQuestionsConfirmModal(count, function () {
                 onUndo();
@@ -1784,7 +1777,6 @@
                 if (typeof global.showToast === 'function') global.showToast('info', 'Se deshizo la generación de preguntas.');
             });
         });
-        banner.querySelector('.cc-eval-undo-close').addEventListener('click', function () { banner.remove(); });
     }
 
     // ---------------------------

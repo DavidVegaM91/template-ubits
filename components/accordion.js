@@ -39,6 +39,65 @@
             .replace(/>/g, '&gt;');
     }
 
+    var VALID_LEADING_MEDIA = ['none', 'icon', 'icon-box', 'avatar', 'badge', 'loader'];
+
+    function resolveLeadingMedia(config, icon) {
+        if (config.leadingHtml) return 'custom';
+        var media = config.leadingMedia;
+        if (media && VALID_LEADING_MEDIA.indexOf(media) >= 0) return media;
+        if (icon) return 'icon';
+        return 'none';
+    }
+
+    function buildLeadingMediaHTML(config, size, numberClass) {
+        if (config.leadingHtml) {
+            return '<span class="ubits-accordion__leading">' + String(config.leadingHtml) + '</span>';
+        }
+
+        var number = config.number !== undefined && config.number !== null && String(config.number).trim() !== ''
+            ? String(config.number).trim()
+            : '';
+        var icon = config.icon !== undefined && config.icon !== null && String(config.icon).trim() !== ''
+            ? String(config.icon).trim()
+            : '';
+        var media = resolveLeadingMedia(config, icon);
+        if (media === 'none' && !number) return '';
+
+        var mediaHtml = '';
+        if (media === 'icon' && icon) {
+            mediaHtml = '<span class="ubits-accordion__icon" aria-hidden="true"><i class="' + escapeAttr(icon) + '"></i></span>';
+        } else if (media === 'icon-box' && icon) {
+            mediaHtml = '<span class="ubits-accordion__icon-box" aria-hidden="true"><i class="' + escapeAttr(icon) + '"></i></span>';
+        } else if (media === 'avatar') {
+            var avatarSrc = config.avatarSrc ? String(config.avatarSrc) : '';
+            var avatarAlt = config.avatarAlt ? String(config.avatarAlt) : (config.title || 'Avatar');
+            if (typeof renderAvatar === 'function') {
+                mediaHtml = renderAvatar(
+                    { nombre: avatarAlt, avatar: avatarSrc },
+                    { size: size === 'lg' ? 'md' : 'sm' }
+                );
+            }
+        } else if (media === 'badge') {
+            var badgeIcon = config.leadingBadgeIcon ? String(config.leadingBadgeIcon) : 'far fa-circle-check';
+            if (typeof createUbitsBadgeTag === 'function') {
+                mediaHtml = createUbitsBadgeTag({ color: 'success', variant: 'soft', size: 'xs', iconOnly: true, icon: badgeIcon, ariaLabel: 'Estado' });
+            } else {
+                mediaHtml = '<span class="ubits-badge-tag ubits-badge-tag--soft ubits-badge-tag--success ubits-badge-tag--xs ubits-badge-tag--icon-only" aria-label="Estado">' +
+                    '<i class="' + escapeAttr(badgeIcon) + '" aria-hidden="true"></i></span>';
+            }
+        } else if (media === 'loader') {
+            mediaHtml = '<span class="ubits-accordion__leading-loader" role="status" aria-label="Cargando"></span>';
+        }
+
+        var parts = '';
+        if (number) {
+            parts += '<span class="ubits-accordion__number ' + numberClass + '">' + number + '</span>';
+        }
+        if (mediaHtml) parts += mediaHtml;
+        if (!parts) return '';
+        return '<span class="ubits-accordion__leading-meta">' + parts + '</span>';
+    }
+
     function buildAccordionHTML(config) {
         var size = resolveSize(config.size);
         var variant = resolveVariant(config.variant);
@@ -89,14 +148,7 @@
         var hiddenAttr = isOpen ? '' : ' hidden';
         var disabledAttr = disabled ? ' disabled aria-disabled="true"' : '';
 
-        var leadingBlock = '';
-        if (leadingHtml) {
-            leadingBlock = '<span class="ubits-accordion__leading">' + leadingHtml + '</span>';
-        } else if (icon) {
-            leadingBlock = '<span class="ubits-accordion__icon" aria-hidden="true"><i class="' + escapeAttr(icon) + '"></i></span>';
-        } else if (number) {
-            leadingBlock = '<span class="ubits-accordion__number ' + numberClass + '">' + number + '</span>';
-        }
+        var leadingBlock = buildLeadingMediaHTML(config, size, numberClass);
 
         var headerDescriptionHTML = description
             ? '<p class="ubits-accordion__description ' + descriptionClass + '">' + description + '</p>'

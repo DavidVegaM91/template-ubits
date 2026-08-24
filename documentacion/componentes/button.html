@@ -89,12 +89,12 @@
                                 <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Preview del componente
                             </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            <p id="button-preview-intro" class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Elige la variante visual. Debajo combina propiedades: tamaño, contenido, forma, carga, badge… Las propiedades no son variantes.
                             </p>
 
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; overflow: visible;">
-                                <div id="button-preview" style="display: flex; align-items: center; justify-content: center; min-height: 96px; width: 100%; overflow: visible;"></div>
+                                <div id="button-preview" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 96px; width: 100%; overflow: visible; gap: 12px;"></div>
                             </div>
 
                             <div style="margin-top: 24px;">
@@ -188,7 +188,7 @@
                                                 <input type="checkbox" class="ubits-switch__input" id="link-toggle" role="switch" onchange="updateButtonPreview()">
                                                 <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             </label>
-                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Como enlace</span>
+                                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Como enlace (href)</span>
                                         </div>
                                     </div>
 
@@ -412,6 +412,20 @@
             var showIcon = state.content === 'icono-texto' || iconOnly;
             var disabled = state.variant === 'disabled' || state.loading;
 
+            var intro = document.getElementById('button-preview-intro');
+            if (intro) {
+                intro.textContent = state.asLink && !disabled
+                    ? 'Modo enlace: se ve igual que el botón, pero en el DOM es un <a href>. Abajo del preview verás el detalle.'
+                    : 'Elige la variante visual. Debajo combina propiedades: tamaño, contenido, forma, carga, badge… Las propiedades no son variantes.';
+            }
+
+            function wrapPreview(btnHtml) {
+                var linkHint = state.asLink && !disabled
+                    ? '<p class="ubits-body-xs-regular" style="margin:0;text-align:center;color:var(--ubits-fg-1-medium);max-width:320px;">Renderizado como enlace (&lt;a href=&quot;#ejemplo&quot;&gt;). Misma apariencia que el botón; en producto usarías una URL real.</p>'
+                    : '';
+                return btnHtml + linkHint;
+            }
+
             if (withGroup) {
                 var groupList = typeof renderProfileList === 'function'
                     ? renderProfileList(
@@ -431,6 +445,7 @@
 
             var tag = state.asLink && !disabled ? 'a' : 'button';
             var hrefAttr = tag === 'a' ? ' href="#ejemplo"' : '';
+            var clickAttr = tag === 'a' ? ' onclick="event.preventDefault(); return false;"' : '';
             var typeAttr = tag === 'button' ? ' type="button"' : '';
             var disabledAttr = (tag === 'button' && disabled) ? ' disabled' : '';
             var ariaBusy = state.loading ? ' aria-busy="true"' : '';
@@ -453,7 +468,7 @@
 
             var inner = '';
             if (state.loading) {
-                inner += '<i class="far fa-spinner-third ubits-button__spinner" aria-hidden="true"></i>';
+                inner += '<i class="far fa-spinner fa-spin" aria-hidden="true"></i>';
             } else if (withAvatar) {
                 var leadingAvatar = typeof renderAvatar === 'function'
                     ? renderAvatar({ nombre: 'Ana García', avatar: DEMO_AVATAR }, { size: 'xs', alt: 'Ana García' })
@@ -467,13 +482,13 @@
             }
             if (!state.loading) inner += badgeHtml();
 
-            var btnHtml = '<' + tag + typeAttr + hrefAttr + disabledAttr + ariaBusy + ariaLabel +
+            var btnHtml = '<' + tag + typeAttr + hrefAttr + clickAttr + disabledAttr + ariaBusy + ariaLabel +
                 ' class="' + classes.join(' ') + '">' + inner + '</' + tag + '>';
 
             if (state.fullWidth) {
-                container.innerHTML = '<div style="width:100%;max-width:360px;">' + btnHtml + '</div>';
+                container.innerHTML = wrapPreview('<div style="width:100%;max-width:360px;">' + btnHtml + '</div>');
             } else {
-                container.innerHTML = btnHtml;
+                container.innerHTML = wrapPreview(btnHtml);
             }
         }
 

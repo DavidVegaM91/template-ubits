@@ -11,7 +11,7 @@
     var NAV_DELAY_MS = 1000;
     var spendAudioCtx = null;
 
-    var AVATAR_SIZE = { xs: 'xs', sm: 'xs', md: 'sm', lg: 'sm', xl: 'sm' };
+    var AVATAR_SIZE = { xs: '2xs', sm: '2xs', md: '2xs', lg: '2xs', xl: '2xs' };
 
     function escapeHtml(str) {
         if (str == null) return '';

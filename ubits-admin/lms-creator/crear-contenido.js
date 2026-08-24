@@ -759,6 +759,9 @@
     /** Footer del recurso principal montado (T1: sin botón Eliminar). */
     function buildCrearContenidoResourceFooterHtml(extraAttrs) {
         extraAttrs = extraAttrs || '';
+        var replaceBtn =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-reemplazar-recurso">' +
+            '<i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button>';
         if (window.CC_PUBLISHED_EDIT_MODE) {
             return (
                 '<div class="ubits-resources-block__footer"' +
@@ -766,12 +769,17 @@
                 ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-descargar-recurso">' +
                 '<i class="far fa-download"></i><span>Descargar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-reemplazar-recurso">' +
-                '<i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button></div>'
+                replaceBtn +
+                '</div>'
             );
         }
-        /* Crear: no hay acciones bajo el recurso montado (cambio de tipo = eliminar página). */
-        return '';
+        return (
+            '<div class="ubits-resources-block__footer"' +
+            extraAttrs +
+            ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
+            replaceBtn +
+            '</div>'
+        );
     }
 
     function buildCrearContenidoEmbedResourceHtml(innerHtml) {
@@ -1282,23 +1290,54 @@
     }
 
     function ensurePublishedEditResourceFooterInMount(mount) {
-        if (!window.CC_PUBLISHED_EDIT_MODE || !mount) return;
+        if (!mount) return;
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        var pt = st && st.primaryType ? String(st.primaryType) : '';
+        if (
+            pt === 'evaluacion-final' ||
+            pt === 'evaluacion' ||
+            pt === 'texto' ||
+            pt === 'asistencia'
+        ) {
+            return;
+        }
         var block = mount.querySelector('.ubits-resources-block');
         if (!block) return;
         var footer = block.querySelector('.ubits-resources-block__footer');
-        if (!footer) return;
-        if (footer.querySelector('#cc-descargar-recurso') && footer.querySelector('#cc-reemplazar-recurso')) {
+        if (window.CC_PUBLISHED_EDIT_MODE) {
+            if (
+                footer &&
+                footer.querySelector('#cc-descargar-recurso') &&
+                footer.querySelector('#cc-reemplazar-recurso')
+            ) {
+                return;
+            }
+            if (typeof window.ccBuildCrearContenidoResourceFooterHtml !== 'function') return;
+            var wrapPub = document.createElement('div');
+            wrapPub.innerHTML = window.ccBuildCrearContenidoResourceFooterHtml(
+                ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
+            );
+            var nextFooter = wrapPub.firstElementChild;
+            if (!nextFooter) return;
+            if (footer) footer.replaceWith(nextFooter);
+            else block.appendChild(nextFooter);
+            return;
+        }
+        if (footer && footer.querySelector('#cc-reemplazar-recurso')) return;
+        var replaceBtnHtml =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-reemplazar-recurso">' +
+            '<i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button>';
+        if (footer) {
+            footer.insertAdjacentHTML('beforeend', replaceBtnHtml);
             return;
         }
         if (typeof window.ccBuildCrearContenidoResourceFooterHtml !== 'function') return;
-        var wrap = document.createElement('div');
-        wrap.innerHTML = window.ccBuildCrearContenidoResourceFooterHtml(
+        var wrapCreate = document.createElement('div');
+        wrapCreate.innerHTML = window.ccBuildCrearContenidoResourceFooterHtml(
             ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
         );
-        var nextFooter = wrap.firstElementChild;
-        if (nextFooter) {
-            footer.replaceWith(nextFooter);
-        }
+        if (wrapCreate.firstElementChild) block.appendChild(wrapCreate.firstElementChild);
     }
 
     function restoreRecursosPage(pageKey) {
@@ -2778,7 +2817,7 @@
             }
             return;
         }
-        if (pt === 'scorm') {
+        if (pt === 'scorm' || pt === 'presentacion-interactiva') {
             if (typeof window.openScormRecursoModal === 'function') {
                 window.openScormRecursoModal({
                     pageKey: CC_RECURSOS_CURRENT_PAGE_KEY,

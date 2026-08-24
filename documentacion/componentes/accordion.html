@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
@@ -64,7 +65,11 @@
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
-    <main class="main-content">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
         <div id="top-nav-container"></div>
         <div style="display: flex;">
             <div id="docs-dropdown-container"></div>
@@ -151,6 +156,18 @@
                                 </div>
                             </div>
 
+                            <div class="acc-control-row" id="row-leading">
+                                <span class="ubits-body-sm-bold acc-control-row__label">Leading:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-leading">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="leadingMedia" data-value="none" onclick="setLeadingMedia('none')"><span>Nada</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="leadingMedia" data-value="icon" onclick="setLeadingMedia('icon')"><span>Icono</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-group="leadingMedia" data-value="icon-box" onclick="setLeadingMedia('icon-box')"><span>Icono en caja</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="leadingMedia" data-value="avatar" onclick="setLeadingMedia('avatar')"><span>Avatar</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="leadingMedia" data-value="badge" onclick="setLeadingMedia('badge')"><span>Badge</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-group="leadingMedia" data-value="loader" onclick="setLeadingMedia('loader')"><span>Loader</span></button>
+                                </div>
+                            </div>
+
                             <div class="acc-switch-row">
                                 <div class="acc-switch-item" id="switch-separated-wrap">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Separados (cards con gap)</span>
@@ -163,13 +180,6 @@
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Multi-open</span>
                                     <label class="ubits-switch ubits-switch--sm">
                                         <input type="checkbox" class="ubits-switch__input" id="switch-multi" role="switch" onchange="setAllowMultiple(this.checked)">
-                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                    </label>
-                                </div>
-                                <div class="acc-switch-item" id="switch-icons-wrap">
-                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos</span>
-                                    <label class="ubits-switch ubits-switch--sm">
-                                        <input type="checkbox" class="ubits-switch__input" id="switch-icons" checked role="switch" onchange="setShowIcons(this.checked)">
                                         <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
@@ -292,13 +302,17 @@
             </div>
         </div>
     </main>
+    </div>
 
     <div id="ubits-toast-container"></div>
 
     <script src="../../components/sidebar.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/avatar.js"></script>
+    <script src="../../components/badge-tag.js"></script>
     <script src="../../components/accordion.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
@@ -313,7 +327,7 @@
             indicatorPosition: 'end',
             triggerPosition: 'header',
             allowMultiple: false,
-            showIcons: true,
+            leadingMedia: 'icon-box',
             showNumber: false,
             showDescription: true,
             showBadge: true,
@@ -335,14 +349,33 @@
             var showTrigger = isGrupo || isDisclosure;
             var showMulti = !isDisclosure;
             var showSeparated = state.appearance === 'filled' && !isDisclosure;
-            var showIcons = isGrupo || isDisclosure || isAnidado;
+            var showLeading = state.composition !== 'perfiles';
             var showCheckbox = isGrupo || isDisclosure || isAnidado;
 
             document.getElementById('row-trigger').style.display = showTrigger ? '' : 'none';
+            document.getElementById('row-leading').style.display = showLeading ? '' : 'none';
             document.getElementById('switch-separated-wrap').style.display = showSeparated ? '' : 'none';
             document.getElementById('switch-multi-wrap').style.display = showMulti ? '' : 'none';
-            document.getElementById('switch-icons-wrap').style.display = showIcons ? '' : 'none';
             document.getElementById('switch-checkbox-wrap').style.display = showCheckbox ? '' : 'none';
+        }
+
+        var DEMO_AVATAR_SRC = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop';
+
+        function buildLeading(icon) {
+            if (state.leadingMedia === 'none') return { leadingMedia: 'none' };
+            if (state.leadingMedia === 'avatar') {
+                return {
+                    leadingMedia: 'avatar',
+                    avatarSrc: DEMO_AVATAR_SRC,
+                    avatarAlt: 'Usuario demo'
+                };
+            }
+            if (state.leadingMedia === 'badge') {
+                return { leadingMedia: 'badge', leadingBadgeIcon: 'far fa-circle-check' };
+            }
+            if (state.leadingMedia === 'loader') return { leadingMedia: 'loader' };
+            if (state.leadingMedia === 'icon-box') return { leadingMedia: 'icon-box', icon: icon };
+            return { leadingMedia: 'icon', icon: icon };
         }
 
         function bodyCopyHtml() {
@@ -399,16 +432,15 @@
                 triggerPosition: state.triggerPosition,
                 allowMultiple: false,
                 separated: false,
-                items: [{
+                items: [Object.assign({
                     id: 'disclosure-1',
                     title: 'Mostrar opciones avanzadas',
                     description: state.showDescription ? 'Disclosure de un solo panel (collapsible).' : undefined,
-                    icon: state.showIcons ? 'far fa-sliders' : undefined,
                     number: state.showNumber ? '1' : undefined,
                     trailingHtml: demoBadgeHtml() || undefined,
                     contentHtml: settingsOrBody(),
                     isOpen: true
-                }]
+                }, buildLeading('far fa-sliders'))]
             }));
         }
 
@@ -416,25 +448,23 @@
             var nestedSize = state.size === 'lg' ? 'md' : 'sm';
             createAccordionGroup(sharedGroupConfig({
                 items: [
-                    {
+                    Object.assign({
                         id: 'parent-1',
                         title: 'Configuración general',
                         description: state.showDescription ? 'Incluye un accordion anidado (bordes internos).' : undefined,
-                        icon: state.showIcons ? 'far fa-gear' : undefined,
                         number: state.showNumber ? '1' : undefined,
                         trailingHtml: demoBadgeHtml() || undefined,
                         contentHtml: '<div id="acc-nested-level1"></div>',
                         isOpen: true
-                    },
-                    {
+                    }, buildLeading('far fa-gear')),
+                    Object.assign({
                         id: 'parent-2',
                         title: 'Facturación',
-                        icon: state.showIcons ? 'far fa-credit-card' : undefined,
                         number: state.showNumber ? '2' : undefined,
                         contentHtml: bodyCopyHtml(),
                         disabled: state.showDisabled,
                         highlighted: state.showHighlight
-                    }
+                    }, buildLeading('far fa-credit-card'))
                 ]
             }));
 
@@ -447,26 +477,23 @@
                 allowMultiple: true,
                 separated: false,
                 items: [
-                    {
+                    Object.assign({
                         id: 'child-a',
                         title: 'Notificaciones',
-                        icon: state.showIcons ? 'far fa-bell' : undefined,
                         trailingHtml: state.showBadge ? badgeHtml('warning', '3') : undefined,
                         contentHtml: settingsOrBody(),
                         isOpen: true
-                    },
-                    {
+                    }, buildLeading('far fa-bell')),
+                    Object.assign({
                         id: 'child-b',
                         title: 'Privacidad',
-                        icon: state.showIcons ? 'far fa-lock' : undefined,
                         contentHtml: bodyCopyHtml()
-                    },
-                    {
+                    }, buildLeading('far fa-lock')),
+                    Object.assign({
                         id: 'child-c',
                         title: 'Integraciones anidadas',
-                        icon: state.showIcons ? 'far fa-plug' : undefined,
                         contentHtml: '<div id="acc-nested-level2"></div>'
-                    }
+                    }, buildLeading('far fa-plug'))
                 ]
             });
 
@@ -531,21 +558,19 @@
             var step2Trailing = demoBadgeHtml() || badgeHtml('info', 'En curso');
             createAccordionGroup(sharedGroupConfig({
                 items: [
-                    {
+                    Object.assign({
                         id: 'step-1',
                         title: 'Crear cuenta',
                         description: state.showDescription ? 'Datos básicos y verificación.' : undefined,
-                        icon: 'far fa-user',
                         number: state.showNumber ? '1' : undefined,
                         trailingHtml: badgeHtml('success', 'Listo'),
                         contentHtml: bodyCopyHtml(),
                         isOpen: true
-                    },
-                    {
+                    }, buildLeading('far fa-user')),
+                    Object.assign({
                         id: 'step-2',
                         title: 'Invitar equipo',
                         description: state.showDescription ? 'Comparte el enlace o código QR.' : undefined,
-                        icon: 'far fa-users',
                         number: state.showNumber ? '2' : undefined,
                         trailingHtml: step2Trailing,
                         contentHtml: '' +
@@ -560,17 +585,16 @@
                                     '</button>' +
                                 '</div>' +
                             '</div>'
-                    },
-                    {
+                    }, buildLeading('far fa-users')),
+                    Object.assign({
                         id: 'step-3',
                         title: 'Publicar espacio',
-                        icon: 'far fa-rocket',
                         number: state.showNumber ? '3' : undefined,
                         trailingHtml: state.showBadge ? badgeHtml('gray', 'Pendiente') : undefined,
                         contentHtml: bodyCopyHtml(),
                         disabled: state.showDisabled,
                         highlighted: state.showHighlight
-                    }
+                    }, buildLeading('far fa-rocket'))
                 ]
             }));
         }
@@ -579,34 +603,31 @@
             createAccordionGroup(sharedGroupConfig({
                 triggerPosition: state.triggerPosition,
                 items: [
-                    {
+                    Object.assign({
                         id: 'g1',
                         title: '¿Qué es UBITS Learning?',
                         description: state.showDescription ? 'Respuesta breve para FAQ o settings.' : undefined,
-                        icon: state.showIcons ? 'far fa-circle-info' : undefined,
                         number: state.showNumber ? '1' : undefined,
                         trailingHtml: demoBadgeHtml() || undefined,
                         contentHtml: settingsOrBody(),
                         isOpen: true,
                         highlighted: state.showHighlight
-                    },
-                    {
+                    }, buildLeading('far fa-circle-info')),
+                    Object.assign({
                         id: 'g2',
                         title: '¿Cómo asigno un plan?',
                         description: state.showDescription ? 'Puedes abrir varios si activas multi-open.' : undefined,
-                        icon: state.showIcons ? 'far fa-clipboard-list' : undefined,
                         number: state.showNumber ? '2' : undefined,
                         trailingHtml: state.showBadge ? badgeHtml('warning', 'Popular') : undefined,
                         contentHtml: bodyCopyHtml(),
                         disabled: state.showDisabled
-                    },
-                    {
+                    }, buildLeading('far fa-clipboard-list')),
+                    Object.assign({
                         id: 'g3',
                         title: '¿Dónde veo reportes?',
-                        icon: state.showIcons ? 'far fa-chart-simple' : undefined,
                         number: state.showNumber ? '3' : undefined,
                         contentHtml: bodyCopyHtml()
-                    }
+                    }, buildLeading('far fa-chart-simple'))
                 ]
             }));
         }
@@ -654,9 +675,13 @@
             setActiveGroup('triggerPosition', value);
             renderAccordionPreview();
         }
+        function setLeadingMedia(v) {
+            state.leadingMedia = v;
+            setActiveGroup('leadingMedia', v);
+            renderAccordionPreview();
+        }
         function setSeparated(v) { state.separated = v; renderAccordionPreview(); }
         function setAllowMultiple(v) { state.allowMultiple = v; renderAccordionPreview(); }
-        function setShowIcons(v) { state.showIcons = v; renderAccordionPreview(); }
         function setShowNumber(v) { state.showNumber = v; renderAccordionPreview(); }
         function setShowDescription(v) { state.showDescription = v; renderAccordionPreview(); }
         function setShowBadge(v) { state.showBadge = v; renderAccordionPreview(); }
@@ -672,7 +697,12 @@
         }
 
         function initAccordionDocsPage() {
-            bootDocsWorkspace();
+            try {
+                bootDocsWorkspace();
+            } catch (err) {
+                console.error('Accordion docs: bootDocsWorkspace', err);
+            }
+
             setTimeout(function () {
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
                     item.classList.remove('active');
@@ -683,12 +713,26 @@
                 if (hamburgerItem) hamburgerItem.classList.add('active');
             }, 200);
 
-            showAlert('warning', 'Antes de usar los prompts, reemplaza todos los textos entre [corchetes].', {
-                containerId: 'accordion-warning-alert',
-                noClose: true
-            });
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de usar los prompts, reemplaza todos los textos entre [corchetes].', {
+                    containerId: 'accordion-warning-alert',
+                    noClose: true
+                });
+            }
 
-            renderAccordionPreview();
+            try {
+                renderAccordionPreview();
+            } catch (err) {
+                console.error('Accordion docs: renderAccordionPreview', err);
+                var mount = document.getElementById('accordion-preview');
+                if (mount) {
+                    mount.innerHTML = '<p class="ubits-body-sm-regular" style="color: var(--ubits-feedback-accent-error); margin: 0;">No se pudo cargar el preview. Revisa la consola del navegador.</p>';
+                }
+            }
+
+            if (typeof initTooltip === 'function') {
+                initTooltip('#accordion-warning-alert [data-tooltip]');
+            }
         }
 
         if (document.readyState === 'loading') {
