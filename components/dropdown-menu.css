@@ -248,13 +248,25 @@
     display: flex;
 }
 
+/* Acciones destructivas — texto + ícono (left/right) en rojo */
 .ubits-dropdown-menu__option--danger,
 .ubits-dropdown-menu__option--danger .ubits-dropdown-menu__option-text,
 .ubits-dropdown-menu__option--danger .ubits-dropdown-menu__option-shortcut {
     color: var(--ubits-feedback-accent-error);
 }
 
-.ubits-dropdown-menu__option--danger i {
+.ubits-dropdown-menu__option--danger i,
+.ubits-dropdown-menu__option--danger .ubits-dropdown-menu__option-left i,
+.ubits-dropdown-menu__option--danger .ubits-dropdown-menu__option-right i,
+.ubits-dropdown-menu__option--danger:hover i,
+.ubits-dropdown-menu__option--danger:hover .ubits-dropdown-menu__option-left i,
+.ubits-dropdown-menu__option--danger:hover .ubits-dropdown-menu__option-right i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-dropdown-menu__option--danger:hover,
+.ubits-dropdown-menu__option--danger:hover .ubits-dropdown-menu__option-text,
+.ubits-dropdown-menu__option--danger:hover .ubits-dropdown-menu__option-shortcut {
     color: var(--ubits-feedback-accent-error);
 }
 
