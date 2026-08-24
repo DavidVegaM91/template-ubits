@@ -65,6 +65,13 @@
     flex-shrink: 0;
 }
 
+/* Cuerpo custom sin padding cuando es panel de notificaciones */
+.ubits-dropdown-menu__custom-body:has(.ubits-dropdown-menu__notif-panel) {
+    padding: 0;
+    max-height: none;
+    overflow: visible;
+}
+
 /* Cuerpo personalizado (formularios, inputs de selección): padding y scroll si hace falta */
 .ubits-dropdown-menu__custom-body {
     padding: var(--padding-md);
@@ -74,7 +81,8 @@
     box-sizing: border-box;
 }
 
-/* Lista de opciones: ancho completo; alto máximo 350px con scroll si hay muchos ítems */
+/* Lista de opciones: ancho completo; alto máximo 350px con scroll si hay muchos ítems.
+   padding-block: aire superior/inferior como ReUI (content p-1) — títulos de sección no pegados al borde. */
 .ubits-dropdown-menu__options {
     display: flex;
     flex-direction: column;
@@ -86,6 +94,7 @@
     flex: 1 1 auto;
     min-height: 0;
     box-sizing: border-box;
+    padding-block: var(--padding-xs);
 }
 
 /* Modo "solo seleccionados" (initDropdownMultiSelectSummary): ~5 filas visibles, resto con scroll */
@@ -195,9 +204,9 @@
     border: none;
 }
 
-/* Etiqueta de sección (no interactiva) */
+/* Etiqueta de sección (no interactiva) — py ≈ ReUI py-1.5 */
 .ubits-dropdown-menu__section-label {
-    padding: var(--padding-xs) var(--padding-md);
+    padding: var(--padding-sm) var(--padding-md);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
@@ -222,30 +231,25 @@
     box-sizing: border-box;
 }
 
-/* Submenú anidado */
+/* Submenú anidado — panel flotante (position:fixed, montado en body vía JS) */
 .ubits-dropdown-menu__submenu-wrap {
-    position: relative;
     width: 100%;
 }
 
 .ubits-dropdown-menu__submenu-panel {
     display: none;
-    position: absolute;
-    left: calc(100% - 4px);
-    top: 0;
+    position: fixed;
     min-width: 160px;
+    max-width: 280px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
     box-shadow: var(--ubits-elevation-overlay);
     padding: 0;
-    z-index: 2;
+    z-index: 1200;
     flex-direction: column;
     overflow: hidden;
-}
-
-.ubits-dropdown-menu__submenu-wrap:hover .ubits-dropdown-menu__submenu-panel {
-    display: flex;
+    box-sizing: border-box;
 }
 
 /* Acciones destructivas — texto + ícono (left/right) en rojo */
@@ -338,27 +342,138 @@
     flex-shrink: 0;
     width: 6px;
     height: 6px;
-    margin-top: 6px;
+    margin-top: 8px;
     border-radius: var(--border-radius-full);
     background: var(--ubits-accent-brand);
 }
 
-.ubits-dropdown-menu__provider-icon {
+/* Notificaciones — panel compacto (paridad ReUI) */
+.ubits-dropdown-menu__notif-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 320px;
+    box-sizing: border-box;
+}
+
+.ubits-dropdown-menu__notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-dropdown-menu__notif-mark-all {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-xs);
+    color: var(--ubits-fg-1-medium);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.ubits-dropdown-menu__notif-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ubits-dropdown-menu__notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    width: 100%;
+    padding: 6px var(--padding-md);
+    border: none;
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.ubits-dropdown-menu__notif-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-dropdown-menu__notif-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ubits-dropdown-menu__notif-line {
+    line-height: 1.35;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-dropdown-menu__notif-user,
+.ubits-dropdown-menu__notif-target {
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-dropdown-menu__notif-action {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-dropdown-menu__notif-date {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-dropdown-menu__notif-footer {
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.ubits-dropdown-menu__notif-view-all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--padding-sm) var(--padding-md);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    box-sizing: border-box;
+}
+
+.ubits-dropdown-menu__notif-view-all:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-dropdown-menu__provider-logo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 16px;
     height: 16px;
-    border-radius: var(--border-radius-sm);
-    font-size: 10px;
-    font-weight: var(--font-weight-semibold);
-    color: white;
     flex-shrink: 0;
+    color: var(--ubits-fg-1-high);
 }
 
-.ubits-dropdown-menu__provider-icon--openai { background: #10a37f; }
-.ubits-dropdown-menu__provider-icon--claude { background: #d97757; }
-.ubits-dropdown-menu__provider-icon--gemini { background: #4285f4; }
+.ubits-dropdown-menu__provider-logo img,
+.ubits-dropdown-menu__provider-logo svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.ubits-dropdown-menu__provider-logo-light { display: block; }
+.ubits-dropdown-menu__provider-logo-dark { display: none; }
+
+[data-theme="dark"] .ubits-dropdown-menu__provider-logo-light { display: none; }
+[data-theme="dark"] .ubits-dropdown-menu__provider-logo-dark { display: block; }
 
 .ubits-dropdown-menu__status-dot {
     display: inline-block;

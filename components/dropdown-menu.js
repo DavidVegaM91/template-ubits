@@ -80,8 +80,9 @@
      * @param {Object} config
      * @param {string} config.overlayId - ID del overlay (cierre al clic fuera).
      * @param {string} [config.contentId] - ID del panel contenido (para posicionar).
-     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar?, radio?, alreadyChosen? }.
+     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, leftHtml?, rightIcon?, checkbox?, switch?, selected?, avatar?, radio?, alreadyChosen? }.
      *   - avatar: URL de imagen (avatar) a mostrar a la izquierda; si se define, tiene prioridad sobre leftIcon para esa opción.
+     *   - leftHtml: HTML crudo a la izquierda (p. ej. logos SVG de proveedores); prioriza sobre leftIcon si no hay avatar.
      *   - radio: si config.radioGroup es true, cada opción se renderiza como radio oficial (ubits-radio--sm) con texto.
      *   - alreadyChosen: true = mismo aspecto que opción ya elegida en Input autocomplete (fondo bg-2, barra de acento, badge "Seleccionado"). Solo filas botón/radio; no combinar con checkbox. No usar selected:true a la vez para el mismo ítem (el estado "activo" de menú usa selected; alreadyChosen es para "ya está en chips/otro contexto").
      * @param {boolean} [config.radioGroup=false] - Si true, las opciones se muestran como lista de radios (componente oficial ubits-radio). Requiere radio-button.css.
@@ -157,6 +158,8 @@
                         ? renderAvatar({ nombre: nombre, avatar: avatarUrl }, { size: 'sm' })
                         : (avatarUrl ? '<img class="ubits-dropdown-menu__option-avatar" src="' + escapeHtml(avatarUrl) + '" alt="">' : '<i class="far fa-user"></i>')) +
                     '</span>';
+            } else if (opt.leftHtml) {
+                left = '<span class="ubits-dropdown-menu__option-left">' + opt.leftHtml + '</span>';
             } else if (opt.leftIcon) {
                 left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
             } else if (opt.checkbox) {
@@ -391,6 +394,8 @@
     /**
      * Drawer (1100–1101) y modal (1200+) quedan por encima del z-index base del dropdown (999–1000).
      * Si el ancla está dentro de uno de esos contenedores, elevamos el stacking para que el menú sea usable.
+     * Workspace: #sidebar-container z-index 20 y .main-content z-index 5 — el overlay debe vivir en body
+     * (ensureDropdownOverlayOnBody) o queda tapado por el sidebar.
      */
     function applyDropdownStackingForAnchor(overlay, content, anchor) {
         if (!overlay || !content) return;
@@ -409,6 +414,31 @@
         content.style.zIndex = String(contentZ);
     }
 
+    /** Monta el overlay en body para escapar stacking contexts (paridad React createPortal). */
+    function ensureDropdownOverlayOnBody(overlay) {
+        if (!overlay || overlay.parentNode === document.body) return;
+        if (!overlay._ubitsDropdownMount) {
+            overlay._ubitsDropdownMount = {
+                parent: overlay.parentNode,
+                next: overlay.nextSibling,
+            };
+        }
+        document.body.appendChild(overlay);
+    }
+
+    function restoreDropdownOverlayMount(overlay) {
+        if (!overlay || !overlay._ubitsDropdownMount) return;
+        var home = overlay._ubitsDropdownMount;
+        if (home.parent && home.parent.isConnected) {
+            if (home.next && home.next.parentNode === home.parent) {
+                home.parent.insertBefore(overlay, home.next);
+            } else {
+                home.parent.appendChild(overlay);
+            }
+        }
+        overlay._ubitsDropdownMount = null;
+    }
+
     /**
      * Abre el menú desplegable y lo posiciona dentro del viewport.
      * Vertical: debajo del ancla; si no hay espacio, arriba; si no cabe, se recorta con padding.
@@ -422,6 +452,8 @@
         if (!overlay) return;
         var content = overlay.querySelector('.ubits-dropdown-menu__content');
         if (!content) return;
+
+        ensureDropdownOverlayOnBody(overlay);
 
         var anchorEl = (position && typeof position.getBoundingClientRect === 'function') ? position : null;
         applyDropdownStackingForAnchor(overlay, content, anchorEl);
@@ -492,6 +524,68 @@
 
         left = Math.max(viewportPadding, Math.min(vw - contentWidth - viewportPadding, left));
         content.style.left = left + 'px';
+
+        bindDropdownSubmenus(overlay);
+    }
+
+    /**
+     * Submenús flotantes fuera del overflow del panel (como ReUI).
+     * El panel se monta en document.body con position:fixed.
+     */
+    function cleanupFloatingSubmenus(overlayId) {
+        document.querySelectorAll('[data-ubits-floating-submenu="' + overlayId + '"]').forEach(function (panel) {
+            panel.style.display = 'none';
+            panel.removeAttribute('data-ubits-floating-submenu');
+        });
+    }
+
+    function bindDropdownSubmenus(overlay) {
+        if (!overlay || !overlay.id) return;
+        var wraps = overlay.querySelectorAll('.ubits-dropdown-menu__submenu-wrap');
+        wraps.forEach(function (wrap) {
+            if (wrap.getAttribute('data-submenu-bound') === '1') return;
+            wrap.setAttribute('data-submenu-bound', '1');
+            var trigger = wrap.querySelector('.ubits-dropdown-menu__option--submenu-trigger');
+            var panel = wrap.querySelector('.ubits-dropdown-menu__submenu-panel');
+            if (!trigger || !panel) return;
+
+            var closeTimer = null;
+            function cancelHide() {
+                if (closeTimer) {
+                    clearTimeout(closeTimer);
+                    closeTimer = null;
+                }
+            }
+            function show() {
+                cancelHide();
+                var r = trigger.getBoundingClientRect();
+                var vw = window.innerWidth;
+                var estimatedW = 180;
+                var left = r.right + 4;
+                if (left + estimatedW > vw - 8) {
+                    left = r.left - estimatedW - 4;
+                }
+                panel.style.position = 'fixed';
+                panel.style.top = Math.max(8, r.top) + 'px';
+                panel.style.left = Math.max(8, left) + 'px';
+                panel.style.display = 'flex';
+                panel.style.zIndex = '1200';
+                panel.setAttribute('data-ubits-floating-submenu', overlay.id);
+                if (panel.parentNode !== document.body) {
+                    document.body.appendChild(panel);
+                }
+            }
+            function hide() {
+                cancelHide();
+                closeTimer = setTimeout(function () {
+                    panel.style.display = 'none';
+                }, 120);
+            }
+            wrap.addEventListener('mouseenter', show);
+            wrap.addEventListener('mouseleave', hide);
+            panel.addEventListener('mouseenter', cancelHide);
+            panel.addEventListener('mouseleave', hide);
+        });
     }
 
     /**
@@ -499,10 +593,12 @@
      * @param {string} overlayId - ID del overlay.
      */
     function closeDropdownMenu(overlayId) {
+        cleanupFloatingSubmenus(overlayId);
         var overlay = document.getElementById(overlayId);
         if (!overlay) return;
         overlay.style.display = 'none';
         overlay.setAttribute('aria-hidden', 'true');
+        restoreDropdownOverlayMount(overlay);
     }
 
     if (typeof window !== 'undefined') {

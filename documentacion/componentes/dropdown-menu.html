@@ -210,6 +210,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
             var showSearch = false;
             var showFooter = true;
             var placement = 'bottom-start';
+            var profileVariant = 'admin';
 
             var COMPOSITIONS = [
                 { id: 'acciones-estandar', label: 'Acciones estándar' },
@@ -225,14 +226,13 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                 { id: 'enriquecido', label: 'Enriquecido (plan)' },
                 { id: 'ya-elegidos', label: 'Ya elegidos' },
                 { id: 'posiciones', label: 'Posiciones' },
-                { id: 'perfil-usuario', label: 'Perfil de usuario' },
+                { id: 'perfil-usuario', label: 'Perfil AppHeader' },
                 { id: 'notificaciones', label: 'Notificaciones' },
-                { id: 'perfil-tema-estado', label: 'Perfil + tema + estado' },
                 { id: 'selector-ia', label: 'Selector IA' }
             ];
 
             var FOOTER_COMPS = { checklist: true, radios: true, 'con-busqueda': true };
-            var NO_SEARCH_KNOB = { 'con-busqueda': true, enriquecido: true, 'acciones-kebab': true, 'acciones-rapidas': true, 'compartir-exportar': true, posiciones: true, 'perfil-usuario': true, notificaciones: true, 'perfil-tema-estado': true, 'selector-ia': true, submenus: true };
+            var NO_SEARCH_KNOB = { 'con-busqueda': true, enriquecido: true, 'acciones-kebab': true, 'acciones-rapidas': true, 'compartir-exportar': true, posiciones: true, 'perfil-usuario': true, notificaciones: true, 'selector-ia': true, submenus: true };
 
             function profileHeaderHtml() {
                 return '<div class="ubits-dropdown-menu__profile-header">' +
@@ -241,13 +241,49 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                     '<span class="ubits-body-xs-regular" style="color:var(--ubits-fg-1-medium);">masanchez@fiqsha.demo</span></div></div>';
             }
 
+            function providerLogoHtml(id) {
+                var base = '../../images/ai-providers/';
+                if (id === 'openai') {
+                    return '<span class="ubits-dropdown-menu__provider-logo" aria-hidden="true">' +
+                        '<img class="ubits-dropdown-menu__provider-logo-light" src="' + base + 'openai.svg" width="16" height="16" alt="">' +
+                        '<img class="ubits-dropdown-menu__provider-logo-dark" src="' + base + 'openai-dark.svg" width="16" height="16" alt="">' +
+                        '</span>';
+                }
+                if (id === 'claude') {
+                    return '<span class="ubits-dropdown-menu__provider-logo" aria-hidden="true">' +
+                        '<img src="' + base + 'claude.svg" width="16" height="16" alt="">' +
+                        '</span>';
+                }
+                return '<span class="ubits-dropdown-menu__provider-logo" aria-hidden="true">' +
+                    '<img src="' + base + 'gemini.svg" width="16" height="16" alt="">' +
+                    '</span>';
+            }
+
             function notificationsBodyHtml() {
-                return '<div class="ubits-dropdown-menu__header-row"><span class="ubits-body-sm-bold" style="color:var(--ubits-fg-1-high);">Notificaciones</span>' +
-                    '<button type="button" class="ubits-dropdown-menu__header-action">Marcar todas como leídas</button></div>' +
-                    '<button type="button" class="ubits-dropdown-menu__notification-item"><span class="ubits-dropdown-menu__notification-body">' +
-                    '<span class="ubits-body-sm-regular">Sarah comentó en Design System v2</span><span class="ubits-body-xs-regular" style="color:var(--ubits-fg-1-medium);">Hace 2 min</span></span>' +
+                return '' +
+                    '<div class="ubits-dropdown-menu__notif-panel">' +
+                    '<div class="ubits-dropdown-menu__notif-header">' +
+                    '<span class="ubits-body-sm-bold" style="color:var(--ubits-fg-1-high);">Notificaciones</span>' +
+                    '<button type="button" class="ubits-dropdown-menu__notif-mark-all">Marcar todas como leídas</button>' +
+                    '</div>' +
+                    '<div class="ubits-dropdown-menu__notif-list">' +
+                    '<button type="button" class="ubits-dropdown-menu__notif-item">' +
+                    '<span class="ubits-dropdown-menu__notif-body">' +
+                    '<span class="ubits-body-sm-regular ubits-dropdown-menu__notif-line"><span class="ubits-dropdown-menu__notif-user">Sarah</span> <span class="ubits-dropdown-menu__notif-action">comentó en</span> <span class="ubits-dropdown-menu__notif-target">Design System v2</span></span>' +
+                    '<span class="ubits-body-xs-regular ubits-dropdown-menu__notif-date">Hace 2 min</span></span></button>' +
+                    '<button type="button" class="ubits-dropdown-menu__notif-item">' +
+                    '<span class="ubits-dropdown-menu__notif-body">' +
+                    '<span class="ubits-body-sm-regular ubits-dropdown-menu__notif-line"><span class="ubits-dropdown-menu__notif-user">James Wilson</span> <span class="ubits-dropdown-menu__notif-action">compartió</span> <span class="ubits-dropdown-menu__notif-target">Q4 Report</span></span>' +
+                    '<span class="ubits-body-xs-regular ubits-dropdown-menu__notif-date">Hace 1 hora</span></span>' +
                     '<span class="ubits-dropdown-menu__notification-dot"></span></button>' +
-                    '<button type="button" class="ubits-dropdown-menu__notification-item"><span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);">Ver todas las notificaciones</span></button>';
+                    '<button type="button" class="ubits-dropdown-menu__notif-item">' +
+                    '<span class="ubits-dropdown-menu__notif-body">' +
+                    '<span class="ubits-body-sm-regular ubits-dropdown-menu__notif-line"><span class="ubits-dropdown-menu__notif-user">Emily Davis</span> <span class="ubits-dropdown-menu__notif-action">te invitó a</span> <span class="ubits-dropdown-menu__notif-target">Project Alpha</span></span>' +
+                    '<span class="ubits-body-xs-regular ubits-dropdown-menu__notif-date">Hace 3 horas</span></span></button>' +
+                    '</div>' +
+                    '<div class="ubits-dropdown-menu__notif-footer">' +
+                    '<button type="button" class="ubits-dropdown-menu__notif-view-all">Ver todas las notificaciones</button>' +
+                    '</div></div>';
             }
 
             function buildOptions(comp) {
@@ -342,32 +378,32 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                             { text: 'Eliminar', value: 'remove', leftIcon: 'trash', danger: true }
                         ];
                     case 'perfil-usuario':
+                        if (profileVariant === 'colaborador') {
+                            return [
+                                { text: 'Ver como admin', value: 'switch-admin', leftIcon: 'right-left' },
+                                { text: 'Design system', value: 'ds', leftIcon: 'book' },
+                                { text: 'Cambio de contraseña', value: 'password', leftIcon: 'key' },
+                                { text: 'Conectores', value: 'connectors', leftIcon: 'plug' },
+                                { divider: true },
+                                { text: 'Modo claro', value: 'theme', leftIcon: 'sun', switch: true },
+                                { divider: true },
+                                { text: 'Cerrar sesión', value: 'logout', leftIcon: 'sign-out-alt', shortcut: '⇧⌘Q', danger: true }
+                            ];
+                        }
                         return [
                             { text: 'Ver como colaborador', value: 'switch', leftIcon: 'right-left' },
                             { text: 'Design system', value: 'ds', leftIcon: 'book' },
+                            { divider: true },
+                            { text: 'Modo claro', value: 'theme', leftIcon: 'sun', switch: true },
                             { divider: true },
                             { text: 'Cerrar sesión', value: 'logout', leftIcon: 'sign-out-alt', shortcut: '⇧⌘Q', danger: true }
                         ];
                     case 'selector-ia':
                         return [
                             { text: 'Modelo', isSectionLabel: true },
-                            { text: 'GPT-5.4', value: 'gpt', leftIcon: 'sparkles', selected: true },
-                            { text: 'Claude 4.6 Opus', value: 'claude', leftIcon: 'brain' },
-                            { text: 'Gemini 3.1 Pro', value: 'gemini', leftIcon: 'gem' }
-                        ];
-                    case 'perfil-tema-estado':
-                        return [
-                            { text: 'Disponible', value: 'status', leftIcon: 'circle', submenu: [
-                                { text: 'Disponible', value: 'available' },
-                                { text: 'Ausente', value: 'away' },
-                                { text: 'Ocupado', value: 'busy' },
-                                { text: 'Desconectado', value: 'offline' }
-                            ]},
-                            { divider: true },
-                            { text: 'Configuración', value: 'settings', leftIcon: 'gear' },
-                            { text: 'Centro de ayuda', value: 'help', leftIcon: 'life-ring' },
-                            { divider: true },
-                            { text: 'Cerrar sesión', value: 'logout', leftIcon: 'sign-out-alt', danger: true }
+                            { text: 'GPT-5.4', value: 'gpt', leftHtml: providerLogoHtml('openai'), selected: true },
+                            { text: 'Claude 4.6 Opus', value: 'claude', leftHtml: providerLogoHtml('claude') },
+                            { text: 'Gemini 3.1 Pro', value: 'gemini', leftHtml: providerLogoHtml('gemini') }
                         ];
                     case 'notificaciones':
                         return [];
@@ -418,7 +454,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                     html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Con submenú</span></button>';
                 } else if (composition === 'notificaciones') {
                     html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-button--pill" id="dropdown-menu-trigger" data-tooltip="Notificaciones" aria-label="Notificaciones"><i class="far fa-bell"></i></button>';
-                } else if (composition === 'perfil-usuario' || composition === 'perfil-tema-estado') {
+                } else if (composition === 'perfil-usuario') {
                     html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>María Alejandra</span></button>';
                 } else if (composition === 'selector-ia') {
                     html = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger"><i class="far fa-chevron-down"></i><span>Seleccionar modelo</span></button>';
@@ -490,7 +526,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                     config.footerSecondaryLabel = 'Cancelar';
                     config.footerPrimaryLabel = 'Aplicar';
                 }
-                if (composition === 'perfil-usuario' || composition === 'perfil-tema-estado') {
+                if (composition === 'perfil-usuario') {
                     config.headerHtml = profileHeaderHtml();
                     config.contentWide = true;
                 }
@@ -521,7 +557,39 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                 knobsRoot.innerHTML = '';
                 var showSearchKnob = !NO_SEARCH_KNOB[composition];
                 var showFooterKnob = !!FOOTER_COMPS[composition];
-                if (!showSearchKnob && !showFooterKnob && composition !== 'posiciones') return;
+                if (!showSearchKnob && !showFooterKnob && composition !== 'posiciones' && composition !== 'perfil-usuario') return;
+
+                if (composition === 'perfil-usuario') {
+                    var profileBlock = document.createElement('div');
+                    profileBlock.style.marginBottom = '16px';
+                    var profileTitle = document.createElement('p');
+                    profileTitle.className = 'ubits-body-sm-bold';
+                    profileTitle.style.marginBottom = '8px';
+                    profileTitle.style.color = 'var(--ubits-fg-1-high)';
+                    profileTitle.textContent = 'Variante AppHeader';
+                    profileBlock.appendChild(profileTitle);
+                    var profileBtns = document.createElement('div');
+                    profileBtns.style.display = 'flex';
+                    profileBtns.style.flexWrap = 'wrap';
+                    profileBtns.style.gap = '8px';
+                    ;[
+                        { id: 'admin', label: 'Admin' },
+                        { id: 'colaborador', label: 'Colaborador' }
+                    ].forEach(function(v) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'ubits-button ubits-button--secondary ubits-button--xs preview-control-btn' + (profileVariant === v.id ? ' active' : '');
+                        btn.innerHTML = '<span>' + v.label + '</span>';
+                        btn.onclick = function() {
+                            profileVariant = v.id;
+                            renderKnobs();
+                            renderDropdown();
+                        };
+                        profileBtns.appendChild(btn);
+                    });
+                    profileBlock.appendChild(profileBtns);
+                    knobsRoot.appendChild(profileBlock);
+                }
 
                 if (showSearchKnob || showFooterKnob) {
                     var block = document.createElement('div');
