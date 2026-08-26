@@ -262,7 +262,7 @@
     function buildScormStandaloneChromeCss() {
         return (
             ':root{' +
-            '--ubits-font-family-sans:"Inter",system-ui,-apple-system,sans-serif;' +
+            '--ubits-font-family-sans:"Inter Tight",system-ui,-apple-system,sans-serif;' +
             '--ubits-bg-1:#fff;--ubits-bg-2:#f3f3f4;--ubits-border-1:#e7e8ea;--ubits-fg-1-high:#303a47;--ubits-fg-1-medium:#5c646f;' +
             '--ubits-button-primary-bg-default:#0c5bef;--ubits-button-primary-hover:#223a91;--ubits-button-primary-pressed:#1e4abf;' +
             '--ubits-btn-primary-fg:#fff;--ubits-btn-secondary-bg-default:#fff;--ubits-btn-secondary-bg-hover:#f3f3f4;' +
@@ -1649,7 +1649,7 @@
             '<title>' + esc(titulo) + '</title>' +
             '<link rel="preconnect" href="https://fonts.googleapis.com">' +
             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
-            '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">' +
+            '<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap" rel="stylesheet">' +
             '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">' +
             '<style>' + buildScormStandaloneChromeCss() + css + '</style></head>' +
             '<body class="sp--compact-viewport">' +

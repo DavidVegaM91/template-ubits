@@ -419,7 +419,8 @@ body.page-exp-estudio .exp-estudio-eval {
 
 body.page-exp-estudio .exp-estudio-eval--bienvenida,
 body.page-exp-estudio .exp-estudio-eval--retomar,
-body.page-exp-estudio .exp-estudio-eval--resultado {
+body.page-exp-estudio .exp-estudio-eval--resultado,
+body.page-exp-estudio .exp-estudio-eval--vacia {
   align-items: center;
   text-align: center;
   padding: var(--padding-2xl) var(--padding-xl);

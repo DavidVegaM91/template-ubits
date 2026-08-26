@@ -1,5 +1,5 @@
-/* Inter: pesos 400 / 600 / 700 (alineados con tipografía UBITS) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/* Inter Tight: pesos 400 / 600 / 700 (alineados con tipografía UBITS) */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap');
 
 /* Tokens de espaciado, gap, padding, border-radius y size (UBITS Playground) */
 @import url('ubits-spacing-tokens.css');

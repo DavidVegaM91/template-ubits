@@ -6,8 +6,8 @@
 
 /* Tokens de tamaño de fuente y peso (fuente única para todas las páginas) */
 :root {
-    /* Familia sans principal (Google Fonts: Inter, cargada desde styles.css) */
-    --ubits-font-family-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* Familia sans principal (Google Fonts: Inter Tight, cargada desde styles.css) */
+    --ubits-font-family-sans: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
     --font-size-d1: 40px;
     --font-size-d2: 36px;

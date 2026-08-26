@@ -1,12 +1,12 @@
 /* ========================================
    ESTILOS ESPECÍFICOS PARA planes
    Alineado con task-group-home y task-group-card-list: colores --ubits-*,
-   fuentes Inter, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
+   fuentes Inter Tight, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
    ======================================== */
 
 @import url('../../components/progress-bar.css');
 
-/* Fuente coherente con task-group (var(--font-family, "Inter")) */
+/* Fuente coherente con task-group (var(--font-family, "Inter Tight")) */
 .page-planes,
 .page-planes .content-sections,
 .page-planes .plan-section,

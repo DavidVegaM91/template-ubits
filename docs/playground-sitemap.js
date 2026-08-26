@@ -417,6 +417,13 @@
                 'variant',
               ),
               link('exp-eval-limite', 'Límite de intentos', C.exp + '?id=' + expId + '#eval-resultado-limite', 'variant'),
+              link(
+                'exp-eval-vacia',
+                'Sin preguntas',
+                C.exp + '?id=' + expId + '#eval-vacia',
+                'empty',
+                'Página publicada sin preguntas · Continuar a la siguiente',
+              ),
             ],
           },
           {

@@ -142,6 +142,7 @@ Hay **dos** filas de evaluación (`p-3` y `p-6`). Prefijo `#eval-*` = Sección 1
 | Hash | Estado | Seed demo |
 |------|--------|-----------|
 | `#eval-bienvenida` / `#eval2-bienvenida` | Fase 1 Bienvenida | Primera entrada a esa evaluación; intento no iniciado |
+| `#eval-vacia` / `#eval2-vacia` | Evaluación publicada sin preguntas | Card info (mismo patrón que Bienvenida); CTA **Continuar** → siguiente página (no consume intentos) |
 | `#eval-intento` / `#eval2-intento` | Fase 2 preguntas + sticky | Banco `collab` (5 preguntas); respuestas vacías o parciales |
 | `#eval-retomar` / `#eval2-retomar` | Evaluación en pausa | Copy «Continúa tu evaluación»; CTA **Continuar** → intento |
 | `#eval-resultado-aprobado` / `#eval2-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → siguiente página (eval 1) o cierre (eval 2) |
@@ -163,6 +164,7 @@ Hay **dos** filas de evaluación (`p-3` y `p-6`). Prefijo `#eval-*` = Sección 1
 …/exp-estudio/exp-estudio.html?id=<contentId>#scorm-1
 …/exp-estudio/exp-estudio.html?id=<contentId>#scorm-2
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-bienvenida
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-vacia
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-intento
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-retomar
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-aprobado
@@ -1210,7 +1212,7 @@ Los frames son **mobile** (sin columna derecha); en playground web el contenido 
 
 Catálogo maestro de **toda** la experiencia (portada, cada página, cierre + evaluación): **§ 2.3.1**.
 
-Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-aprobado-tiempo`, `#eval-resultado-reprobado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
+Hashes de esta fase: `#eval-bienvenida`, `#eval-vacia`, `#eval-intento`, `#eval-retomar`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-aprobado-tiempo`, `#eval-resultado-reprobado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
 
 #### 6.8.2 Diagrama de flujo (fase × nav)
 
@@ -1252,6 +1254,7 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eva
 | Botones nav | **`Regresar`** + CTA primario (`Continuar` / **`Reintentar`** / **`Ir al inicio`** según fase y variante de resultado) |
 | **`Continuar`** fase **`evaluacion`** | **`disabled`** hasta que **todas** las preguntas del intento tengan respuesta (§ 6.8.4b). Habilitado → envía intento → fase **3 Resultado** (aprobado o reprobado según score) |
 | **`Continuar`** fase **`bienvenida`** | Inicia intento → fase 2 |
+| **`Continuar`** fase **`vacia`** | Página publicada sin preguntas (ícono info + copy). CTA habilitado → completa la página y avanza a la siguiente. Deep link `#eval-vacia` |
 | CTA en resultado | Ver § 6.8.4c — copy exacto por variante |
 | Progreso % | La evaluación cuenta como página consumible completada **solo** tras **aprobado** en fase 3 (alinea § 8.3) |
 
@@ -1305,7 +1308,18 @@ Recordatorio
 
 **Qué NO aparece en Bienvenida:** nota mínima para aprobar, número de preguntas, aleatoriedad, ni el bullet «Importante:…» de salida/recarga.
 
-**Nav:** **`Continuar`** → fase 2 (inicia el intento).
+##### 6.8.4a-bis-2 Fase **vacía** — página publicada sin preguntas
+
+Deep link: `#eval-vacia` / `#eval2-vacia`. Misma card centrada que Bienvenida / Retomar (ícono info).
+
+| Orden | Elemento | Copy / detalle |
+|-------|----------|----------------|
+| 1 | Ícono | Info (mismo asset que Bienvenida) — `info-icon.svg` |
+| 2 | Título | **`No hay preguntas en esta evaluación`** |
+| 3 | Cuerpo | **`Puedes continuar a la siguiente página.`** |
+| 4 | CTA nav | **Continuar** (habilitado) → completa la página y avanza |
+
+No hay sticky de tiempo, no hay intento, no hay bienvenida.
 
 ##### 6.8.4a-bis — **Retomar** (APP — evaluación en pausa)
 

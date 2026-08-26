@@ -64,6 +64,7 @@
       evalFase: 'resultado',
       evalResultadoKind: 'limite'
     },
+    'eval-vacia': { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'vacia' },
     'scorm-2': { view: 'recursos', pageId: 'p-4' },
     'pagina-p-4': { view: 'recursos', pageId: 'p-4' },
     pdf: { view: 'recursos', pageId: 'p-5' },
@@ -105,6 +106,7 @@
       evalFase: 'resultado',
       evalResultadoKind: 'limite'
     },
+    'eval2-vacia': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'vacia' },
     cierre: { view: 'cierre', pageId: FIN_PAGE_ID },
     'pagina-p-7': { view: 'cierre', pageId: FIN_PAGE_ID }
   };
@@ -248,6 +250,14 @@
     return !!(p && p.tipo === 'evaluacion');
   }
 
+  function evalPageHasNoQuestions(page) {
+    return !!(page && page.tipo === 'evaluacion' && !(page.preguntas && page.preguntas.length));
+  }
+
+  function isEvalEmptyExperience(page) {
+    return session.evalFase === 'vacia' || evalPageHasNoQuestions(page);
+  }
+
   function evalHashPrefix(pageId) {
     return pageId === EVAL_PAGE_2 ? 'eval2' : 'eval';
   }
@@ -256,6 +266,7 @@
     var prefix = evalHashPrefix(pageId);
     if (fase === 'evaluacion') return prefix + '-intento';
     if (fase === 'retomar') return prefix + '-retomar';
+    if (fase === 'vacia') return prefix + '-vacia';
     if (fase === 'resultado') {
       var base = prefix + '-resultado-' + (resultadoKind || 'reprobado');
       if (
@@ -413,6 +424,10 @@
       session.evalFase = cfg.evalFase || 'bienvenida';
       session.evalResultadoKind = cfg.evalResultadoKind || null;
       session.evalTimedOut = !!cfg.timedOut;
+      if (evalPageHasNoQuestions(getPage(cfg.pageId))) {
+        session.evalFase = 'vacia';
+        session.evalResultadoKind = null;
+      }
       if (session.evalFase === 'evaluacion') {
         session.evalIntentoActual = session.evalIntentoActual || 1;
         session.answers = {};
@@ -1171,6 +1186,17 @@
       '</ul></div></div>';
   }
 
+  function renderEvalVacia(main) {
+    main.innerHTML =
+      '<div class="exp-estudio-eval exp-estudio-eval--vacia">' +
+      '<img class="exp-estudio-eval__icon" src="' +
+      ICONS.info +
+      '" alt="" />' +
+      '<h2 class="exp-estudio-eval__heading ubits-heading-h2">No hay preguntas en esta evaluación</h2>' +
+      '<p class="exp-estudio-eval__lead ubits-body-md-regular">Puedes continuar a la siguiente página.</p>' +
+      '</div>';
+  }
+
   /** APP Evaluation-resuming evaluation (3341:13137) — demo #eval-retomar */
   function renderEvalRetomar(main) {
     main.innerHTML =
@@ -1393,7 +1419,8 @@
       return;
     }
     if (page.tipo === 'evaluacion') {
-      if (session.evalFase === 'evaluacion') renderEvalPreguntas(main, page);
+      if (session.evalFase === 'vacia' || isEvalEmptyExperience(page)) renderEvalVacia(main);
+      else if (session.evalFase === 'evaluacion') renderEvalPreguntas(main, page);
       else if (session.evalFase === 'resultado') renderEvalResultado(main);
       else if (session.evalFase === 'retomar') renderEvalRetomar(main);
       else renderEvalBienvenida(main, page);
@@ -1561,6 +1588,7 @@
   }
 
   function evalPrimaryLabel() {
+    if (session.evalFase === 'vacia') return 'Continuar';
     if (session.evalFase === 'retomar') return 'Continuar';
     if (session.evalFase === 'resultado') {
       if (session.evalResultadoKind === 'aprobado') return 'Continuar';
@@ -1579,6 +1607,24 @@
     var maxA = cfg.maxAttempts || 2;
     var evalId = session.currentPageId;
 
+    if (session.evalFase === 'vacia' || isEvalEmptyExperience(page)) {
+      session.completedPageIds[evalId] = true;
+      var nextEmpty = nextPageId(evalId);
+      var nextEmptyPage = nextEmpty ? getPage(nextEmpty) : null;
+      if (!nextEmpty || (nextEmptyPage && nextEmptyPage.tipo === 'fin')) {
+        goToCierre();
+      } else {
+        session.evalFase = null;
+        session.evalResultadoKind = null;
+        session.answers = {};
+        session.evalIntentoActual = 1;
+        if (nextEmptyPage && nextEmptyPage.tipo === 'evaluacion') {
+          session.evalFase = evalPageHasNoQuestions(nextEmptyPage) ? 'vacia' : 'bienvenida';
+        }
+        goToPage(nextEmpty);
+      }
+      return;
+    }
     if (session.evalFase === 'retomar') {
       session.evalFase = 'evaluacion';
       setHash(evalHashFor(evalId, 'evaluacion'));
@@ -1718,7 +1764,10 @@
     if (session.portadaMode === 'por-iniciar') session.portadaMode = 'en-progreso';
 
     if (page.tipo === 'evaluacion') {
-      if (session.evalAttemptPaused && session.evalPausedPageId === pageId) {
+      if (evalPageHasNoQuestions(page)) {
+        session.evalFase = 'vacia';
+        session.evalResultadoKind = null;
+      } else if (session.evalAttemptPaused && session.evalPausedPageId === pageId) {
         session.evalFase = 'retomar';
         session.evalResultadoKind = null;
       } else if (switchingEval || !session.evalFase) {
@@ -1742,6 +1791,7 @@
         !session.completedPageIds[pageId] &&
         session.evalFase !== 'retomar' &&
         session.evalFase !== 'evaluacion' &&
+        session.evalFase !== 'vacia' &&
         !(session.evalFase === 'resultado' && session.evalResultadoKind)
       ) {
         session.evalFase = 'bienvenida';
@@ -1778,7 +1828,10 @@
       return;
     }
     if (nextPage && nextPage.tipo === 'evaluacion') {
-      if (session.evalAttemptPaused && session.evalPausedPageId === next) {
+      if (evalPageHasNoQuestions(nextPage)) {
+        session.evalFase = 'vacia';
+        session.evalResultadoKind = null;
+      } else if (session.evalAttemptPaused && session.evalPausedPageId === next) {
         session.evalFase = 'retomar';
       } else {
         session.evalFase = 'bienvenida';
