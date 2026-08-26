@@ -564,7 +564,7 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 ### Pestaña «Subir video»
 
-- Zona de **carga de archivo** con reglas de **formato y peso** máximo comunicadas en la propia UI.
+- Zona de **carga de archivo**: solo **MP4**, hasta **500 MB**. El file uploader muestra `MP4 · Hasta 500 MB`. WEBM, MOV y otros formatos se rechazan.
 - **Cargar video** confirma y cierra el modal; el panel muestra el **reproductor** con el archivo local.
 
 ### Después de confirmar (cualquier pestaña)

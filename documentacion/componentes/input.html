@@ -17,8 +17,9 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
-    <link rel="stylesheet" href="../../components/input.css">
-    <link rel="stylesheet" href="../../components/duration-input.css">
+    <link rel="stylesheet" href="../../components/input.css?v=20260825-range">
+    <link rel="stylesheet" href="../../components/duration-input.css?v=20260825">
+    <link rel="stylesheet" href="../../components/file-upload-compact.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/switch.css">
@@ -121,146 +122,105 @@
                         Preview del componente
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Prueba todas las variantes del componente Input usando los controles de abajo. Cambia tamaños, estados, iconos y funcionalidades en tiempo real.
+                        Elige una <strong>variante</strong> (paridad React) y ajusta tamaño, estado y knobs. Cubre la familia ReUI Input; input-group / OTP / phone-input van en oleadas aparte.
                     </p>
-                    
-                    <!-- Preview Container -->
+
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
-                        
-                        <!-- Input Preview -->
-                        <div id="input-preview-container" style="max-width: 400px; margin: 0 auto;">
-                            <label class="ubits-input-label" id="preview-label">
-                                Label <span class="ubits-input-mandatory" id="mandatory-text" style="display: none;">(Obligatorio)</span>
-                            </label>
-                            <div class="ubits-input-wrapper" id="input-wrapper">
-                                <i class="far fa-user" id="left-icon" style="display: none;"></i>
-                                <input type="text" class="ubits-input ubits-input--md" id="preview-input" placeholder="Placeholder label">
-                                <i class="far fa-eye" id="right-icon" style="display: none;"></i>
-                            </div>
-                            <div class="ubits-input-helper" id="helper-text" style="display: none;">
-                                <span>Helper text</span>
-                                <span class="ubits-input-counter" id="character-counter" style="display: none;">0/50</span>
-                            </div>
-                        </div>
+                        <div id="input-preview-container" style="max-width: 400px; margin: 0 auto;"></div>
                     </div>
-                    
-                    <!-- Preview Controls -->
+
                     <div style="margin-top: 24px;">
+                        <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Variante</p>
+                        <div id="input-variant-btns" class="dd-control-row" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
+
+                        <div id="input-preview-knobs">
                         <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Controles del preview</h3>
                         
                         <!-- Controls Grid -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                             
                             <!-- Columna 1 -->
                             <div>
-                                <!-- Label Control -->
+                                <!-- Size -->
                                 <div style="margin-bottom: 16px;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Label</label>
-                                        <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="label-toggle" role="switch" checked onchange="updateInput()">
-                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                        </label>
-                                    </div>
-                                    <div id="label-content-control"></div>
+                                    <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">Tamaño</label>
+                                    <div id="size-btn-row" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
                                 </div>
 
-                                <!-- Label position (arriba / izquierda) -->
+                                <!-- State -->
+                                <div style="margin-bottom: 16px;">
+                                    <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">Estado</label>
+                                    <div id="state-btn-row" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                                </div>
+
+                                <!-- Label left -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Etiqueta a la izquierda</label>
-                                        <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="label-position-left-toggle" role="switch" onchange="updateInput()">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="label-position-left-toggle" role="switch" onchange="onLabelLeftToggle()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
-                                    <p class="ubits-body-xs-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">Apagado: etiqueta arriba (por defecto). Encendido: <code>labelPosition: 'left'</code>.</p>
                                 </div>
 
-                                <!-- Mandatory Control -->
+                                <!-- Mandatory -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mandatory/Optional</label>
-                                        <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="mandatory-toggle" role="switch" onchange="updateInput()">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Obligatorio / opcional</label>
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="mandatory-toggle" role="switch" checked onchange="updateInput()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
-                                    <div id="mandatory-type-control"></div>
-                                </div>
-
-                                <!-- Helper Text Control -->
-                                <div style="margin-bottom: 16px;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Helper text</label>
-                                        <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="helper-toggle" role="switch" onchange="updateInput()">
-                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                        </label>
-                                    </div>
-                                    <div id="helper-content-control"></div>
+                                    <div id="mandatory-style-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
                                 </div>
                             </div>
 
                             <!-- Columna 2 -->
                             <div>
-                                <!-- Character Counter Control -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Character counter</label>
-                                        <label class="ubits-switch ubits-switch--md">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Helper text</label>
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="helper-toggle" role="switch" checked onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Contador de caracteres</label>
+                                        <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="counter-toggle" role="switch" onchange="updateInput()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
-                                    <div id="max-length-control"></div>
+                                    <div id="counter-placement-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
                                 </div>
 
-                                <!-- Left Icon Control -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Left icon</label>
-                                        <label class="ubits-switch ubits-switch--md">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Icono izquierdo</label>
+                                        <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="left-icon-toggle" role="switch" onchange="updateInput()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
-                                    <div id="left-icon-content-control"></div>
                                 </div>
 
-                                <!-- Right Icon Control -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Right icon</label>
-                                        <label class="ubits-switch ubits-switch--md">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Icono derecho</label>
+                                        <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="right-icon-toggle" role="switch" onchange="updateInput()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
-                                    <div id="right-icon-content-control"></div>
                                 </div>
                             </div>
-
-                            <!-- Columna 3 -->
-                            <div>
-                                <!-- Size Control -->
-                                <div style="margin-bottom: 16px;">
-                                    <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">Size</label>
-                                    <div id="size-select-control"></div>
-                                </div>
-
-                                <!-- State Control -->
-                                <div style="margin-bottom: 16px;">
-                                    <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">State</label>
-                                    <div id="state-select-control"></div>
-                                </div>
-
-                                <!-- Placeholder Control -->
-                                <div style="margin-bottom: 16px;">
-                                    <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">Placeholder content</label>
-                                    <div id="placeholder-content-control"></div>
-                                </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -790,395 +750,647 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
-    <script src="../../components/input.js"></script>
-    <script src="../../components/duration-input.js"></script>
-    <script src="../../components/calendar.js"></script>
+    <script src="../../components/input.js?v=20260825-range"></script>
+    <script src="../../components/duration-input.js?v=20260825"></script>
+    <script src="../../components/file-upload-compact.js?v=20260825"></script>
+    <script src="../../components/calendar.js?v=20260825"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../docs/docs-workspace-boot.js"></script>
     <script src="../../script.js"></script>
     <script>
-        // Valores reales de los selects (createInput type select guarda el texto en el input, no el value)
-        var previewSelectedSize = 'md';
+        // Preview state (paridad React input-demo)
+        var previewSelectedSize = 'sm';
         var previewSelectedState = 'default';
+        var previewVariant = 'email';
+        var previewMandatoryStyle = 'text';
+        var previewMandatoryType = 'obligatorio';
+        var previewCounterPlacement = 'helper';
+        var previewFieldValue = 'ana.garcia@empresa.com';
+        var previewSelectVal = 'co';
+        var previewAutoVal = '';
+        var previewCalVal = '';
+        var previewDurationSec = 65;
+
+        var INPUT_VARIANTS = [
+            { id: 'texto', label: 'Texto' },
+            { id: 'email', label: 'Email' },
+            { id: 'password', label: 'Contraseña' },
+            { id: 'password-strength', label: 'Contraseña + fortaleza' },
+            { id: 'telefono', label: 'Teléfono' },
+            { id: 'url', label: 'URL' },
+            { id: 'numero', label: 'Número' },
+            { id: 'busqueda', label: 'Búsqueda' },
+            { id: 'textarea', label: 'Textarea' },
+            { id: 'select', label: 'Select' },
+            { id: 'autocomplete', label: 'Autocomplete' },
+            { id: 'calendario', label: 'Calendario' },
+            { id: 'time', label: 'Hora' },
+            { id: 'file', label: 'Archivo' },
+            { id: 'color', label: 'Color' },
+            { id: 'range', label: 'Rango' },
+            { id: 'duration', label: 'Duración' },
+            { id: 'counter-label', label: 'Contador en label' },
+            { id: 'required-asterisk', label: 'Obligatorio *' },
+            { id: 'errores-multiples', label: 'Errores múltiples' },
+            { id: 'label-tooltip', label: 'Label + tooltip' },
+            { id: 'label-badge', label: 'Label + badge' },
+            { id: 'label-enlace', label: 'Label + enlace' },
+            { id: 'icons-lr', label: 'Dos iconos' },
+            { id: 'formulario', label: 'Formulario' },
+            { id: 'sutil', label: 'Sutil (sin borde)' },
+            { id: 'underline', label: 'Solo borde inferior' },
+            { id: 'minimal', label: 'Minimal' },
+            { id: 'pill', label: 'Píldora' },
+            { id: 'pulsed', label: 'Pulso de fondo' }
+        ];
+
+        var DEFAULT_VALUES = {
+            texto: 'Ana García',
+            email: 'ana.garcia@empresa.com',
+            password: '',
+            'password-strength': '',
+            telefono: '+57 300 123 4567',
+            url: 'https://ubits.co',
+            numero: '42',
+            busqueda: '',
+            textarea: '',
+            'label-tooltip': 'ana.garcia',
+            'label-badge': 'Nuevo producto',
+            'label-enlace': '',
+            'errores-multiples': '123',
+            'counter-label': 'Hola',
+            'required-asterisk': '',
+            'icons-lr': '',
+            sutil: 'Sin borde visible',
+            underline: 'Solo línea inferior',
+            minimal: 'Sin borde ni fondo',
+            pill: 'Forma píldora',
+            pulsed: 'Escribe aquí…',
+            time: '09:30',
+            color: '#0c5bef',
+            range: '45'
+        };
+
+        var SELECT_OPTS = [
+            { value: 'co', text: 'Colombia' },
+            { value: 'mx', text: 'México' },
+            { value: 'cl', text: 'Chile' },
+            { value: 'ar', text: 'Argentina' }
+        ];
+
+        var AUTOCOMPLETE_OPTS = [
+            { value: 'js', text: 'JavaScript' },
+            { value: 'ts', text: 'TypeScript' },
+            { value: 'py', text: 'Python' },
+            { value: 'go', text: 'Go' },
+            { value: 'rs', text: 'Rust' }
+        ];
+
+        function makePreviewBtn(label, active, onClick) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ubits-button ubits-button--secondary ubits-button--xs preview-control-btn' + (active ? ' active' : '');
+            btn.innerHTML = '<span>' + label + '</span>';
+            btn.onclick = onClick;
+            return btn;
+        }
+
+        function renderInputVariantBtns() {
+            var root = document.getElementById('input-variant-btns');
+            if (!root) return;
+            root.innerHTML = '';
+            INPUT_VARIANTS.forEach(function (c) {
+                root.appendChild(makePreviewBtn(c.label, previewVariant === c.id, function () {
+                    applyVariantDefaults(c.id);
+                }));
+            });
+        }
+
+        function renderSizeBtns() {
+            var root = document.getElementById('size-btn-row');
+            if (!root) return;
+            root.innerHTML = '';
+            ['xs', 'sm', 'md', 'lg'].forEach(function (s) {
+                root.appendChild(makePreviewBtn(s.toUpperCase(), previewSelectedSize === s, function () {
+                    previewSelectedSize = s;
+                    renderSizeBtns();
+                    updateInput();
+                }));
+            });
+        }
+
+        function renderStateBtns() {
+            var root = document.getElementById('state-btn-row');
+            if (!root) return;
+            root.innerHTML = '';
+            ['default', 'hover', 'focus', 'invalid', 'disabled'].forEach(function (s) {
+                root.appendChild(makePreviewBtn(s, previewSelectedState === s, function () {
+                    previewSelectedState = s;
+                    renderStateBtns();
+                    updateInput();
+                }));
+            });
+        }
+
+        function renderMandatoryStyleBtns() {
+            var root = document.getElementById('mandatory-style-btns');
+            if (!root) return;
+            root.innerHTML = '';
+            var mandToggle = document.getElementById('mandatory-toggle');
+            if (mandToggle && !mandToggle.checked) {
+                root.style.display = 'none';
+                return;
+            }
+            root.style.display = 'flex';
+            root.appendChild(makePreviewBtn('(obligatorio)', previewMandatoryStyle === 'text' && previewMandatoryType === 'obligatorio', function () {
+                previewMandatoryStyle = 'text';
+                previewMandatoryType = 'obligatorio';
+                renderMandatoryStyleBtns();
+                updateInput();
+            }));
+            root.appendChild(makePreviewBtn('(opcional)', previewMandatoryStyle === 'text' && previewMandatoryType === 'opcional', function () {
+                previewMandatoryStyle = 'text';
+                previewMandatoryType = 'opcional';
+                renderMandatoryStyleBtns();
+                updateInput();
+            }));
+            root.appendChild(makePreviewBtn('Asterisco *', previewMandatoryStyle === 'asterisk', function () {
+                previewMandatoryStyle = 'asterisk';
+                renderMandatoryStyleBtns();
+                updateInput();
+            }));
+        }
+
+        function renderCounterPlacementBtns() {
+            var root = document.getElementById('counter-placement-btns');
+            if (!root) return;
+            root.innerHTML = '';
+            var counterToggle = document.getElementById('counter-toggle');
+            var labelLeft = document.getElementById('label-position-left-toggle');
+            var show = (counterToggle && counterToggle.checked) || previewVariant === 'counter-label';
+            var leftOn = labelLeft && labelLeft.checked;
+            if (!show || leftOn) {
+                root.style.display = 'none';
+                return;
+            }
+            root.style.display = 'flex';
+            root.appendChild(makePreviewBtn('Contador abajo', previewCounterPlacement === 'helper', function () {
+                previewCounterPlacement = 'helper';
+                renderCounterPlacementBtns();
+                updateInput();
+            }));
+            root.appendChild(makePreviewBtn('Contador en label', previewCounterPlacement === 'label', function () {
+                previewCounterPlacement = 'label';
+                renderCounterPlacementBtns();
+                updateInput();
+            }));
+        }
+
+        function onLabelLeftToggle() {
+            var labelLeft = document.getElementById('label-position-left-toggle');
+            if (labelLeft && labelLeft.checked) previewCounterPlacement = 'helper';
+            renderCounterPlacementBtns();
+            updateInput();
+        }
+
+        function applyVariantDefaults(id) {
+            previewVariant = id;
+            if (id === 'errores-multiples') previewSelectedState = 'invalid';
+            else if (previewSelectedState === 'invalid' && id !== 'errores-multiples') previewSelectedState = 'default';
+
+            if (id === 'counter-label') {
+                previewCounterPlacement = 'label';
+                var leftEl = document.getElementById('label-position-left-toggle');
+                if (leftEl) leftEl.checked = false;
+                var counterEl = document.getElementById('counter-toggle');
+                if (counterEl) counterEl.checked = true;
+            } else {
+                previewCounterPlacement = 'helper';
+            }
+
+            if (id === 'required-asterisk') previewMandatoryStyle = 'asterisk';
+            else previewMandatoryStyle = 'text';
+
+            if (id === 'icons-lr') {
+                var li = document.getElementById('left-icon-toggle');
+                var ri = document.getElementById('right-icon-toggle');
+                if (li) li.checked = true;
+                if (ri) ri.checked = true;
+            }
+
+            if (DEFAULT_VALUES[id] !== undefined) previewFieldValue = DEFAULT_VALUES[id];
+            if (id === 'autocomplete') previewAutoVal = '';
+            if (id === 'calendario') previewCalVal = '';
+            if (id === 'select') previewSelectVal = 'co';
+
+            renderInputVariantBtns();
+            renderStateBtns();
+            renderMandatoryStyleBtns();
+            renderCounterPlacementBtns();
+            updateInput();
+        }
+
+        function updateInput() {
+            var mandatoryToggle = document.getElementById('mandatory-toggle');
+            var helperToggle = document.getElementById('helper-toggle');
+            var counterToggle = document.getElementById('counter-toggle');
+            var leftIconToggle = document.getElementById('left-icon-toggle');
+            var rightIconToggle = document.getElementById('right-icon-toggle');
+            if (!mandatoryToggle || !helperToggle || !counterToggle || !leftIconToggle || !rightIconToggle) return;
+
+            var showMandatory = mandatoryToggle.checked;
+            var showHelper = helperToggle.checked;
+            var showCounter = counterToggle.checked || previewVariant === 'counter-label';
+            var showLeftIcon = leftIconToggle.checked || previewVariant === 'icons-lr';
+            var showRightIcon = rightIconToggle.checked || previewVariant === 'icons-lr';
+            var size = previewSelectedSize || 'sm';
+            var state = previewSelectedState || 'default';
+            var labelPosLeftEl = document.getElementById('label-position-left-toggle');
+            var labelLeft = !!(labelPosLeftEl && labelPosLeftEl.checked);
+
+            var previewContainer = document.getElementById('input-preview-container');
+            var knobsEl = document.getElementById('input-preview-knobs');
+            if (!previewContainer) return;
+
+            var isForm = previewVariant === 'formulario';
+            var isFile = previewVariant === 'file';
+            var isDuration = previewVariant === 'duration';
+            var hideKnobs = isForm || isFile;
+            if (knobsEl) knobsEl.style.display = hideKnobs ? 'none' : '';
+
+            previewContainer.innerHTML = '';
+            previewContainer.style.maxWidth = isForm ? '560px' : (isFile ? '480px' : '400px');
+
+            if (isForm) {
+                previewContainer.innerHTML =
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;">' +
+                    '<div id="form-nombre"></div><div id="form-apellido"></div>' +
+                    '<div id="form-email" style="grid-column:1/-1"></div>' +
+                    '<div id="form-tel" style="grid-column:1/-1"></div>' +
+                    '<div id="form-pais" style="grid-column:1/-1"></div>' +
+                    '<div style="grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;">' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"><span>Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm"><span>Guardar</span></button>' +
+                    '</div></div>';
+                createInput({ containerId: 'form-nombre', label: 'Nombre', placeholder: 'Ana', size: size, mandatory: true, mandatoryType: 'obligatorio' });
+                createInput({ containerId: 'form-apellido', label: 'Apellido', placeholder: 'García', size: size });
+                createInput({ containerId: 'form-email', type: 'email', label: 'Correo electrónico', placeholder: 'ana.garcia@empresa.com', size: size, helperText: 'Usaremos este correo para notificaciones', showHelper: true });
+                createInput({ containerId: 'form-tel', type: 'tel', label: 'Teléfono', placeholder: '+57 300 123 4567', size: size, helperText: 'Incluye código de país', showHelper: true });
+                createInput({ containerId: 'form-pais', type: 'select', label: 'País', size: size, selectOptions: SELECT_OPTS, value: previewSelectVal, onChange: function (v) { previewSelectVal = v; } });
+                renderMandatoryStyleBtns();
+                renderCounterPlacementBtns();
+                return;
+            }
+
+            if (isFile) {
+                if (typeof createFileUploadCompact === 'function') {
+                    createFileUploadCompact({
+                        containerId: 'input-preview-container',
+                        title: 'Archivo',
+                        accept: '.pdf,.png,.jpg,.jpeg',
+                        formats: 'PDF, PNG, JPG',
+                        maxSizeMb: 5
+                    });
+                } else {
+                    createInput({
+                        containerId: 'input-preview-container',
+                        type: 'file',
+                        label: 'Archivo',
+                        size: size
+                    });
+                }
+                return;
+            }
+
+            if (isDuration) {
+                if (typeof createDurationInput === 'function') {
+                    createDurationInput({
+                        containerId: 'input-preview-container',
+                        label: 'Duración',
+                        labelPosition: labelLeft ? 'left' : 'top',
+                        valueSec: previewDurationSec,
+                        size: size,
+                        helperText: showHelper ? 'Formato minutos:segundos' : undefined,
+                        fullWidth: true,
+                        onChange: function (sec) { previewDurationSec = sec; }
+                    });
+                }
+                renderMandatoryStyleBtns();
+                renderCounterPlacementBtns();
+                return;
+            }
+
+            var type = 'text';
+            var label = 'Label';
+            var labelEndHtml = '';
+            var labelInlineEndHtml = '';
+            var errors = null;
+            var appearance = 'default';
+            var value = previewFieldValue;
+            var selectOptions = [];
+            var autocompleteOptions = [];
+            var pulsed = false;
+            var showPasswordStrength = false;
+            var placeholder = 'Placeholder';
+            var helperText = 'Texto de ayuda del campo';
+            var min, max, step;
+            var maxLength = 50;
+
+            switch (previewVariant) {
+                case 'email':
+                    type = 'email';
+                    label = 'Correo electrónico';
+                    placeholder = 'nombre@empresa.com';
+                    helperText = 'Escribe un correo válido (incluye @ y dominio)';
+                    break;
+                case 'password':
+                case 'label-enlace':
+                    type = 'password';
+                    label = 'Contraseña';
+                    placeholder = 'Escribe tu contraseña';
+                    break;
+                case 'password-strength':
+                    type = 'password';
+                    label = 'Contraseña';
+                    placeholder = 'Escribe tu contraseña';
+                    showPasswordStrength = true;
+                    break;
+                case 'telefono':
+                    type = 'tel';
+                    label = 'Teléfono';
+                    break;
+                case 'url':
+                    type = 'url';
+                    label = 'Sitio web';
+                    break;
+                case 'numero':
+                    type = 'number';
+                    label = 'Cantidad';
+                    break;
+                case 'busqueda':
+                    type = 'search';
+                    label = 'Buscar';
+                    placeholder = 'Buscar contenidos…';
+                    break;
+                case 'textarea':
+                    type = 'textarea';
+                    break;
+                case 'select':
+                    type = 'select';
+                    selectOptions = SELECT_OPTS;
+                    value = previewSelectVal;
+                    break;
+                case 'autocomplete':
+                    type = 'autocomplete';
+                    autocompleteOptions = AUTOCOMPLETE_OPTS;
+                    value = previewAutoVal;
+                    break;
+                case 'calendario':
+                    type = 'calendar';
+                    value = previewCalVal;
+                    break;
+                case 'time':
+                    type = 'time';
+                    label = 'Hora';
+                    placeholder = '';
+                    break;
+                case 'color':
+                    type = 'color';
+                    label = 'Color';
+                    break;
+                case 'range':
+                    type = 'range';
+                    label = 'Progreso';
+                    min = 0;
+                    max = 100;
+                    step = 1;
+                    break;
+                case 'errores-multiples':
+                    type = 'text';
+                    label = 'Código de seguridad';
+                    state = 'invalid';
+                    errors = [
+                        'El código debe tener 6 dígitos',
+                        'No uses secuencias obvias (123456)',
+                        'El código expiró; solicita uno nuevo'
+                    ];
+                    break;
+                case 'label-tooltip':
+                    label = 'Usuario';
+                    labelInlineEndHtml = '<button type="button" class="ubits-input-label-tooltip-btn" data-tooltip="Tu identificador público en la plataforma" aria-label="Más información"><i class="far fa-circle-question" aria-hidden="true"></i></button>';
+                    break;
+                case 'label-badge':
+                    label = 'Nombre del producto';
+                    labelInlineEndHtml = '<span class="ubits-body-xs-bold" style="color:var(--ubits-feedback-accent-success);background:var(--ubits-feedback-bg-success-subtle);padding:2px 8px;border-radius:999px;">Nuevo</span>';
+                    break;
+                case 'label-enlace':
+                    label = 'Contraseña';
+                    labelEndHtml = '<a href="#recuperar">¿Olvidaste tu contraseña?</a>';
+                    break;
+                case 'counter-label':
+                    label = 'Biografía corta';
+                    maxLength = 120;
+                    break;
+                case 'required-asterisk':
+                    label = 'Nombre completo';
+                    break;
+                case 'icons-lr':
+                    label = 'Monto';
+                    break;
+                case 'sutil':
+                    appearance = 'subtle';
+                    break;
+                case 'underline':
+                    appearance = 'underline';
+                    break;
+                case 'minimal':
+                    appearance = 'minimal';
+                    break;
+                case 'pill':
+                    appearance = 'pill';
+                    break;
+                case 'pulsed':
+                    pulsed = true;
+                    break;
+                default:
+                    break;
+            }
+
+            var effectiveCounterPlacement = previewVariant === 'counter-label'
+                ? 'label'
+                : (labelLeft ? 'helper' : previewCounterPlacement);
+            var effectiveShowCounter = previewVariant === 'counter-label' ||
+                (showCounter && (type === 'text' || type === 'textarea' || type === 'email'));
+            var mandatoryStyle = previewVariant === 'required-asterisk' ? 'asterisk' : previewMandatoryStyle;
+
+            var leftIcon = '';
+            var rightIcon = '';
+            if (showLeftIcon || previewVariant === 'icons-lr') {
+                leftIcon = previewVariant === 'icons-lr' ? 'fa-dollar-sign' : 'fa-user';
+            }
+            if (showRightIcon || previewVariant === 'icons-lr') {
+                rightIcon = previewVariant === 'icons-lr' ? 'fa-circle-info' : 'fa-check';
+            }
+
+            createInput({
+                containerId: 'input-preview-container',
+                type: type,
+                label: label,
+                showLabel: true,
+                labelPosition: labelLeft ? 'left' : 'top',
+                labelEndHtml: labelEndHtml,
+                labelInlineEndHtml: labelInlineEndHtml,
+                placeholder: placeholder,
+                mandatory: showMandatory && previewVariant !== 'busqueda',
+                mandatoryType: previewMandatoryType,
+                mandatoryStyle: mandatoryStyle,
+                helperText: showHelper && !errors && previewVariant !== 'counter-label' ? helperText : '',
+                showHelper: showHelper && !errors && previewVariant !== 'counter-label',
+                maxLength: maxLength,
+                showCounter: effectiveShowCounter,
+                counterPlacement: effectiveCounterPlacement,
+                leftIcon: leftIcon,
+                rightIcon: rightIcon,
+                size: size,
+                state: previewVariant === 'errores-multiples' ? 'invalid' : state,
+                variant: appearance,
+                pulsed: pulsed,
+                showPasswordStrength: showPasswordStrength,
+                errors: errors,
+                value: value,
+                min: min,
+                max: max,
+                step: step,
+                selectOptions: selectOptions,
+                autocompleteOptions: autocompleteOptions,
+                onChange: function (v) {
+                    if (type === 'select') previewSelectVal = v;
+                    else if (type === 'autocomplete') {
+                        // Keep typed text in the field (fix controlled value bug)
+                        previewAutoVal = v;
+                        previewFieldValue = v;
+                        var found = AUTOCOMPLETE_OPTS.find(function (o) { return o.value === v || o.text === v; });
+                        if (found && found.value === v) {
+                            previewAutoVal = found.text;
+                            previewFieldValue = found.text;
+                        }
+                    } else if (type === 'calendar') {
+                        previewCalVal = v;
+                        previewFieldValue = v;
+                    } else {
+                        previewFieldValue = v;
+                    }
+                }
+            });
+
+            if (typeof initTooltip === 'function') {
+                initTooltip('#input-preview-container [data-tooltip]');
+            }
+
+            renderMandatoryStyleBtns();
+            renderCounterPlacementBtns();
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
-bootDocsWorkspace();
-            // Cargar alert de warning para prompts usando el componente oficial
+            bootDocsWorkspace();
             showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'component-warning-alert',
                 noClose: true
             });
 
-            // Inicializar todos los inputs de demostración
             initializeInputDemos();
-            
-            // Inicializar controles del preview
-            initializePreviewControls();
-            
-            // Inicializar el preview del input después de un pequeño delay
-            setTimeout(() => {
+
+            renderInputVariantBtns();
+            renderSizeBtns();
+            renderStateBtns();
+            renderMandatoryStyleBtns();
+            renderCounterPlacementBtns();
+
+            var mandToggle = document.getElementById('mandatory-toggle');
+            if (mandToggle) {
+                mandToggle.addEventListener('change', function () {
+                    renderMandatoryStyleBtns();
+                    updateInput();
+                });
+            }
+            var counterToggle = document.getElementById('counter-toggle');
+            if (counterToggle) {
+                counterToggle.addEventListener('change', function () {
+                    renderCounterPlacementBtns();
+                    updateInput();
+                });
+            }
+
+            setTimeout(function () {
                 updateInput();
-                
-                // Agregar event listeners específicos para los selects
-                const sizeSelect = document.querySelector('#size-select-control');
-                const stateSelect = document.querySelector('#state-select-control');
-                const mandatorySelect = document.querySelector('#mandatory-type-control');
-                
-                // Listeners en inputs de los selects (change/input)
-                [sizeSelect, stateSelect, mandatorySelect].forEach(container => {
-                    if (!container) return;
-                    const input = container.querySelector('input');
-                    if (input) {
-                        input.addEventListener('change', updateInput);
-                        input.addEventListener('input', updateInput);
-                    }
-                });
-                
-                // Delegación: opciones del Dropdown Menu oficial (createInput type select inyecta el overlay en body)
-                const previewOverlayIds = ['ubits-input-select-size-select-control', 'ubits-input-select-state-select-control', 'ubits-input-select-mandatory-type-control'];
-                document.body.addEventListener('click', function previewSelectOptionHandler(e) {
-                    if (!e.target.closest('.ubits-dropdown-menu__overlay')) return;
-                    const option = e.target.closest('.ubits-dropdown-menu__option');
-                    if (!option) return;
-                    const overlay = option.closest('.ubits-dropdown-menu__overlay');
-                    if (!overlay || !previewOverlayIds.includes(overlay.id)) return;
-                    setTimeout(updateInput, 100);
-                });
             }, 200);
         });
 
-        // Función para inicializar los controles con componente Input real
-        function initializePreviewControls() {
-            // Label Content Control
-            createInput({
-                containerId: 'label-content-control',
-                type: 'text',
-                value: 'Label',
-                size: 'sm',
-                onChange: updateInput
-            });
-
-            // Mandatory Type Control
-            createInput({
-                containerId: 'mandatory-type-control',
-                type: 'select',
-                placeholder: 'Selecciona tipo...',
-                value: 'optional',
-                size: 'sm',
-                selectOptions: [
-                    {value: 'optional', text: 'Optional'},
-                    {value: 'mandatory', text: 'Mandatory'}
-                ],
-                onChange: updateInput
-            });
-
-            // Helper Content Control
-            createInput({
-                containerId: 'helper-content-control',
-                type: 'text',
-                value: 'Helper text',
-                size: 'sm',
-                onChange: updateInput
-            });
-
-            // Max Length Control
-            createInput({
-                containerId: 'max-length-control',
-                type: 'number',
-                value: '50',
-                size: 'sm',
-                onChange: updateInput
-            });
-
-            // Left Icon Content Control
-            createInput({
-                containerId: 'left-icon-content-control',
-                type: 'text',
-                value: 'fa-user',
-                placeholder: 'fa-user',
-                size: 'sm',
-                onChange: updateInput
-            });
-
-            // Right Icon Content Control
-            createInput({
-                containerId: 'right-icon-content-control',
-                type: 'text',
-                value: 'fa-check',
-                placeholder: 'fa-check',
-                size: 'sm',
-                onChange: updateInput
-            });
-
-            // Size Select Control (onChange recibe el value: xs, sm, md, lg)
-            createInput({
-                containerId: 'size-select-control',
-                type: 'select',
-                placeholder: 'Selecciona tamaño...',
-                value: 'md',
-                size: 'sm',
-                selectOptions: [
-                    {value: 'xs', text: 'Extra small (xs) - 28px'},
-                    {value: 'sm', text: 'Small (sm) - 32px'},
-                    {value: 'md', text: 'Medium (md) - 40px'},
-                    {value: 'lg', text: 'Large (lg) - 48px'}
-                ],
-                onChange: function(val) { previewSelectedSize = val; updateInput(); }
-            });
-
-            // State Select Control (onChange recibe el value: default, hover, focus, etc.)
-            createInput({
-                containerId: 'state-select-control',
-                type: 'select',
-                placeholder: 'Selecciona estado...',
-                value: 'default',
-                size: 'sm',
-                selectOptions: [
-                    {value: 'default', text: 'Default'},
-                    {value: 'hover', text: 'Hover'},
-                    {value: 'focus', text: 'Focus'},
-                    {value: 'invalid', text: 'Invalid'},
-                    {value: 'disabled', text: 'Disabled'}
-                ],
-                onChange: function(val) { previewSelectedState = val; updateInput(); }
-            });
-
-            // Placeholder Content Control
-            createInput({
-                containerId: 'placeholder-content-control',
-                type: 'text',
-                value: 'Placeholder text',
-                placeholder: 'Placeholder text',
-                size: 'sm',
-                onChange: updateInput
-            });
-        }
-
-
-        // Función para actualizar el preview del input (sin hacks: debe reflejar input.js + input.css)
-        function updateInput() {
-            const labelToggle = document.getElementById('label-toggle');
-            const mandatoryToggle = document.getElementById('mandatory-toggle');
-            const helperToggle = document.getElementById('helper-toggle');
-            const counterToggle = document.getElementById('counter-toggle');
-            const leftIconToggle = document.getElementById('left-icon-toggle');
-            const rightIconToggle = document.getElementById('right-icon-toggle');
-            if (!labelToggle || !mandatoryToggle || !helperToggle || !counterToggle || !leftIconToggle || !rightIconToggle) return;
-
-            const showLabel = labelToggle.checked;
-            const labelContentValue = document.querySelector('#label-content-control input')?.value || 'Label';
-            const showMandatory = mandatoryToggle.checked;
-            const mandatoryTypeValue = document.querySelector('#mandatory-type-control input')?.value || 'opcional';
-            const showHelper = helperToggle.checked;
-            const helperContentValue = document.querySelector('#helper-content-control input')?.value || 'Helper text';
-            const showCounter = counterToggle.checked;
-            const maxLengthValue = document.querySelector('#max-length-control input')?.value || '50';
-            const showLeftIcon = leftIconToggle.checked;
-            const leftIconContentValue = document.querySelector('#left-icon-content-control input')?.value || 'fa-user';
-            const showRightIcon = rightIconToggle.checked;
-            const rightIconContentValue = document.querySelector('#right-icon-content-control input')?.value || 'fa-check';
-            const placeholderContentValue = document.querySelector('#placeholder-content-control input')?.value || 'Placeholder text';
-
-            const size = previewSelectedSize || 'md';
-            const state = previewSelectedState || 'default';
-
-            const previewContainer = document.getElementById('input-preview-container');
-            if (!previewContainer) return;
-            previewContainer.innerHTML = '';
-
-            const labelPosLeftEl = document.getElementById('label-position-left-toggle');
-
-            createInput({
-                containerId: 'input-preview-container',
-                label: showLabel ? labelContentValue : '',
-                showLabel: showLabel,
-                labelPosition: labelPosLeftEl && labelPosLeftEl.checked ? 'left' : 'top',
-                placeholder: placeholderContentValue,
-                mandatory: showMandatory,
-                mandatoryType: String(mandatoryTypeValue).toLowerCase().includes('oblig') ? 'obligatorio' : 'opcional',
-                helperText: showHelper ? helperContentValue : '',
-                showHelper: showHelper,
-                maxLength: showCounter ? parseInt(maxLengthValue, 10) : 50,
-                showCounter: showCounter,
-                leftIcon: showLeftIcon ? leftIconContentValue : '',
-                rightIcon: showRightIcon ? rightIconContentValue : '',
-                size: size,
-                state: state
-            });
-        }
-
-        // Funciones para el preview del componente
         function setPreviewActive(section) {
-            // Reemplaza con la lógica específica del componente
             console.log('Preview activo:', section);
-            
-            // Actualizar controles
-            const controlButtons = document.querySelectorAll('.preview-control-btn');
-            controlButtons.forEach(button => {
+            var controlButtons = document.querySelectorAll('.preview-control-btn');
+            controlButtons.forEach(function (button) {
                 button.classList.remove('active');
             });
-            
-            const activeControl = document.querySelector(`[onclick="setPreviewActive('${section}')"]`);
-            if (activeControl) {
-                activeControl.classList.add('active');
-            }
+            var activeControl = document.querySelector('[onclick="setPreviewActive(\'' + section + '\')"]');
+            if (activeControl) activeControl.classList.add('active');
         }
-        
 
-        // Función para copiar prompts
         function copyPrompt(promptId) {
-            const promptElement = document.getElementById(promptId);
-            const promptText = promptElement.textContent;
-            
-            // Copiar al portapapeles
+            var promptElement = document.getElementById(promptId);
+            var promptText = promptElement.textContent;
             navigator.clipboard.writeText(promptText).then(function() {
-                // Mostrar feedback visual
-                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
-                const icon = button.querySelector('i');
-                const text = button.querySelector('span');
-                
-                // Cambiar estado del botón
+                var button = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = button.querySelector('i');
+                var text = button.querySelector('span');
                 icon.className = 'far fa-check';
                 text.textContent = 'Copiado';
                 button.classList.add('ubits-button--active');
-                
-                // Mostrar toast
-                showToast('success', '¡Prompt copiado! 🎉', {
-                    containerId: 'ubits-toast-container',
-                    duration: 3500
-                });
-                
-                // Restaurar estado después de 2 segundos
+                showToast('success', '¡Prompt copiado! 🎉', { containerId: 'ubits-toast-container', duration: 3500 });
                 setTimeout(function() {
                     icon.className = 'far fa-copy';
                     text.textContent = 'Copiar';
                     button.classList.remove('ubits-button--active');
                 }, 2000);
-                
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showToast('error', 'Error al copiar el prompt', {
-                    containerId: 'ubits-toast-container',
-                    duration: 6500
-                });
+                showToast('error', 'Error al copiar el prompt', { containerId: 'ubits-toast-container', duration: 6500 });
             });
         }
 
-        // Función para copiar código
         function copyCode(codeId) {
-            const codeElement = document.getElementById(codeId);
-            const codeText = codeElement.textContent;
-            
-            // Copiar al portapapeles
+            var codeElement = document.getElementById(codeId);
+            var codeText = codeElement.textContent;
             navigator.clipboard.writeText(codeText).then(function() {
-                // Mostrar feedback visual
-                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
-                const icon = button.querySelector('i');
-                const text = button.querySelector('span');
-                
-                // Cambiar estado del botón
+                var button = document.querySelector('[onclick="copyCode(\'' + codeId + '\')"]');
+                var icon = button.querySelector('i');
+                var text = button.querySelector('span');
                 icon.className = 'far fa-check';
                 text.textContent = 'Copiado';
                 button.classList.add('ubits-button--active');
-                
-                // Mostrar toast
-                showToast('success', '¡Código copiado! 🎉', {
-                    containerId: 'ubits-toast-container',
-                    duration: 3500
-                });
-                
-                // Restaurar estado después de 2 segundos
+                showToast('success', '¡Código copiado! 🎉', { containerId: 'ubits-toast-container', duration: 3500 });
                 setTimeout(function() {
                     icon.className = 'far fa-copy';
                     text.textContent = 'Copiar';
                     button.classList.remove('ubits-button--active');
                 }, 2000);
-                
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showToast('error', 'Error al copiar el código', {
-                    containerId: 'ubits-toast-container',
-                    duration: 6500
-                });
+                showToast('error', 'Error al copiar el código', { containerId: 'ubits-toast-container', duration: 6500 });
             });
         }
 
-        // Función para inicializar todos los inputs de demostración
         function initializeInputDemos() {
-            // Text Input
-            createInput({
-                containerId: 'text-input-demo',
-                type: 'text',
-                placeholder: 'Escribe tu nombre',
-                size: 'sm'
-            });
+            if (!document.getElementById('text-input-demo')) return;
+            createInput({ containerId: 'text-input-demo', type: 'text', placeholder: 'Escribe tu nombre', size: 'sm' });
+            createInput({ containerId: 'email-input-demo', type: 'email', placeholder: 'correo@ejemplo.com', value: 'email-invalido', size: 'sm', state: 'invalid', helperText: 'Email inválido' });
+            createInput({ containerId: 'password-input-demo', type: 'password', placeholder: 'Escribe tu contraseña', size: 'sm' });
+            createInput({ containerId: 'number-input-demo', type: 'number', placeholder: 'Ingresa un número', size: 'sm' });
+            createInput({ containerId: 'tel-input-demo', type: 'tel', placeholder: '+57 300 123 4567', value: '123', size: 'sm', state: 'invalid', helperText: 'Debe tener al menos 10 dígitos' });
+            createInput({ containerId: 'url-input-demo', type: 'url', placeholder: 'https://ejemplo.com', value: 'url-invalida', size: 'sm', state: 'invalid', helperText: 'URL inválida. Debe iniciar con https://' });
+            createInput({ containerId: 'textarea-input-demo', type: 'textarea', placeholder: 'Escribe tu mensaje aquí...', size: 'sm' });
+            createInput({ containerId: 'search-input-demo', type: 'search', placeholder: 'Buscar...', size: 'sm' });
 
-            // Email Input
-            createInput({
-                containerId: 'email-input-demo',
-                type: 'email',
-                placeholder: 'correo@ejemplo.com',
-                value: 'email-invalido',
-                size: 'sm',
-                state: 'invalid',
-                helperText: 'Email inválido'
-            });
-
-            // Password Input
-            createInput({
-                containerId: 'password-input-demo',
-                type: 'password',
-                placeholder: 'Escribe tu contraseña',
-                size: 'sm'
-            });
-
-            // Number Input
-            createInput({
-                containerId: 'number-input-demo',
-                type: 'number',
-                placeholder: 'Ingresa un número',
-                size: 'sm'
-            });
-
-            // Tel Input
-            createInput({
-                containerId: 'tel-input-demo',
-                type: 'tel',
-                placeholder: '+57 300 123 4567',
-                value: '123',
-                size: 'sm',
-                state: 'invalid',
-                helperText: 'Debe tener al menos 10 dígitos'
-            });
-
-            // URL Input
-            createInput({
-                containerId: 'url-input-demo',
-                type: 'url',
-                placeholder: 'https://ejemplo.com',
-                value: 'url-invalida',
-                size: 'sm',
-                state: 'invalid',
-                helperText: 'URL inválida. Debe iniciar con https://'
-            });
-
-            // Textarea Input
-            createInput({
-                containerId: 'textarea-input-demo',
-                type: 'textarea',
-                placeholder: 'Escribe tu mensaje aquí...',
-                size: 'sm'
-            });
-
-            // Search Input
-            createInput({
-                containerId: 'search-input-demo',
-                type: 'search',
-                placeholder: 'Buscar...',
-                size: 'sm'
-            });
-
-            // Autocomplete Input (preview: marcar valores 1 y 2 como ya seleccionados con el switch)
             window.__inputDocAutocompleteMarkedDemo = [];
             var inputAutocompleteDemoApi = createInput({
                 containerId: 'autocomplete-input-demo',
@@ -1206,100 +1418,37 @@ bootDocsWorkspace();
                 });
             }
 
-            // Calendar Input
-            createInput({
-                containerId: 'calendar-input-demo',
-                type: 'calendar',
-                placeholder: 'Selecciona una fecha...',
-                size: 'sm'
-            });
-
-            // Duration Input (mm:ss) — createDurationInput
-            createDurationInput({
-                containerId: 'duration-input-demo',
-                valueSec: 65,
-                minSec: 1,
-                maxSec: 600,
-                size: 'sm',
-                showIcon: true
-            });
-
-            // Input con iconos
-            createInput({
-                containerId: 'icon-input-demo',
-                type: 'text',
-                placeholder: 'Input con iconos',
-                leftIcon: 'fa-user',
-                rightIcon: 'fa-check',
-                size: 'sm'
-            });
-
-            // Input con contador
-            createInput({
-                containerId: 'counter-input-demo',
-                type: 'text',
-                placeholder: 'Máximo 20 caracteres',
-                showCounter: true,
-                maxLength: 20,
-                size: 'sm'
-            });
-
-            // Select Input (pocas opciones)
-            createInput({
-                containerId: 'select-small-demo',
-                type: 'select',
-                placeholder: 'Selecciona una opción...',
-                size: 'sm',
-                selectOptions: [
-                    {value: '1', text: 'Opción 1'},
-                    {value: '2', text: 'Opción 2'},
-                    {value: '3', text: 'Opción 3'}
-                ]
-            });
-
-            // Select Input (scroll infinito) - 50+ opciones para activar scroll infinito
-            const largeOptions = Array.from({length: 150}, (_, i) => ({
-                value: `country-${i + 1}`,
-                text: `País ${i + 1}`
-            }));
-            createInput({
-                containerId: 'select-large-demo',
-                type: 'select',
-                placeholder: 'Selecciona un país...',
-                size: 'sm',
-                selectOptions: largeOptions
-            });
-
-            // Input con helper text
-            createInput({
-                containerId: 'helper-input-demo',
-                type: 'text',
-                placeholder: 'Input con ayuda',
-                helperText: 'Este es un texto de ayuda',
-                showHelper: true,
-                size: 'sm'
-            });
-
-            // Input mandatory
-            createInput({
-                containerId: 'mandatory-input-demo',
-                type: 'text',
-                placeholder: 'Campo obligatorio',
-                mandatory: true,
-                mandatoryType: 'obligatorio',
-                size: 'sm'
-            });
-
-            // Input disabled
-            const disabledInput = createInput({
-                containerId: 'disabled-input-demo',
-                type: 'text',
-                placeholder: 'Campo deshabilitado',
-                value: 'No se puede editar',
-                size: 'sm'
-            });
-            disabledInput.disable();
-
+            createInput({ containerId: 'calendar-input-demo', type: 'calendar', placeholder: 'Selecciona una fecha...', size: 'sm' });
+            if (typeof createDurationInput === 'function' && document.getElementById('duration-input-demo')) {
+                createDurationInput({ containerId: 'duration-input-demo', valueSec: 65, minSec: 1, maxSec: 600, size: 'sm', showIcon: true });
+            }
+            if (document.getElementById('icon-input-demo')) {
+                createInput({ containerId: 'icon-input-demo', type: 'text', placeholder: 'Input con iconos', leftIcon: 'fa-user', rightIcon: 'fa-check', size: 'sm' });
+            }
+            if (document.getElementById('counter-input-demo')) {
+                createInput({ containerId: 'counter-input-demo', type: 'text', placeholder: 'Máximo 20 caracteres', showCounter: true, maxLength: 20, size: 'sm' });
+            }
+            if (document.getElementById('select-small-demo')) {
+                createInput({ containerId: 'select-small-demo', type: 'select', placeholder: 'Selecciona una opción...', size: 'sm', selectOptions: [
+                    {value: '1', text: 'Opción 1'}, {value: '2', text: 'Opción 2'}, {value: '3', text: 'Opción 3'}
+                ]});
+            }
+            if (document.getElementById('select-large-demo')) {
+                var largeOptions = Array.from({length: 150}, function (_, i) {
+                    return { value: 'country-' + (i + 1), text: 'País ' + (i + 1) };
+                });
+                createInput({ containerId: 'select-large-demo', type: 'select', placeholder: 'Selecciona un país...', size: 'sm', selectOptions: largeOptions });
+            }
+            if (document.getElementById('helper-input-demo')) {
+                createInput({ containerId: 'helper-input-demo', type: 'text', placeholder: 'Input con ayuda', helperText: 'Este es un texto de ayuda', showHelper: true, size: 'sm' });
+            }
+            if (document.getElementById('mandatory-input-demo')) {
+                createInput({ containerId: 'mandatory-input-demo', type: 'text', placeholder: 'Campo obligatorio', mandatory: true, mandatoryType: 'obligatorio', size: 'sm' });
+            }
+            if (document.getElementById('disabled-input-demo')) {
+                var disabledInput = createInput({ containerId: 'disabled-input-demo', type: 'text', placeholder: 'Campo deshabilitado', value: 'No se puede editar', size: 'sm' });
+                if (disabledInput) disabledInput.disable();
+            }
         }
     </script>
 </body>

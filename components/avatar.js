@@ -57,6 +57,7 @@ function normalizeAvatarUrlForPage(avatar) {
     var a = String(avatar || '').trim();
     if (!a) return null;
     if (a.indexOf('http://') === 0 || a.indexOf('https://') === 0 || a.indexOf('data:') === 0) return a;
+    a = a.replace(/^\/+/, '');
     a = a.replace(/^(\.\.\/)+/, '');
     if (a.indexOf('images/') === 0) return getAvatarImagesPrefixForPage() + a;
     return a;

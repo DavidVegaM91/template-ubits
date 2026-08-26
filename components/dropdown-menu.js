@@ -35,12 +35,165 @@
         return !!(opt && (opt.metaText != null || opt.statusTag));
     }
 
-    function renderDropdownStatusTagHtml(statusTag) {
+    function renderDropdownStatusTagHtml(statusTag, tagSize) {
         if (!statusTag || statusTag.text == null || String(statusTag.text).trim() === '') return '';
         var variant = statusTag.variant != null ? String(statusTag.variant) : 'neutral';
         var text = escapeHtml(String(statusTag.text));
-        return '<span class="ubits-status-tag ubits-status-tag--' + escapeHtml(variant) + ' ubits-status-tag--sm ubits-dropdown-menu__option-rich-tag">' +
+        var sizeClass = tagSize === 'xs' ? ' ubits-status-tag--xs' : ' ubits-status-tag--sm';
+        return '<span class="ubits-status-tag ubits-status-tag--' + escapeHtml(variant) + sizeClass + ' ubits-dropdown-menu__option-rich-tag">' +
             '<span class="ubits-status-tag__text">' + text + '</span></span>';
+    }
+
+    function markedChosenBadgeHtml() {
+        return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i></span>';
+    }
+
+    function isCheckRightIcon(rightIcon) {
+        return rightIcon != null && /check/.test(String(rightIcon));
+    }
+
+    function renderDropdownOptionRightHtml(opt) {
+        if (!opt || !opt.rightIcon) return '';
+        if (isCheckRightIcon(opt.rightIcon) && opt.selected) {
+            return markedChosenBadgeHtml();
+        }
+        var iconName = String(opt.rightIcon).replace(/^far fa-|^fas fa-|^fa-/, '');
+        return '<span class="ubits-dropdown-menu__option-right"><i class="far fa-' + escapeHtml(iconName) + '"></i></span>';
+    }
+
+    function buildDropdownOptionTextHtml(text, description) {
+        if (description != null && String(description).trim() !== '') {
+            return '<span class="ubits-dropdown-menu__option-text-wrap">' +
+                '<span class="ubits-dropdown-menu__option-text">' + text + '</span>' +
+                '<span class="ubits-dropdown-menu__option-description ubits-body-xs-regular">' + escapeHtml(String(description)) + '</span>' +
+                '</span>';
+        }
+        return '<span class="ubits-dropdown-menu__option-text">' + text + '</span>';
+    }
+
+    /**
+     * HTML de una fila de opción (divider, section label, radio, checkbox, submenu o botón).
+     * Usado por getDropdownMenuHtml y por Input type select (paridad iconos / agrupado / descripción).
+     * @param {Object} opt
+     * @param {string} [selectedValue] - Valor seleccionado actual (marca --selected)
+     * @param {Object} [ctx]
+     * @param {boolean} [ctx.radioGroup=false]
+     * @param {string} [ctx.radioName]
+     * @returns {string}
+     */
+    function renderDropdownMenuOptionRowHtml(opt, selectedValue, ctx) {
+        ctx = ctx || {};
+        opt = opt || {};
+
+        if (opt.divider) {
+            return '<hr class="ubits-dropdown-menu__divider">';
+        }
+        if (opt.isSectionLabel || opt.sectionLabel) {
+            var sectionText = escapeHtml(opt.text != null ? String(opt.text) : (opt.label != null ? String(opt.label) : ''));
+            return '<div class="ubits-dropdown-menu__section-label" role="presentation">' + sectionText + '</div>';
+        }
+
+        var optValRaw = opt.value != null ? String(opt.value) : '';
+        var valueStr = selectedValue != null ? String(selectedValue) : '';
+        var isSelected = (opt.selected && !opt.alreadyChosen) || (valueStr && optValRaw === valueStr);
+        var value = escapeHtml(optValRaw);
+        var text = escapeHtml(opt.text != null ? String(opt.text) : '');
+        var selectedClass = isSelected ? ' ubits-dropdown-menu__option--selected' : '';
+        var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
+        var dangerClass = opt.danger ? ' ubits-dropdown-menu__option--danger' : '';
+        var disabledAttr = opt.disabled ? ' disabled aria-disabled="true"' : '';
+        var descClass = opt.description != null && String(opt.description).trim() !== ''
+            ? ' ubits-dropdown-menu__option--with-description' : '';
+
+        if (ctx.radioGroup === true) {
+            var radioName = ctx.radioName != null ? String(ctx.radioName) : 'dropdown-radio';
+            var radioChecked = opt.selected ? ' checked' : '';
+            var badgeRadio = opt.alreadyChosen ? markedChosenBadgeHtml() : '';
+            return '<label class="ubits-dropdown-menu__option ubits-dropdown-menu__option--radio ubits-radio ubits-radio--sm' + selectedClass + markedClass + '" data-value="' + value + '">' +
+                '<input type="radio" class="ubits-radio__input" name="' + escapeHtml(radioName) + '" value="' + value + '"' + radioChecked + '>' +
+                '<span class="ubits-radio__circle"></span>' +
+                '<span class="ubits-radio__label">' + text + '</span>' +
+                badgeRadio +
+                '</label>';
+        }
+
+        var left = '';
+        if (opt.avatar !== undefined) {
+            var nombre = opt.text != null ? String(opt.text) : '';
+            var avatarUrl = (opt.avatar && String(opt.avatar).trim()) ? String(opt.avatar).trim() : null;
+            left = '<span class="ubits-dropdown-menu__option-left">' +
+                (typeof renderAvatar === 'function'
+                    ? renderAvatar({ nombre: nombre, avatar: avatarUrl }, { size: 'sm' })
+                    : (avatarUrl ? '<img class="ubits-dropdown-menu__option-avatar" src="' + escapeHtml(avatarUrl) + '" alt="">' : '<i class="far fa-user"></i>')) +
+                '</span>';
+        } else if (opt.leftHtml) {
+            left = '<span class="ubits-dropdown-menu__option-left">' + opt.leftHtml + '</span>';
+        } else if (opt.leftIcon) {
+            left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
+        } else if (opt.checkbox) {
+            var checked = opt.selected ? ' checked' : '';
+            left = '<span class="ubits-dropdown-menu__option-left"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" data-value="' + value + '"' + checked + '><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">' + text + '</span></label></span>';
+        }
+
+        var right = '';
+        if (opt.rightIcon) {
+            right = renderDropdownOptionRightHtml(opt);
+        } else if (opt.switch) {
+            var checkedSwitch = opt.selected ? ' checked' : '';
+            right = '<span class="ubits-dropdown-menu__option-right"><input type="checkbox" role="switch" data-value="' + value + '"' + checkedSwitch + '></span>';
+        }
+        if (opt.alreadyChosen && !opt.checkbox) {
+            right += markedChosenBadgeHtml();
+        }
+
+        if (isRichDropdownOption(opt)) {
+            var metaText = opt.metaText != null ? escapeHtml(String(opt.metaText)) : '';
+            var tagHtml = renderDropdownStatusTagHtml(opt.statusTag, opt.statusTagSize || 'xs');
+            var checkHtml = isSelected ? markedChosenBadgeHtml() : '';
+            var showLabel = text && !opt.badgeOnly;
+            var labelGroupHtml = '';
+            if (showLabel || tagHtml) {
+                labelGroupHtml = '<span class="ubits-dropdown-menu__option-rich-label-group">' +
+                    (showLabel ? '<span class="ubits-dropdown-menu__option-text ubits-body-sm-regular">' + text + '</span>' : '') +
+                    tagHtml +
+                    '</span>';
+            }
+            var spacerHtml = (labelGroupHtml && (metaText || checkHtml))
+                ? '<span class="ubits-dropdown-menu__option-rich-spacer" aria-hidden="true"></span>'
+                : '';
+            return '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--rich' + selectedClass + markedClass + descClass + '"' + disabledAttr + ' data-value="' + value + '">' +
+                labelGroupHtml +
+                spacerHtml +
+                (metaText ? '<span class="ubits-dropdown-menu__option-rich-meta ubits-body-sm-regular">' + metaText + '</span>' : '') +
+                checkHtml +
+                '</button>';
+        }
+
+        var shortcutHtml = opt.shortcut
+            ? '<span class="ubits-dropdown-menu__option-shortcut" aria-hidden="true">' + escapeHtml(String(opt.shortcut)) + '</span>'
+            : '';
+        var textHtml = opt.checkbox ? '' : buildDropdownOptionTextHtml(text, opt.description);
+        var inner = left + textHtml + shortcutHtml + right;
+
+        if (opt.checkbox) {
+            return '<div class="ubits-dropdown-menu__option' + selectedClass + dangerClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
+        }
+
+        if (opt.submenu && opt.submenu.length) {
+            var submenuHtml = opt.submenu.map(function (sub) {
+                var subText = escapeHtml(sub.text != null ? String(sub.text) : '');
+                var subVal = sub.value != null ? escapeHtml(String(sub.value)) : '';
+                var subLeft = sub.leftIcon ? '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(sub.leftIcon) + '"></i></span>' : '';
+                var subDanger = sub.danger ? ' ubits-dropdown-menu__option--danger' : '';
+                return '<button type="button" class="ubits-dropdown-menu__option' + subDanger + '" data-value="' + subVal + '">' + subLeft + '<span class="ubits-dropdown-menu__option-text">' + subText + '</span></button>';
+            }).join('');
+            var chevron = '<span class="ubits-dropdown-menu__option-right"><i class="far fa-chevron-right"></i></span>';
+            return '<div class="ubits-dropdown-menu__submenu-wrap">' +
+                '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--submenu-trigger' + dangerClass + markedClass + selectedClass + descClass + '"' + disabledAttr + ' data-value="' + value + '">' + inner + chevron + '</button>' +
+                '<div class="ubits-dropdown-menu__submenu-panel">' + submenuHtml + '</div></div>';
+        }
+
+        return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + dangerClass + descClass + '"' + disabledAttr + ' data-value="' + value + '">' + inner + '</button>';
     }
 
     /**
@@ -50,29 +203,7 @@
      * @returns {string}
      */
     function renderDropdownMenuOptionButtonHtml(opt, selectedValue) {
-        opt = opt || {};
-        var optVal = opt.value != null ? String(opt.value) : '';
-        var text = opt.text != null ? String(opt.text) : '';
-        var valueStr = selectedValue != null ? String(selectedValue) : '';
-        var selectedClass = (opt.selected && !opt.alreadyChosen) || (valueStr && optVal === valueStr)
-            ? ' ubits-dropdown-menu__option--selected' : '';
-        var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
-        var safeText = escapeHtml(text);
-        var safeVal = escapeHtml(optVal);
-
-        if (isRichDropdownOption(opt)) {
-            var metaText = opt.metaText != null ? escapeHtml(String(opt.metaText)) : '';
-            var tagHtml = renderDropdownStatusTagHtml(opt.statusTag);
-            return '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--rich' + selectedClass + markedClass + '" data-value="' + safeVal + '">' +
-                '<span class="ubits-dropdown-menu__option-text ubits-body-sm-regular">' + safeText + '</span>' +
-                (metaText ? '<span class="ubits-dropdown-menu__option-rich-meta ubits-body-sm-regular">' + metaText + '</span>' : '') +
-                tagHtml +
-                '</button>';
-        }
-
-        return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + '" data-value="' + safeVal + '">' +
-            '<span class="ubits-dropdown-menu__option-text">' + safeText + '</span>' +
-            '</button>';
+        return renderDropdownMenuOptionRowHtml(opt, selectedValue, {});
     }
 
     /**
@@ -121,85 +252,8 @@
         var footerPrimaryId = config.footerPrimaryId || overlayId + '-footer-primary';
         var headerHtml = config.headerHtml != null ? config.headerHtml : '';
 
-        function markedChosenBadgeHtml() {
-            return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i></span>';
-        }
-
-        var optionsHtml = options.map(function (opt, index) {
-            if (opt.divider) {
-                return '<hr class="ubits-dropdown-menu__divider">';
-            }
-            if (opt.isSectionLabel || opt.sectionLabel) {
-                var sectionText = escapeHtml(opt.text != null ? String(opt.text) : (opt.label != null ? String(opt.label) : ''));
-                return '<div class="ubits-dropdown-menu__section-label" role="presentation">' + sectionText + '</div>';
-            }
-            var value = opt.value != null ? escapeHtml(String(opt.value)) : '';
-            var text = escapeHtml(opt.text != null ? String(opt.text) : '');
-            var selectedClass = opt.selected && !opt.alreadyChosen ? ' ubits-dropdown-menu__option--selected' : '';
-            var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
-            var dangerClass = opt.danger ? ' ubits-dropdown-menu__option--danger' : '';
-            if (radioGroup) {
-                var radioChecked = opt.selected ? ' checked' : '';
-                var badgeRadio = opt.alreadyChosen ? markedChosenBadgeHtml() : '';
-                return '<label class="ubits-dropdown-menu__option ubits-dropdown-menu__option--radio ubits-radio ubits-radio--sm' + selectedClass + markedClass + '" data-value="' + value + '">' +
-                    '<input type="radio" class="ubits-radio__input" name="' + escapeHtml(radioName) + '" value="' + value + '"' + radioChecked + '>' +
-                    '<span class="ubits-radio__circle"></span>' +
-                    '<span class="ubits-radio__label">' + text + '</span>' +
-                    badgeRadio +
-                    '</label>';
-            }
-            var left = '';
-            var checkboxId = '';
-            if (opt.avatar !== undefined) {
-                var nombre = opt.text != null ? String(opt.text) : '';
-                var avatarUrl = (opt.avatar && String(opt.avatar).trim()) ? String(opt.avatar).trim() : null;
-                left = '<span class="ubits-dropdown-menu__option-left">' +
-                    (typeof renderAvatar === 'function'
-                        ? renderAvatar({ nombre: nombre, avatar: avatarUrl }, { size: 'sm' })
-                        : (avatarUrl ? '<img class="ubits-dropdown-menu__option-avatar" src="' + escapeHtml(avatarUrl) + '" alt="">' : '<i class="far fa-user"></i>')) +
-                    '</span>';
-            } else if (opt.leftHtml) {
-                left = '<span class="ubits-dropdown-menu__option-left">' + opt.leftHtml + '</span>';
-            } else if (opt.leftIcon) {
-                left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
-            } else if (opt.checkbox) {
-                var checked = opt.selected ? ' checked' : '';
-                left = '<span class="ubits-dropdown-menu__option-left"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" data-value="' + value + '"' + checked + '><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">' + text + '</span></label></span>';
-            }
-            var right = '';
-            if (opt.rightIcon) {
-                right = '<span class="ubits-dropdown-menu__option-right"><i class="far fa-' + escapeHtml(opt.rightIcon) + '"></i></span>';
-            } else if (opt.switch) {
-                var checkedSwitch = opt.selected ? ' checked' : '';
-                right = '<span class="ubits-dropdown-menu__option-right"><input type="checkbox" role="switch" data-value="' + value + '"' + checkedSwitch + '></span>';
-            }
-            if (opt.alreadyChosen && !opt.checkbox) {
-                right += markedChosenBadgeHtml();
-            }
-            if (isRichDropdownOption(opt)) {
-                return renderDropdownMenuOptionButtonHtml(opt, opt.selected ? opt.value : null);
-            }
-            var shortcutHtml = opt.shortcut
-                ? '<span class="ubits-dropdown-menu__option-shortcut" aria-hidden="true">' + escapeHtml(String(opt.shortcut)) + '</span>'
-                : '';
-            var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + shortcutHtml + right;
-            if (opt.checkbox) {
-                return '<div class="ubits-dropdown-menu__option' + selectedClass + dangerClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
-            }
-            if (opt.submenu && opt.submenu.length) {
-                var submenuHtml = opt.submenu.map(function (sub) {
-                    var subText = escapeHtml(sub.text != null ? String(sub.text) : '');
-                    var subVal = sub.value != null ? escapeHtml(String(sub.value)) : '';
-                    var subLeft = sub.leftIcon ? '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(sub.leftIcon) + '"></i></span>' : '';
-                    var subDanger = sub.danger ? ' ubits-dropdown-menu__option--danger' : '';
-                    return '<button type="button" class="ubits-dropdown-menu__option' + subDanger + '" data-value="' + subVal + '">' + subLeft + '<span class="ubits-dropdown-menu__option-text">' + subText + '</span></button>';
-                }).join('');
-                var chevron = '<span class="ubits-dropdown-menu__option-right"><i class="far fa-chevron-right"></i></span>';
-                return '<div class="ubits-dropdown-menu__submenu-wrap">' +
-                    '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--submenu-trigger' + dangerClass + markedClass + selectedClass + '" data-value="' + value + '">' + inner + chevron + '</button>' +
-                    '<div class="ubits-dropdown-menu__submenu-panel">' + submenuHtml + '</div></div>';
-            }
-            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + dangerClass + '" data-value="' + value + '">' + inner + '</button>';
+        var optionsHtml = options.map(function (opt) {
+            return renderDropdownMenuOptionRowHtml(opt, null, { radioGroup: radioGroup, radioName: radioName });
         }).join('');
 
         var searchInputId = overlayId + '-autocomplete-input';
@@ -608,5 +662,6 @@
         window.initDropdownMultiSelectSummary = initDropdownMultiSelectSummary;
         window.isRichDropdownOption = isRichDropdownOption;
         window.renderDropdownMenuOptionButtonHtml = renderDropdownMenuOptionButtonHtml;
+        window.renderDropdownMenuOptionRowHtml = renderDropdownMenuOptionRowHtml;
     }
 })();

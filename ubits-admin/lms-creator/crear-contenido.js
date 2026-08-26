@@ -2877,6 +2877,10 @@
             }
             return;
         }
+        if (pt === 'asistencia') {
+            openCrearContenidoAsistenciaModal({ pageKey: pk });
+            return;
+        }
         renderRecursosResourcesBlock({ variant: 'default' });
     }
 
@@ -2983,6 +2987,66 @@
         }
 
         return { pageKey: pageKey, list: list };
+    }
+
+    function applyAsistenciaPayloadToMount(pageKey, payload, mount) {
+        if (!pageKey || !mount || typeof window.asistenciaRecursoRenderedHtml !== 'function') return;
+        var html = window.asistenciaRecursoRenderedHtml(payload);
+        var prev = CC_RECURSOS_PAGE_STATE[pageKey] || {};
+        CC_RECURSOS_PAGE_STATE[pageKey] = Object.assign({}, prev, {
+            html: html,
+            primaryType: 'asistencia',
+            asistencia: payload
+        });
+        mount.innerHTML = html;
+        var activeItem = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (activeItem && typeof window.setPaginasCreatorItemTipo === 'function') {
+            window.setPaginasCreatorItemTipo(activeItem, 'asistencia');
+        }
+        renderCrearContenidoComplementary();
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function openCrearContenidoAsistenciaModal(opts) {
+        opts = opts || {};
+        if (typeof window.openAsistenciaRecursoModal !== 'function') {
+            if (typeof window.showToast === 'function') {
+                window.showToast('error', 'No se pudo abrir el modal de asistencia.');
+            }
+            return;
+        }
+        var pk = opts.pageKey != null ? opts.pageKey : CC_RECURSOS_CURRENT_PAGE_KEY;
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        var ctx = opts.ctx || {};
+        window.openAsistenciaRecursoModal({
+            initialData: opts.initialData != null ? opts.initialData : (st && st.asistencia) || null,
+            lockPastSessions: !!window.CC_PUBLISHED_EDIT_MODE,
+            onBack: opts.onBack
+                ? function () {
+                      if (typeof window.openAnadirPaginaTipoModal === 'function') {
+                          window.openAnadirPaginaTipoModal({
+                              onSelect: function (tipo) {
+                                  handleAnadirPaginaTipoSelect(tipo, ctx);
+                              }
+                          });
+                      }
+                  }
+                : undefined,
+            onReady: function (payload) {
+                var pageKey = pk;
+                var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+                if (typeof opts.createPage === 'function') {
+                    var created = opts.createPage();
+                    if (!created) return;
+                    pageKey = created.pageKey;
+                    CC_RECURSOS_CURRENT_PAGE_KEY = pageKey;
+                    if (typeof opts.afterCreate === 'function') opts.afterCreate(pageKey);
+                }
+                applyAsistenciaPayloadToMount(pageKey, payload, mount);
+            }
+        });
     }
 
     /**
@@ -3118,6 +3182,18 @@
                     finishCrearContenidoEmbedRender(parsed.html, rbMount);
                     syncRecursosEmbedPageIcon();
                 }
+            });
+            return;
+        }
+
+        if (tipo === 'asistencia') {
+            openCrearContenidoAsistenciaModal({
+                createPage: createPageForTipo,
+                afterCreate: function (pageKey) {
+                    afterNewPageMounted(pageKey, 'asistencia');
+                },
+                onBack: true,
+                ctx: { sectionEl: sectionEl }
             });
             return;
         }
@@ -3526,6 +3602,12 @@
                 return;
             }
 
+            var asistenciaCard = ev.target.closest('[data-resources-card-type="asistencia"]');
+            if (asistenciaCard && !asistenciaCard.disabled) {
+                openCrearContenidoAsistenciaModal({ pageKey: CC_RECURSOS_CURRENT_PAGE_KEY });
+                return;
+            }
+
             // 2c. Descargar / Reemplazar (modo edición publicada)
             var descargarBtn = ev.target.closest('#cc-descargar-recurso');
             if (descargarBtn) {
@@ -3544,6 +3626,12 @@
                 if (typeof window.openScormEditModal === 'function') {
                     window.openScormEditModal(CC_RECURSOS_CURRENT_PAGE_KEY);
                 }
+                return;
+            }
+
+            var editAsistenciaBtn = ev.target.closest('#cc-editar-asistencia-recurso');
+            if (editAsistenciaBtn) {
+                openCrearContenidoAsistenciaModal({ pageKey: CC_RECURSOS_CURRENT_PAGE_KEY });
                 return;
             }
 

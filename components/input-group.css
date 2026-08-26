@@ -1,0 +1,143 @@
+/* Input Group — borde compartido (paridad React InputGroup.module.css) */
+
+.ubits-input-group {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ubits-input-group:hover:not(.ubits-input-group--disabled):not(.ubits-input-group--invalid) {
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-input-group:focus-within:not(.ubits-input-group--disabled):not(.ubits-input-group--invalid) {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+.ubits-input-group--disabled {
+    background: var(--ubits-bg-3);
+    border-color: var(--ubits-border-2);
+    cursor: not-allowed;
+}
+
+.ubits-input-group--invalid {
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: 0 0 0 2px rgba(229, 53, 53, 0.12);
+}
+
+.ubits-input-group--xs { min-height: 28px; border-radius: var(--border-radius-sm); }
+.ubits-input-group--sm { min-height: 32px; border-radius: var(--border-radius-sm); }
+.ubits-input-group--md { min-height: 40px; }
+.ubits-input-group--lg { min-height: 48px; }
+
+.ubits-input-group__addon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+    font-family: var(--font-family-sans);
+    user-select: none;
+}
+
+.ubits-input-group__addon--start {
+    padding-left: var(--padding-sm);
+    padding-right: var(--padding-xs);
+}
+
+.ubits-input-group__addon--end {
+    margin-left: auto;
+    padding-right: var(--padding-xs);
+    padding-left: var(--padding-xs);
+    border-left: 1px solid var(--ubits-border-1);
+    gap: 2px;
+}
+
+.ubits-input-group__text {
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+.ubits-input-group--xs .ubits-input-group__text { font-size: var(--font-size-xs); }
+
+.ubits-input-group__control {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    font-family: var(--font-family-sans);
+    box-sizing: border-box;
+}
+
+.ubits-input-group__control::placeholder { color: var(--ubits-fg-disabled); }
+
+.ubits-input-group__control:disabled {
+    color: var(--ubits-fg-1-low);
+    cursor: not-allowed;
+}
+
+.ubits-input-group--xs .ubits-input-group__control {
+    padding: 6px var(--padding-sm);
+    font-size: var(--font-size-xs);
+    height: 28px;
+}
+
+.ubits-input-group--sm .ubits-input-group__control {
+    padding: var(--padding-sm);
+    font-size: var(--font-size-sm);
+    height: 32px;
+}
+
+.ubits-input-group--md .ubits-input-group__control {
+    padding: var(--padding-md) var(--padding-sm);
+    font-size: var(--font-size-md);
+    height: 40px;
+}
+
+.ubits-input-group--lg .ubits-input-group__control {
+    padding: var(--padding-lg) var(--padding-sm);
+    font-size: var(--font-size-h2);
+    height: 48px;
+}
+
+.ubits-input-group__control--mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: var(--font-size-xs);
+}
+
+.ubits-input-group__control[readonly] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-input-group__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+}
+
+.ubits-input-group-field__helper {
+    margin-top: 6px;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
+.ubits-input-group-field__label {
+    display: block;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}

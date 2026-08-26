@@ -1097,7 +1097,179 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
 var INPUT_SELECT_ITEMS_PER_PAGE = 50;
 var INPUT_SELECT_LOAD_MORE_DELAY_MS = 333;
 
+function inputSelectEscapeHtml(text) {
+    if (text == null) return '';
+    var div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}
+
+function inputSelectFindOption(selectOptions, value) {
+    if (value == null || value === '') return null;
+    return (selectOptions || []).find(function (o) {
+        return o && o.value != null && String(o.value) === String(value);
+    }) || null;
+}
+
+function inputSelectSelectableOptions(selectOptions) {
+    return (selectOptions || []).filter(function (o) {
+        return o && o.value != null && !o.disabled && !o.divider && !o.isSectionLabel;
+    });
+}
+
+function inputSelectBuildLeadingHtml(opt) {
+    if (!opt) return '';
+    if (opt.avatar !== undefined) {
+        var nombre = opt.text != null ? String(opt.text) : '';
+        var avatarUrl = (opt.avatar && String(opt.avatar).trim()) ? String(opt.avatar).trim() : null;
+        var avatarInner = typeof renderAvatar === 'function'
+            ? renderAvatar({ nombre: nombre, avatar: avatarUrl }, { size: '2xs' })
+            : (avatarUrl
+                ? '<img class="ubits-avatar__img" src="' + inputSelectEscapeHtml(avatarUrl) + '" alt="">'
+                : '<i class="far fa-user"></i>');
+        return '<span class="ubits-select-trigger-leading">' + avatarInner + '</span>';
+    }
+    if (opt.leftHtml) {
+        return '<span class="ubits-select-trigger-leading">' + opt.leftHtml + '</span>';
+    }
+    if (opt.leftIcon) {
+        var iconName = String(opt.leftIcon).replace(/^far fa-|^fas fa-|^fa-/, '');
+        return '<span class="ubits-select-trigger-leading"><i class="far fa-' + inputSelectEscapeHtml(iconName) + '" aria-hidden="true"></i></span>';
+    }
+    return '';
+}
+
+function inputSelectBuildStatusTagHtml(statusTag) {
+    if (typeof renderDropdownStatusTagHtml === 'function') {
+        return renderDropdownStatusTagHtml(statusTag, 'xs');
+    }
+    if (!statusTag || statusTag.text == null || String(statusTag.text).trim() === '') return '';
+    var variant = statusTag.variant != null ? String(statusTag.variant) : 'neutral';
+    return '<span class="ubits-status-tag ubits-status-tag--' + inputSelectEscapeHtml(variant) + ' ubits-status-tag--xs">' +
+        '<span class="ubits-status-tag__text">' + inputSelectEscapeHtml(String(statusTag.text)) + '</span></span>';
+}
+
+function inputSelectBuildSingleTriggerInner(opt, placeholder, valueDisplay) {
+    if (!opt || opt.value == null || opt.value === '') {
+        return '<span class="ubits-select-trigger-placeholder">' + inputSelectEscapeHtml(placeholder) + '</span>';
+    }
+    if (valueDisplay === 'badge-only' && opt.statusTag && opt.statusTag.text) {
+        return '<span class="ubits-select-trigger-selected">' +
+            '<span class="ubits-select-trigger-leading">' + inputSelectBuildStatusTagHtml(opt.statusTag) + '</span></span>';
+    }
+    var leading = inputSelectBuildLeadingHtml(opt);
+    var tagInline = opt.statusTag && opt.statusTag.text
+        ? '<span class="ubits-select-trigger-inline-tag">' + inputSelectBuildStatusTagHtml(opt.statusTag) + '</span>'
+        : '';
+    return '<span class="ubits-select-trigger-selected">' + leading +
+        '<span class="ubits-select-trigger-label">' + inputSelectEscapeHtml(opt.text != null ? String(opt.text) : '') + '</span>' +
+        tagInline + '</span>';
+}
+
+function inputSelectBuildMultiTriggerInner(selectedOpts, allOptions, summaryLabel, placeholder) {
+    if (!selectedOpts.length) {
+        return '<span class="ubits-select-trigger-placeholder">' + inputSelectEscapeHtml(placeholder) + '</span>';
+    }
+    var selectable = inputSelectSelectableOptions(allOptions);
+    var total = selectable.length || selectedOpts.length;
+    var countLabel = selectedOpts.length + '/' + total;
+    var withDots = selectedOpts.filter(function (o) { return o.dotColor || o.leftHtml; });
+    var dotsHtml = '';
+    if (withDots.length) {
+        dotsHtml = '<span class="ubits-select-trigger-dot-stack" aria-hidden="true">' +
+            withDots.slice(0, 6).map(function (o) {
+                var bg = o.dotColor || 'var(--ubits-fg-1-medium)';
+                return '<span class="ubits-select-trigger-dot-stack-item" style="background:' + String(bg).replace(/"/g, '') + '"></span>';
+            }).join('') + '</span>';
+    }
+    var summaryHtml = summaryLabel
+        ? '<span class="ubits-select-trigger-summary">' + inputSelectEscapeHtml(summaryLabel) + '</span>'
+        : '';
+    var badgeHtml = '<span class="ubits-select-trigger-count-badge" aria-label="' +
+        inputSelectEscapeHtml(selectedOpts.length + ' de ' + total) + '">' +
+        inputSelectEscapeHtml(countLabel) + '</span>';
+    return '<span class="ubits-select-trigger-selected ubits-select-trigger-selected--multi">' +
+        dotsHtml + summaryHtml + badgeHtml + '</span>';
+}
+
+function inputSelectBuildTriggerInner(selectOptions, config) {
+    config = config || {};
+    var placeholder = config.placeholder || 'Selecciona una opción';
+    if (config.multiple) {
+        var values = config.values || [];
+        var selectedOpts = values.map(function (v) { return inputSelectFindOption(selectOptions, v); }).filter(Boolean);
+        return inputSelectBuildMultiTriggerInner(selectedOpts, selectOptions, config.multipleSummaryLabel, placeholder);
+    }
+    return inputSelectBuildSingleTriggerInner(
+        inputSelectFindOption(selectOptions, config.value),
+        placeholder,
+        config.valueDisplay
+    );
+}
+
+function inputSelectUpdateTriggerDisplay(triggerEl, selectOptions, config) {
+    if (!triggerEl) return;
+    var inner = triggerEl.querySelector('.ubits-select-trigger-inner');
+    if (!inner) return;
+    inner.innerHTML = inputSelectBuildTriggerInner(selectOptions, config);
+    if (config.multiple) {
+        triggerEl.setAttribute('data-values', JSON.stringify(config.values || []));
+        triggerEl.removeAttribute('data-value');
+    } else {
+        triggerEl.setAttribute('data-value', config.value != null ? String(config.value) : '');
+        triggerEl.removeAttribute('data-values');
+    }
+}
+
+function inputSelectMapMenuOptions(selectOptions, config) {
+    config = config || {};
+    var values = config.values || [];
+    var currentVal = config.value != null ? String(config.value) : '';
+    var badgeOnly = config.valueDisplay === 'badge-only';
+    return (selectOptions || []).map(function (opt) {
+        if (!opt || opt.divider || opt.isSectionLabel) return opt;
+        var copy = Object.assign({}, opt);
+        var isSelected = config.multiple
+            ? values.indexOf(String(opt.value)) !== -1
+            : String(opt.value) === currentVal;
+        copy.selected = isSelected;
+        if (isSelected) copy.rightIcon = 'check';
+        if (badgeOnly && copy.statusTag) {
+            copy.badgeOnly = true;
+            copy.text = '';
+            copy.statusTagSize = 'xs';
+        } else if (copy.statusTag) {
+            copy.statusTagSize = 'xs';
+        }
+        return copy;
+    });
+}
+
+function inputSelectNeedsWidePanel(selectOptions) {
+    return (selectOptions || []).some(function (opt) {
+        return opt && opt.metaText != null && String(opt.metaText).trim() !== '';
+    });
+}
+
+function inputSelectSyncMenuSelection(dropdown, selectOptions, config) {
+    if (!dropdown) return;
+    var values = config.multiple ? (config.values || []) : [config.value != null ? String(config.value) : ''];
+    dropdown.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (row) {
+        var val = row.getAttribute('data-value');
+        if (val == null || val === '') return;
+        var isSelected = config.multiple
+            ? values.indexOf(String(val)) !== -1
+            : String(val) === String(config.value);
+        row.classList.toggle('ubits-dropdown-menu__option--selected', isSelected);
+        var checkbox = row.querySelector('.ubits-checkbox__input');
+        if (checkbox) checkbox.checked = isSelected;
+    });
+}
+
 function inputSelectBuildOptionHtml(opt, selectedValue) {
+    if (typeof renderDropdownMenuOptionRowHtml === 'function') {
+        return renderDropdownMenuOptionRowHtml(opt, selectedValue, {});
+    }
     if (typeof renderDropdownMenuOptionButtonHtml === 'function') {
         return renderDropdownMenuOptionButtonHtml(opt, selectedValue);
     }
@@ -1120,22 +1292,70 @@ function inputSelectHasRichOptions(selectOptions) {
     });
 }
 
-function setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange) {
+function setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange, selectConfig) {
+    selectConfig = selectConfig || {};
+    var multiple = selectConfig.multiple === true;
+    var currentValues = multiple
+        ? (Array.isArray(selectConfig.values) ? selectConfig.values.slice() : [])
+        : [];
+    var currentValue = multiple ? '' : (value != null ? String(value) : '');
+
+    function getTriggerConfig() {
+        return {
+            multiple: multiple,
+            value: currentValue,
+            values: currentValues.slice(),
+            placeholder: placeholder,
+            multipleSummaryLabel: selectConfig.multipleSummaryLabel,
+            valueDisplay: selectConfig.valueDisplay
+        };
+    }
+
+    function rebuildDropdownOptions() {
+        var menuOptions = buildMenuOptions();
+        var optionsContainer = dropdown.querySelector('.ubits-dropdown-menu__options');
+        if (!optionsContainer) return;
+        optionsContainer.innerHTML = menuOptions.map(function (opt) {
+            return inputSelectBuildOptionHtml(opt, multiple ? null : currentValue);
+        }).join('');
+    }
+
+    var clearBtn = container.querySelector('.ubits-select-clear-btn');
+    function updateClearVisibility() {
+        if (!clearBtn) return;
+        var hasVal = multiple ? currentValues.length > 0 : !!currentValue;
+        clearBtn.style.display = hasVal ? 'inline-flex' : 'none';
+        inputElement.classList.toggle('ubits-select-trigger--clearable', hasVal);
+    }
+
+    function refreshTrigger() {
+        inputSelectUpdateTriggerDisplay(inputElement, selectOptions, getTriggerConfig());
+        updateClearVisibility();
+    }
+
+    function emitChange() {
+        if (typeof onChange !== 'function') return;
+        if (multiple) onChange(currentValues.slice());
+        else onChange(currentValue);
+    }
+
+    function buildMenuOptions() {
+        return inputSelectMapMenuOptions(selectOptions, getTriggerConfig());
+    }
     var overlayId = 'ubits-input-select-' + containerId;
     var existing = document.getElementById(overlayId);
     if (existing) existing.remove();
 
-    var valueStr = value != null ? String(value) : '';
-    var allOptions = selectOptions || [];
-    var hasRichOptions = inputSelectHasRichOptions(allOptions);
+    var valueStr = multiple ? '' : currentValue;
+    var menuOptions = buildMenuOptions();
+    var allOptions = menuOptions || [];
+    var needsWidePanel = inputSelectNeedsWidePanel(selectOptions);
     var initialCount = allOptions.length > INPUT_SELECT_ITEMS_PER_PAGE ? INPUT_SELECT_ITEMS_PER_PAGE : allOptions.length;
     var initialSlice = allOptions.slice(0, initialCount);
 
-    // Create the dropdown content div directly (no overlay wrapper)
-    // Mimics Calendar component: direct body child, fixed position, high z-index
     var dropdown = document.createElement('div');
     dropdown.id = overlayId;
-    dropdown.className = 'ubits-dropdown-menu__content' + (hasRichOptions ? ' ubits-dropdown-menu__content--rich-options' : '');
+    dropdown.className = 'ubits-dropdown-menu__content' + (needsWidePanel ? ' ubits-dropdown-menu__content--rich-options' : '');
     // Force styles: fixed, max z-index, initially hidden. No inline overflow — el CSS de
     // .ubits-dropdown-menu__content usa overflow:hidden para recortar hijos al border-radius
     // (overflow:visible rompía esquinas redondeadas en listas con scroll).
@@ -1144,7 +1364,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
 
     // Build internal HTML manually (options)
     var optionsHtml = initialSlice.map(function (opt) {
-        return inputSelectBuildOptionHtml(opt, valueStr);
+        return inputSelectBuildOptionHtml(opt, multiple ? null : valueStr);
     }).join('');
 
     dropdown.innerHTML = '<div class="ubits-dropdown-menu__options">' + optionsHtml + '</div>';
@@ -1152,26 +1372,49 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
 
     // Option click handler
     function onOptionClick(btn) {
+        if (btn.disabled || btn.getAttribute('aria-disabled') === 'true') return;
         var val = btn.getAttribute('data-value') || '';
-        var textEl = btn.querySelector('.ubits-dropdown-menu__option-text');
-        var text = textEl ? textEl.textContent : '';
-        inputElement.value = text;
-        dropdown.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (optBtn) {
-            var v = optBtn.getAttribute('data-value') || '';
-            optBtn.classList.toggle('ubits-dropdown-menu__option--selected', v === val);
-        });
+        currentValue = val;
+        refreshTrigger();
+        rebuildDropdownOptions();
         dropdown.style.display = 'none';
-        if (typeof onChange === 'function') onChange(val);
+        emitChange();
     }
 
-    // Attach event listeners via delegation
+    function onMultiOptionClick(btn) {
+        if (btn.disabled || btn.getAttribute('aria-disabled') === 'true') return;
+        var val = btn.getAttribute('data-value') || '';
+        var idx = currentValues.indexOf(val);
+        if (idx === -1) currentValues.push(val);
+        else currentValues.splice(idx, 1);
+        refreshTrigger();
+        rebuildDropdownOptions();
+        emitChange();
+    }
+
     dropdown.addEventListener('click', function (e) {
-        e.stopPropagation(); // Prevent closing when clicking inside
-        var btn = e.target.closest('.ubits-dropdown-menu__option');
-        if (btn) {
-            onOptionClick(btn);
+        e.stopPropagation();
+        var btn = e.target.closest('button.ubits-dropdown-menu__option');
+        if (!btn) return;
+        if (multiple) {
+            onMultiOptionClick(btn);
+            return;
         }
+        onOptionClick(btn);
     });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (multiple) currentValues = [];
+            else currentValue = '';
+            refreshTrigger();
+            rebuildDropdownOptions();
+            emitChange();
+        });
+    }
+    updateClearVisibility();
 
     // Positioning logic (adapted from manual calculation to mimic overlay behavior but without the wrapper)
     function positionDropdown() {
@@ -1185,15 +1428,10 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
         dropdown.style.display = 'flex'; // dropdown-menu__content needs flex
 
         var contentWidth = dropdown.offsetWidth;
-        // Si content is too narrow, match input width (rich options: ancho mínimo del panel)
-        var minPanelWidth = hasRichOptions ? Math.max(rect.width, 520) : rect.width;
-        if (minPanelWidth > contentWidth) {
-            dropdown.style.minWidth = minPanelWidth + 'px';
-            contentWidth = minPanelWidth;
-        } else if (rect.width > contentWidth) {
-            dropdown.style.minWidth = rect.width + 'px';
-            contentWidth = rect.width;
-        }
+        dropdown.style.minWidth = rect.width + 'px';
+        dropdown.style.width = rect.width + 'px';
+        dropdown.style.maxWidth = rect.width + 'px';
+        contentWidth = rect.width;
         var contentHeight = dropdown.offsetHeight;
 
         // Default position: below-left
@@ -1275,7 +1513,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
                 setTimeout(function () {
                     var nextSlice = allOptions.slice(loadedCount, loadedCount + INPUT_SELECT_ITEMS_PER_PAGE);
                     var newHtml = nextSlice.map(function (opt) {
-                        return inputSelectBuildOptionHtml(opt, valueStr);
+                        return inputSelectBuildOptionHtml(opt, multiple ? null : valueStr);
                     }).join('');
 
                     loadingRow.insertAdjacentHTML('beforebegin', newHtml);
@@ -1468,12 +1706,20 @@ function createInput(options = {}) {
             showLabel = true,
             showHelper = false,
             showCounter = false,
+            /** Dónde va el contador: `helper` (abajo) o `label` (arriba a la derecha). Con label left se fuerza `helper`. */
+            counterPlacement = 'helper',
             maxLength = 50,
             mandatory = false,
             mandatoryType = 'obligatorio',
+            /** Estilo del obligatorio: texto `(obligatorio)` o asterisco rojo. */
+            mandatoryStyle = 'text',
             leftIcon = '',
             rightIcon = '',
             selectOptions = [],
+            selectValues = [],
+            multipleSummaryLabel = '',
+            valueDisplay = 'default',
+            clearable = false,
             autocompleteOptions = [],
             value = '',
             onChange = null,
@@ -1487,14 +1733,36 @@ function createInput(options = {}) {
             /** Tamaño de cada página al hacer scroll en autocomplete (modo simple, sin checkboxes). Default 10. */
             autocompleteLazyPageSize = 10,
             /** Etiqueta encima del campo (`top`, default) o a la izquierda (`left`). Solo aplica si hay `label` y `showLabel`. */
-            labelPosition = 'top'
+            labelPosition = 'top',
+            /** HTML junto al label (tooltip, badge). */
+            labelInlineEndHtml = '',
+            /** HTML al extremo derecho de la fila del label (enlace, contador en label). */
+            labelEndHtml = '',
+            /** Fortaleza de contraseña (barras + checklist) — solo type=password. */
+            showPasswordStrength = false,
+            /** Fondo con pulso animado (se detiene al focus). */
+            pulsed = false,
+            min = undefined,
+            max = undefined,
+            step = undefined,
+            /** Error(es): string o array de strings — fuerza estado invalid. */
+            errors = null,
+            error = null
         } = options;
 
+    const errorList = Array.isArray(errors)
+        ? errors.map(function (e) { return String(e || '').trim(); }).filter(Boolean)
+        : Array.isArray(error)
+            ? error.map(function (e) { return String(e || '').trim(); }).filter(Boolean)
+            : (error && String(error).trim())
+                ? [String(error).trim()]
+                : [];
+
     // Si el input está en invalid, el helper debe existir y ser rojo, con texto por defecto.
-    const isInvalidInit = String(state) === 'invalid';
+    const isInvalidInit = String(state) === 'invalid' || errorList.length > 0;
     const effectiveShowHelper = isInvalidInit ? true : !!showHelper;
     const effectiveHelperText = isInvalidInit
-        ? (String(helperText || '').trim() || 'Campo requerido')
+        ? (errorList[0] || String(helperText || '').trim() || 'Campo requerido')
         : String(helperText || '');
 
     // Validar parámetros requeridos
@@ -1525,19 +1793,72 @@ function createInput(options = {}) {
     const labelPosNorm = String(labelPosition || 'top').toLowerCase();
     const useLabelLeft =
         labelPosNorm === 'left' && showLabel && String(label || '').trim() !== '';
+    const counterOnLabel = !!showCounter && String(counterPlacement || 'helper') === 'label' && !useLabelLeft;
+    const counterInHelper = !!showCounter && !counterOnLabel;
+    const variantNorm = String(variant || 'default').toLowerCase();
+    const mandatoryStyleNorm = String(mandatoryStyle || 'text').toLowerCase() === 'asterisk' ? 'asterisk' : 'text';
+
+    function passwordStrengthChecks(password) {
+        const pwd = String(password || '');
+        return [
+            { label: 'Al menos 8 caracteres', ok: pwd.length >= 8 },
+            { label: 'Una mayúscula', ok: /[A-Z]/.test(pwd) },
+            { label: 'Un número', ok: /\d/.test(pwd) },
+            { label: 'Un símbolo', ok: /[^A-Za-z0-9]/.test(pwd) }
+        ];
+    }
+
+    function buildPasswordStrengthHtml(password) {
+        const checks = passwordStrengthChecks(password);
+        const score = checks.filter(function (c) { return c.ok; }).length;
+        let bars = '';
+        for (let i = 0; i < 4; i++) {
+            bars += '<span class="ubits-input-password-strength__bar' +
+                (i < score ? ' ubits-input-password-strength__bar--on' : '') +
+                '" data-score="' + score + '"></span>';
+        }
+        let list = '';
+        checks.forEach(function (c) {
+            list += '<li class="' + (c.ok ? 'ubits-input-password-strength__ok' : 'ubits-input-password-strength__pending') + '">' +
+                '<i class="far ' + (c.ok ? 'fa-check' : 'fa-circle') + '" aria-hidden="true"></i>' +
+                c.label + '</li>';
+        });
+        return '<div class="ubits-input-password-strength" aria-live="polite">' +
+            '<div class="ubits-input-password-strength__bars" role="img" aria-label="Fortaleza ' + score + ' de 4">' + bars + '</div>' +
+            '<ul class="ubits-input-password-strength__list">' + list + '</ul></div>';
+    }
 
     // Crear estructura HTML
     let inputHTML = '';
 
     if (useLabelLeft) {
         const fieldTextareaMod = type === 'textarea' ? ' ubits-input-field--has-textarea' : '';
-        inputHTML += `<div class="ubits-input-field ubits-input-field--label-left${fieldTextareaMod}">`;
+        inputHTML += `<div class="ubits-input-field ubits-input-field--label-left ubits-input-field--label-left-${size}${fieldTextareaMod}">`;
     }
 
     if (showLabel && label) {
-        const mandatoryText = mandatory ? ` <span class="ubits-input-mandatory">(${mandatoryType})</span>` : '';
+        let mandatoryHtml = '';
+        if (mandatory && mandatoryStyleNorm === 'asterisk') {
+            mandatoryHtml = '<span class="ubits-input-mandatory-asterisk" aria-hidden="true">*</span>';
+        } else if (mandatory) {
+            mandatoryHtml = ` <span class="ubits-input-mandatory">(${mandatoryType})</span>`;
+        }
         const labelClass = useLabelLeft ? 'ubits-input-label ubits-input-label--left' : 'ubits-input-label';
-        inputHTML += `<label class="${labelClass}">${label}${mandatoryText}</label>`;
+        const initialCount = String(value || '').length;
+        const counterLabelHtml = counterOnLabel
+            ? `<span class="ubits-input-counter">${initialCount}/${maxLength}</span>`
+            : '';
+        // ReUI c-input-29: valor del rango al mismo nivel del label (solo label arriba)
+        const rangeMinForLabel = min != null ? min : 0;
+        const rangeValForLabel = value !== '' && value != null ? value : String(rangeMinForLabel);
+        const rangeLabelHtml = (type === 'range' && !useLabelLeft)
+            ? `<span class="ubits-input-range-value" aria-live="polite">${escapeAttr(rangeValForLabel)}</span>`
+            : '';
+        const inlineInner = labelInlineEndHtml || '';
+        const inlineHtml = inlineInner ? `<span class="ubits-input-label-inline">${inlineInner}</span>` : '';
+        const endInner = (labelEndHtml || '') + counterLabelHtml + rangeLabelHtml;
+        const endHtml = endInner ? `<div class="ubits-input-label-end">${endInner}</div>` : '';
+        inputHTML += `<div class="ubits-input-label-row${useLabelLeft ? ' ubits-input-label-row--left' : ''}"><div class="ubits-input-label-cluster"><label class="${labelClass}">${label}${mandatoryHtml}</label>${inlineHtml}</div>${endHtml}</div>`;
     }
 
     if (useLabelLeft) {
@@ -1552,7 +1873,14 @@ function createInput(options = {}) {
     const leftIconClass = hasLeftIcon && leftIcon.startsWith('fa-') ? `far ${leftIcon}` : leftIcon;
     const rightIconClass = hasRightIcon && rightIcon.startsWith('fa-') ? `far ${rightIcon}` : rightIcon;
 
-    const wrapperInvalidClass = isInvalidInit ? ' ubits-input-wrapper--invalid' : '';
+    const wrapperMods = [];
+    if (isInvalidInit) wrapperMods.push('ubits-input-wrapper--invalid');
+    if (variantNorm === 'subtle') wrapperMods.push('ubits-input-wrapper--subtle');
+    if (variantNorm === 'underline') wrapperMods.push('ubits-input-wrapper--underline');
+    if (variantNorm === 'minimal') wrapperMods.push('ubits-input-wrapper--minimal');
+    if (variantNorm === 'pill') wrapperMods.push('ubits-input-wrapper--pill');
+    if (type === 'range') wrapperMods.push('ubits-input-wrapper--range');
+    const wrapperInvalidClass = wrapperMods.length ? ' ' + wrapperMods.join(' ') : '';
     inputHTML += `<div class="ubits-input-wrapper${wrapperInvalidClass}" style="position: relative; display: inline-block; width: 100%;">`;
     
     // Icono izquierdo con posicionamiento absoluto
@@ -1565,8 +1893,26 @@ function createInput(options = {}) {
     if (state !== 'default') {
         inputClasses.push(`ubits-input--${state}`);
     }
-    if (variant === 'subtle') {
+    if (variantNorm === 'subtle') {
         inputClasses.push('ubits-input--subtle');
+    } else if (variantNorm === 'underline') {
+        inputClasses.push('ubits-input--underline');
+    } else if (variantNorm === 'minimal') {
+        inputClasses.push('ubits-input--minimal');
+    } else if (variantNorm === 'pill') {
+        inputClasses.push('ubits-input--pill');
+    }
+    if (pulsed) {
+        inputClasses.push('ubits-input--pulsed');
+    }
+    if (type === 'color') {
+        inputClasses.push('ubits-input--color');
+    }
+    if (type === 'file') {
+        inputClasses.push('ubits-input--file');
+    }
+    if (type === 'range') {
+        inputClasses.push('ubits-input--range');
     }
     
     const disabledAttr = state === 'disabled' ? ' disabled' : '';
@@ -1586,16 +1932,31 @@ function createInput(options = {}) {
     
     if (type === 'select') {
         console.log('Rendering SELECT with options:', selectOptions);
-        // SELECT - usar input normal pero readonly y con rightIcon angle-down (siempre, no chevron-down)
-        // padding-right debe aplicarse SIEMPRE aunque el caller no pase rightIcon en options (hasRightIcon sería false y inputStyle no reservaría hueco).
         const selectIconPadRight = { xs: '32px', sm: '36px', md: '40px', lg: '44px' }[size] || '40px';
-        const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
-        const selectInputStyle = `width: 100%; ${paddingLeft} padding-right: ${selectIconPadRight};`;
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${selectInputStyle}" value="${escapeAttr(selectValue)}" readonly>`;
-        
-        // Siempre usar angle-down en selects (icono desplegable)
-            finalRightIcon = 'fa-angle-down';
-            finalHasRightIcon = true;
+        const triggerConfig = {
+            value: value,
+            placeholder: placeholder,
+            multiple: multiple,
+            values: Array.isArray(selectValues) ? selectValues : [],
+            multipleSummaryLabel: multipleSummaryLabel,
+            valueDisplay: valueDisplay
+        };
+        const triggerInnerHtml = inputSelectBuildTriggerInner(selectOptions, triggerConfig);
+        const dataAttrs = multiple
+            ? ' data-values="' + escapeAttr(JSON.stringify(triggerConfig.values)) + '"'
+            : ' data-value="' + escapeAttr(value) + '"';
+        const clearPad = clearable ? { xs: '48px', sm: '52px', md: '56px', lg: '64px' }[size] || '56px' : selectIconPadRight;
+        const selectInputStyle = 'width: 100%; ' + paddingLeft + ' padding-right: ' + clearPad + '; text-align: left;';
+        inputHTML += '<button type="button" class="' + inputClasses.join(' ') + ' ubits-select-trigger"' +
+            dataAttrs + ' style="' + selectInputStyle + '" aria-haspopup="listbox"' +
+            (multiple ? ' aria-multiselectable="true"' : '') + disabledAttr + '>' +
+            '<span class="ubits-select-trigger-inner">' + triggerInnerHtml + '</span></button>';
+        if (clearable) {
+            inputHTML += '<button type="button" class="ubits-select-clear-btn" aria-label="Limpiar selección" style="display:none;"><i class="far fa-times" aria-hidden="true"></i></button>';
+        }
+
+        finalRightIcon = 'fa-angle-down';
+        finalHasRightIcon = true;
     } else if (type === 'textarea') {
         console.log('Rendering TEXTAREA');
         // TEXTAREA - campo multilínea sin control nativo de redimensionamiento
@@ -1686,10 +2047,29 @@ function createInput(options = {}) {
                 passwordStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
             }
         inputHTML += `<input type="password" class="${inputClasses.join(' ')}" style="${passwordStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
+        } else if (type === 'range') {
+            const rangeMin = min != null ? min : 0;
+            const rangeMax = max != null ? max : 100;
+            const rangeStep = step != null ? step : 1;
+            const rangeVal = value !== '' && value != null ? value : String(rangeMin);
+            let rangeAttrs = ` min="${escapeAttr(rangeMin)}" max="${escapeAttr(rangeMax)}" step="${escapeAttr(rangeStep)}"`;
+            // Valor en label row cuando hay label arriba; si no, al lado del slider
+            const showInlineValue = !(showLabel && label) || useLabelLeft;
+            inputHTML += `<div class="ubits-input-range-inner">`;
+            inputHTML += `<input type="range" class="${inputClasses.join(' ')}" style="width: 100%;" value="${escapeAttr(rangeVal)}"${rangeAttrs}${disabledAttr}>`;
+            if (showInlineValue) {
+                inputHTML += `<span class="ubits-input-range-value" aria-live="polite">${escapeAttr(rangeVal)}</span>`;
+            }
+            inputHTML += `</div>`;
         } else {
         console.log('Rendering normal INPUT');
-        // INPUT normal
-        inputHTML += `<input type="${type}" class="${inputClasses.join(' ')}" style="${inputStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
+        // INPUT normal (text, email, number, tel, url, time, file, color, …)
+        let extraAttrs = '';
+        if (min != null) extraAttrs += ` min="${escapeAttr(min)}"`;
+        if (max != null) extraAttrs += ` max="${escapeAttr(max)}"`;
+        if (step != null) extraAttrs += ` step="${escapeAttr(step)}"`;
+        const valueAttr = type === 'file' ? '' : ` value="${safeValue}"`;
+        inputHTML += `<input type="${type}" class="${inputClasses.join(' ')}" style="${inputStyle}" placeholder="${safePlaceholder}"${valueAttr}${disabledAttr}${maxLengthAttr}${extraAttrs}>`;
     }
     
     // Icono izquierdo con posicionamiento absoluto
@@ -1706,16 +2086,29 @@ function createInput(options = {}) {
     
     inputHTML += '</div>';
 
-    // Helper + contador: con showCounter, una sola fila — helper «Máximo X caracteres» + n/max (sin duplicar etiquetas).
-    if (showCounter) {
+    // Fortaleza de contraseña (debajo del wrapper, antes del helper)
+    if (showPasswordStrength && type === 'password') {
+        inputHTML += buildPasswordStrengthHtml(value);
+    }
+
+    // Helper + contador: con showCounter en helper, una sola fila — «Máximo X caracteres» + n/max.
+    if (errorList.length > 1) {
+        inputHTML += '<div class="ubits-input-helper ubits-input-helper--errors"><ul class="ubits-input-error-list" role="alert">';
+        errorList.forEach(function (msg) {
+            inputHTML += '<li class="ubits-input-error-item"><i class="far fa-circle-exclamation" aria-hidden="true"></i><span>' +
+                String(msg).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span></li>';
+        });
+        inputHTML += '</ul></div>';
+    } else if (counterInHelper) {
         const maxCharsHelper = `Máximo ${maxLength} caracteres`;
+        const initialCount = String(value || '').length;
         inputHTML += '<div class="ubits-input-helper">';
         if (isInvalidInit) {
             inputHTML += `<span class="ubits-input-helper-text">${effectiveHelperText}</span>`;
         } else {
             inputHTML += '<div class="ubits-input-helper-row">';
             inputHTML += `<span class="ubits-input-helper-text">${maxCharsHelper}</span>`;
-            inputHTML += `<span class="ubits-input-counter">0/${maxLength}</span>`;
+            inputHTML += `<span class="ubits-input-counter">${initialCount}/${maxLength}</span>`;
             inputHTML += '</div>';
         }
         inputHTML += '</div>';
@@ -1739,16 +2132,69 @@ function createInput(options = {}) {
     const wrapperElement = container.querySelector('.ubits-input-wrapper');
     const helperElement = container.querySelector('.ubits-input-helper');
     const counterElement = container.querySelector('.ubits-input-counter');
+    const rangeValueEl = container.querySelector('.ubits-input-range-value');
+    const passwordStrengthEl = container.querySelector('.ubits-input-password-strength');
     
     // Determinar si es input, select o search
     const isSelect = type === 'select';
     const isSearch = type === 'search';
+
+    function refreshPasswordStrengthUI() {
+        const mount = container.querySelector('.ubits-input-password-strength');
+        if (!mount || !inputElement) return;
+        const next = document.createElement('div');
+        next.innerHTML = buildPasswordStrengthHtml(inputElement.value);
+        const fresh = next.firstChild;
+        if (fresh && mount.parentNode) {
+            mount.parentNode.replaceChild(fresh, mount);
+        }
+    }
+
+    function applyEmailBlurError() {
+        if (type !== 'email' || !inputElement) return;
+        const val = String(inputElement.value || '').trim();
+        if (!val) return;
+        const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        if (ok) return;
+        // Mostrar helper de error sin pisar errores múltiples ya definidos
+        if (errorList.length > 1) return;
+        inputElement.classList.add('ubits-input--invalid');
+        if (wrapperElement) wrapperElement.classList.add('ubits-input-wrapper--invalid');
+        let helper = container.querySelector('.ubits-input-helper');
+        if (!helper) {
+            helper = document.createElement('div');
+            helper.className = 'ubits-input-helper';
+            const insertAfter = passwordStrengthEl || wrapperElement;
+            if (insertAfter && insertAfter.parentNode) {
+                insertAfter.parentNode.insertBefore(helper, insertAfter.nextSibling);
+            } else {
+                container.appendChild(helper);
+            }
+        }
+        let helperTextEl = helper.querySelector('.ubits-input-helper-text');
+        if (!helperTextEl) {
+            helper.innerHTML = '';
+            helperTextEl = document.createElement('span');
+            helperTextEl.className = 'ubits-input-helper-text';
+            helper.appendChild(helperTextEl);
+        }
+        const msg = 'Escribe un correo válido';
+        helperTextEl.textContent = msg;
+        helperTextEl.classList.add('ubits-input-helper-error');
+    }
     
     // Si es SELECT, usar la nueva implementación con inyección en body (setupSelectWithDropdownMenu)
     // Ya no depende de dropdown-menu.js porque la función es autónoma.
     if (isSelect) {
         inputElement.style.cursor = 'pointer';
-        setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange);
+        setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange, {
+            multiple: multiple,
+            values: Array.isArray(selectValues) ? selectValues : [],
+            multipleSummaryLabel: multipleSummaryLabel,
+            label: label,
+            valueDisplay: valueDisplay,
+            clearable: clearable
+        });
     }
     
     // Si es SEARCH, agregar funcionalidad de limpiar
@@ -1937,8 +2383,25 @@ function createInput(options = {}) {
 
     if (onBlur && typeof onBlur === 'function') {
         inputElement.addEventListener('blur', (e) => {
+            if (type === 'email') applyEmailBlurError();
             onBlur(e.target.value, e);
         });
+    } else if (type === 'email') {
+        inputElement.addEventListener('blur', function () {
+            applyEmailBlurError();
+        });
+    }
+
+    // Range: actualizar indicador de valor
+    if (type === 'range' && inputElement && rangeValueEl) {
+        inputElement.addEventListener('input', function () {
+            rangeValueEl.textContent = inputElement.value;
+        });
+    }
+
+    // Password strength live update
+    if (showPasswordStrength && type === 'password' && inputElement) {
+        inputElement.addEventListener('input', refreshPasswordStrengthUI);
     }
 
     // Actualizar contador de caracteres con validación
@@ -1973,13 +2436,37 @@ function createInput(options = {}) {
 
     // Retornar métodos útiles
     const inputApi = {
-        getValue: () => inputElement.value,
+        getValue: () => {
+            if (isSelect && multiple) {
+                var raw = inputElement.getAttribute('data-values');
+                if (!raw) return [];
+                try { return JSON.parse(raw); } catch (e) { return []; }
+            }
+            if (isSelect) return inputElement.getAttribute('data-value') || '';
+            return inputElement.value;
+        },
         setValue: (newValue) => {
+            if (isSelect) {
+                if (multiple) {
+                    var vals = Array.isArray(newValue) ? newValue.map(String) : [];
+                    inputSelectUpdateTriggerDisplay(inputElement, selectOptions, {
+                        multiple: true,
+                        values: vals,
+                        placeholder: placeholder,
+                        multipleSummaryLabel: multipleSummaryLabel
+                    });
+                } else {
+                    inputSelectUpdateTriggerDisplay(inputElement, selectOptions, {
+                        value: newValue != null ? String(newValue) : '',
+                        placeholder: placeholder
+                    });
+                }
+                return;
+            }
             inputElement.value = newValue;
             if (showCounter && counterElement) {
                 updateCounter();
             }
-            // Validación automática removida - Usar validación manual
         },
         focus: () => inputElement.focus(),
         blur: () => inputElement.blur(),

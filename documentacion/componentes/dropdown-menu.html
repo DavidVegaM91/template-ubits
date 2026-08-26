@@ -228,11 +228,28 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                 { id: 'posiciones', label: 'Posiciones' },
                 { id: 'perfil-usuario', label: 'Perfil AppHeader' },
                 { id: 'notificaciones', label: 'Notificaciones' },
-                { id: 'selector-ia', label: 'Selector IA' }
+                { id: 'selector-ia', label: 'Selector IA' },
+                { id: 'con-badges', label: 'Con badges' },
+                { id: 'solo-badges', label: 'Solo badges' },
+                { id: 'con-avatar', label: 'Con avatar' },
+                { id: 'con-descripcion', label: 'Con descripción' },
+                { id: 'status-dots', label: 'Status dots' },
+                { id: 'agrupado', label: 'Agrupado' },
+                { id: 'timezone', label: 'Zona horaria' },
+                { id: 'con-banderas', label: 'Con banderas' },
+                { id: 'lista-simple', label: 'Lista simple' },
+                { id: 'iconos-select', label: 'Iconos (select)' },
+                { id: 'multi-dots', label: 'Multi + dots' },
+                { id: 'lista-larga', label: 'Lista larga' },
+                { id: 'opcion-disabled', label: 'Opción disabled' }
             ];
 
             var FOOTER_COMPS = { checklist: true, radios: true, 'con-busqueda': true };
-            var NO_SEARCH_KNOB = { 'con-busqueda': true, enriquecido: true, 'acciones-kebab': true, 'acciones-rapidas': true, 'compartir-exportar': true, posiciones: true, 'perfil-usuario': true, notificaciones: true, 'selector-ia': true, submenus: true };
+            var NO_SEARCH_KNOB = { 'con-busqueda': true, enriquecido: true, 'acciones-kebab': true, 'acciones-rapidas': true, 'compartir-exportar': true, posiciones: true, 'perfil-usuario': true, notificaciones: true, 'selector-ia': true, submenus: true, 'con-badges': true, 'solo-badges': true, 'con-avatar': true, 'con-descripcion': true, 'status-dots': true, agrupado: true, timezone: true, 'con-banderas': true, 'lista-simple': true, 'iconos-select': true, 'multi-dots': true, 'lista-larga': true, 'opcion-disabled': true };
+
+            function statusDotHtml(color) {
+                return '<span aria-hidden="true" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + String(color).replace(/"/g, '') + ';flex-shrink:0"></span>';
+            }
 
             function profileHeaderHtml() {
                 return '<div class="ubits-dropdown-menu__profile-header">' +
@@ -434,6 +451,109 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                             { text: 'Perfil', value: 'profile', leftIcon: 'user' },
                             { text: 'Configuración', value: 'settings', leftIcon: 'gear', selected: true },
                             { text: 'Cerrar sesión', value: 'logout', leftIcon: 'right-from-bracket', danger: true }
+                        ];
+                    case 'con-badges':
+                        return [
+                            { text: 'Urgente', value: 'p0', statusTag: { text: 'P0', variant: 'error' }, selected: true },
+                            { text: 'Alta', value: 'p1', statusTag: { text: 'P1', variant: 'warning' } },
+                            { text: 'Media', value: 'p2', statusTag: { text: 'P2', variant: 'info' } },
+                            { text: 'Baja', value: 'p3', statusTag: { text: 'P3', variant: 'neutral' } }
+                        ];
+                    case 'solo-badges':
+                        return [
+                            { value: 'progress', statusTag: { text: 'En progreso', variant: 'warning' }, badgeOnly: true, selected: true },
+                            { value: 'done', statusTag: { text: 'Completado', variant: 'success' }, badgeOnly: true },
+                            { value: 'pending', statusTag: { text: 'Pendiente', variant: 'info' }, badgeOnly: true },
+                            { value: 'cancelled', statusTag: { text: 'Cancelado', variant: 'neutral' }, badgeOnly: true },
+                            { value: 'rejected', statusTag: { text: 'Rechazado', variant: 'error' }, badgeOnly: true }
+                        ];
+                    case 'con-avatar':
+                        return [
+                            { text: 'Ana García', value: 'ana', avatar: '../../images/avatars/serv_f27_ana.jpg', description: 'ana.garcia@empresa.com' },
+                            { text: 'Mariana López', value: 'mariana', avatar: '../../images/avatars/cons_f27_mariana.jpg', description: 'mariana.lopez@empresa.com' },
+                            { text: 'Sin asignar', value: 'unassigned', avatar: '' }
+                        ];
+                    case 'con-descripcion':
+                        return [
+                            { text: 'Solo lectura', value: 'viewer', description: 'Puede ver contenidos, no editar.' },
+                            { text: 'Editor', value: 'editor', description: 'Crea y edita contenidos del espacio.' },
+                            { text: 'Administrador', value: 'admin', description: 'Gestiona acceso, facturación y defaults.', selected: true }
+                        ];
+                    case 'status-dots':
+                        return [
+                            { text: 'Listo', value: 'ready', leftHtml: statusDotHtml('var(--ubits-feedback-accent-success)'), selected: true },
+                            { text: 'En progreso', value: 'progress', leftHtml: statusDotHtml('var(--ubits-feedback-accent-info)') },
+                            { text: 'Bloqueado', value: 'blocked', leftHtml: statusDotHtml('var(--ubits-feedback-accent-error)') },
+                            { text: 'Borrador', value: 'draft', leftHtml: statusDotHtml('var(--ubits-fg-1-medium)') }
+                        ];
+                    case 'agrupado':
+                        return [
+                            { text: 'Frutas', isSectionLabel: true },
+                            { text: 'Manzana', value: 'apple' },
+                            { text: 'Banano', value: 'banana', selected: true },
+                            { text: 'Naranja', value: 'orange' },
+                            { divider: true },
+                            { text: 'Verduras', isSectionLabel: true },
+                            { text: 'Zanahoria', value: 'carrot' },
+                            { text: 'Brócoli', value: 'broccoli' }
+                        ];
+                    case 'timezone':
+                        return [
+                            { text: 'América', isSectionLabel: true },
+                            { text: 'Bogotá', value: 'bog', metaText: 'UTC−5', selected: true },
+                            { text: 'Ciudad de México', value: 'mex', metaText: 'UTC−6' },
+                            { text: 'Santiago', value: 'scl', metaText: 'UTC−4' },
+                            { divider: true },
+                            { text: 'Europa', isSectionLabel: true },
+                            { text: 'Madrid', value: 'mad', metaText: 'UTC+1' },
+                            { text: 'Londres', value: 'lon', metaText: 'UTC+0' }
+                        ];
+                    case 'con-banderas':
+                        return [
+                            { text: 'Colombia', value: 'co', leftHtml: '<span aria-hidden="true">🇨🇴</span>' },
+                            { text: 'México', value: 'mx', leftHtml: '<span aria-hidden="true">🇲🇽</span>', selected: true },
+                            { text: 'Chile', value: 'cl', leftHtml: '<span aria-hidden="true">🇨🇱</span>' },
+                            { text: 'Argentina', value: 'ar', leftHtml: '<span aria-hidden="true">🇦🇷</span>' }
+                        ];
+                    case 'lista-simple':
+                        return [
+                            { text: 'Colombia', value: 'co', selected: true, rightIcon: 'check' },
+                            { text: 'México', value: 'mx' },
+                            { text: 'Chile', value: 'cl' },
+                            { text: 'Argentina', value: 'ar' },
+                            { text: 'Perú', value: 'pe' }
+                        ];
+                    case 'iconos-select':
+                        return [
+                            { text: 'Curso', value: 'curso', leftIcon: 'graduation-cap', selected: true, rightIcon: 'check' },
+                            { text: 'Ruta', value: 'ruta', leftIcon: 'route' },
+                            { text: 'Podcast', value: 'podcast', leftIcon: 'podcast' },
+                            { text: 'Video', value: 'video', leftIcon: 'play' }
+                        ];
+                    case 'multi-dots':
+                        return [
+                            { text: 'Listo', value: 'ready', leftHtml: statusDotHtml('var(--ubits-feedback-accent-success)'), selected: true, rightIcon: 'check' },
+                            { text: 'Error', value: 'error', leftHtml: statusDotHtml('var(--ubits-feedback-accent-error)'), selected: true, rightIcon: 'check' },
+                            { text: 'Construyendo', value: 'building', leftHtml: statusDotHtml('var(--ubits-feedback-accent-warning)'), selected: true, rightIcon: 'check' },
+                            { text: 'En cola', value: 'queued', leftHtml: statusDotHtml('var(--ubits-feedback-accent-info)') },
+                            { text: 'Inicializando', value: 'initializing', leftHtml: statusDotHtml('var(--ubits-fg-1-high)') },
+                            { text: 'Cancelado', value: 'canceled', leftHtml: statusDotHtml('var(--ubits-accent-purple)') }
+                        ];
+                    case 'lista-larga':
+                        return Array.from({ length: 40 }, function (_, i) {
+                            return {
+                                text: 'Opción ' + (i + 1),
+                                value: 'item-' + (i + 1),
+                                selected: i === 0,
+                                rightIcon: i === 0 ? 'check' : undefined
+                            };
+                        });
+                    case 'opcion-disabled':
+                        return [
+                            { text: 'Manzana', value: 'apple', selected: true, rightIcon: 'check' },
+                            { text: 'Banano', value: 'banana' },
+                            { text: 'Uva', value: 'grape', disabled: true },
+                            { text: 'Naranja', value: 'orange' }
                         ];
                     default:
                         return [];

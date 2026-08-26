@@ -1,0 +1,199 @@
+/* Modal «Agregar asistencia» + vista renderizada en Recursos */
+
+.cc-asistencia-recurso-modal {
+    width: 100%;
+    min-width: 0;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--padding-lg) 0 calc(var(--padding-xl) + var(--padding-lg));
+    box-sizing: border-box;
+}
+
+.cc-asistencia-recurso-modal__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    width: 100%;
+}
+
+.cc-asistencia-recurso-modal__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.cc-asistencia-recurso-modal__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-asistencia-recurso-modal__switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.cc-asistencia-recurso-modal__hint {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-asistencia-recurso-modal__sessions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.cc-asistencia-recurso-modal__session-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.cc-asistencia-session-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md, 8px);
+    background: var(--ubits-bg-1);
+}
+
+.cc-asistencia-session-card.is-locked {
+    background: var(--ubits-bg-2);
+}
+
+.cc-asistencia-session-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.cc-asistencia-session-card__name {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.cc-asistencia-session-card__name .ubits-inline-edit.ubits-body-sm-bold {
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-asistencia-session-card__fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-md);
+}
+
+@media (min-width: 640px) {
+    .cc-asistencia-session-card__fields {
+        grid-template-columns: 1.2fr 1fr 1fr;
+    }
+}
+
+.cc-asistencia-recurso-modal .ubits-rich-text-editor {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md, 8px);
+    padding: var(--padding-md);
+    box-sizing: border-box;
+}
+
+#cc-asistencia-recurso-modal .ubits-modal-header .ubits-modal-full-inner,
+#cc-asistencia-recurso-modal .ubits-modal-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Vista renderizada (Recursos / readonly) */
+.cc-asistencia-rendered {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    gap: var(--gap-md);
+}
+
+.cc-asistencia-rendered__widget {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md, 8px);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.cc-asistencia-rendered__heading {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-asistencia-rendered__heading-sessions {
+    margin: var(--gap-md) 0 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-asistencia-rendered__instructions {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-asistencia-rendered__instructions p {
+    margin: 0 0 var(--gap-sm);
+}
+
+.cc-asistencia-rendered__instructions p:last-child {
+    margin-bottom: 0;
+}
+
+.cc-asistencia-rendered__free {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-asistencia-rendered__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.cc-asistencia-rendered__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding: var(--padding-md) 0;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.cc-asistencia-rendered__item:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.cc-asistencia-rendered__label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-asistencia-rendered__window {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-asistencia-rendered__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}

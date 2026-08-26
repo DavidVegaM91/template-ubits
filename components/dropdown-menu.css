@@ -159,9 +159,9 @@
     transform: none;
 }
 
-/* Opción activa (--selected): refuerzo en tipografía; la clase debe seguir al valor real (p. ej. input.js al elegir en select) */
+/* Opción activa (--selected): fondo gris + check azul a la derecha (paridad ReUI / Select) */
 .ubits-dropdown-menu__option--selected {
-    background: var(--ubits-bg-1);
+    background: var(--ubits-bg-2);
 }
 
 .ubits-dropdown-menu__option--selected:hover {
@@ -497,6 +497,41 @@
     color: var(--ubits-fg-1-high);
 }
 
+.ubits-dropdown-menu__option-text-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.ubits-dropdown-menu__option-text-wrap .ubits-dropdown-menu__option-text {
+    flex: none;
+}
+
+.ubits-dropdown-menu__option-description {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.35;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-dropdown-menu__option--with-description {
+    align-items: flex-start;
+}
+
+.ubits-dropdown-menu__option--with-description .ubits-dropdown-menu__option-left {
+    margin-top: 2px;
+}
+
+.ubits-dropdown-menu__option:disabled,
+.ubits-dropdown-menu__option[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Variante enriquecida: texto + meta + status-tag (Figma Zona de estudio · filtrar plan) */
 .ubits-dropdown-menu__content--rich-options {
     min-width: 520px;
@@ -509,11 +544,24 @@
     justify-content: flex-start;
 }
 
-.ubits-dropdown-menu__option--rich .ubits-dropdown-menu__option-text {
-    flex: 1 1 0;
+.ubits-dropdown-menu__option-rich-label-group {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.ubits-dropdown-menu__option--rich .ubits-dropdown-menu__option-rich-label-group .ubits-dropdown-menu__option-text {
+    flex: 0 1 auto;
     min-width: 0;
     color: var(--ubits-fg-1-medium);
     word-break: break-word;
+}
+
+.ubits-dropdown-menu__option-rich-spacer {
+    flex: 1 1 0;
+    min-width: 8px;
 }
 
 .ubits-dropdown-menu__option-rich-meta {
@@ -525,12 +573,12 @@
 
 .ubits-dropdown-menu__option-rich-tag {
     flex-shrink: 0;
-    min-width: 83px;
+    min-width: 0;
     justify-content: center;
     box-sizing: border-box;
 }
 
-.ubits-dropdown-menu__option--rich.ubits-dropdown-menu__option--selected .ubits-dropdown-menu__option-text {
+.ubits-dropdown-menu__option--rich.ubits-dropdown-menu__option--selected .ubits-dropdown-menu__option-rich-label-group .ubits-dropdown-menu__option-text {
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }

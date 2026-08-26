@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Input Group | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input-group.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .ig-control-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: flex-start; }
+        .ig-control-row__label { color: var(--ubits-fg-1-medium); min-width: 96px; padding-top: 6px; flex-shrink: 0; }
+        .ig-props-divider { border-top: 1px solid var(--ubits-border-1); margin: 0 0 12px; padding-top: 4px; color: var(--ubits-fg-1-medium); }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 48px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 16px; color: var(--ubits-accent-brand);">Input Group</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 720px; margin: 0 auto;">Contenedor con borde único: input + prefijos/sufijos y botones inline. Oleada P0 vs ReUI input-group.</p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 16px;"><i class="far fa-eye" style="margin-right:8px;color:var(--ubits-accent-brand);"></i>Preview</h2>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
+                                <div id="ig-preview" style="max-width: 420px; margin: 0 auto;"></div>
+                                <p id="ig-copy-feedback" class="ubits-body-xs-regular" style="display:none;margin-top:8px;color:var(--ubits-feedback-accent-success);">Copiado al portapapeles</p>
+                            </div>
+
+                            <div style="margin-top: 24px;">
+                                <div class="ig-control-row">
+                                    <span class="ubits-body-sm-bold ig-control-row__label">Variante:</span>
+                                    <div id="ig-variant-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                                </div>
+                                <p class="ubits-body-sm-bold ig-props-divider">Propiedades de esta variante</p>
+                                <div class="ig-control-row">
+                                    <span class="ubits-body-sm-bold ig-control-row__label">Tamaño:</span>
+                                    <div id="ig-size-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                                </div>
+                                <div class="ig-control-row">
+                                    <span class="ubits-body-sm-bold ig-control-row__label">Estado:</span>
+                                    <div id="ig-state-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/doc-init.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/input-group.js"></script>
+    <script>
+    (function () {
+        var VARIANTS = [
+            { id: 'basico', label: 'Básico' },
+            { id: 'prefijo-texto', label: 'Prefijo texto' },
+            { id: 'sufijo-texto', label: 'Sufijo texto' },
+            { id: 'prefijo-sufijo-texto', label: 'Prefijo + sufijo' },
+            { id: 'boton-accion', label: 'Botón acción' },
+            { id: 'boton-icono', label: 'Botón icono' },
+            { id: 'multiples-acciones', label: 'Múltiples acciones' },
+            { id: 'token-readonly', label: 'Token readonly' }
+        ];
+        var state = { variant: 'basico', size: 'sm', disabled: false, invalid: false };
+        var tokenApi = null;
+        var DEMO_SECRET = 'sk_live_8JfHk29cNqL7zQ4mR6vP';
+
+        function groupClass(extra) {
+            var c = 'ubits-input-group ubits-input-group--' + state.size;
+            if (state.disabled) c += ' ubits-input-group--disabled';
+            if (state.invalid) c += ' ubits-input-group--invalid';
+            if (extra) c += ' ' + extra;
+            return c;
+        }
+
+        function fieldWrap(label, helper, inner) {
+            return '<div class="ubits-input-group-field">' +
+                (label ? '<label class="ubits-input-group-field__label">' + label + '</label>' : '') +
+                inner +
+                (helper ? '<p class="ubits-input-group-field__helper">' + helper + '</p>' : '') +
+                '</div>';
+        }
+
+        function renderPreview() {
+            var el = document.getElementById('ig-preview');
+            if (!el) return;
+            if (tokenApi) { tokenApi.destroy(); tokenApi = null; }
+
+            var s = state.size;
+            var dis = state.disabled ? ' disabled' : '';
+            var html = '';
+
+            if (state.variant === 'token-readonly') {
+                el.innerHTML = fieldWrap('Token de servidor', 'Valor enmascarado con copiar y mostrar/ocultar.', '<div id="ig-token-mount"></div>');
+                tokenApi = createSecretTokenField({
+                    containerId: 'ig-token-mount',
+                    value: DEMO_SECRET,
+                    maskedValue: 'sk_live_••••••••••••••••••••',
+                    size: s,
+                    disabled: state.disabled,
+                    onCopy: showCopyFeedback
+                });
+                return;
+            }
+
+            switch (state.variant) {
+                case 'basico':
+                    html = fieldWrap('Buscar', 'Campo con borde compartido.',
+                        '<div class="' + groupClass() + '" role="group"><input class="ubits-input-group__control" placeholder="Buscar…"' + dis + '></div>');
+                    break;
+                case 'prefijo-texto':
+                    html = fieldWrap('URL', 'Prefijo fijo dentro del grupo.',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--start"><span class="ubits-input-group__text">https://</span></div>' +
+                        '<input class="ubits-input-group__control" placeholder="ejemplo.com"' + dis + '></div>');
+                    break;
+                case 'sufijo-texto':
+                    html = fieldWrap('Monto', 'Sufijo de moneda.',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<input class="ubits-input-group__control" placeholder="0.00"' + dis + '>' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--end"><span class="ubits-input-group__text">EUR</span></div></div>');
+                    break;
+                case 'prefijo-sufijo-texto':
+                    html = fieldWrap('Dominio', 'Prefijo y sufijo de texto.',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--start"><span class="ubits-input-group__text">https://</span></div>' +
+                        '<input class="ubits-input-group__control" placeholder="marca"' + dis + '>' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--end"><span class="ubits-input-group__text">.com</span></div></div>');
+                    break;
+                case 'boton-accion':
+                    html = fieldWrap('Consulta', 'Acción primaria al final.',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<input class="ubits-input-group__control" placeholder="Query…"' + dis + '>' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--end">' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs"' + dis + '>Buscar</button></div></div>');
+                    break;
+                case 'boton-icono':
+                    html = fieldWrap('Componente', 'Botón copiar con tooltip.',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<input class="ubits-input-group__control" value="Usage sync worker"' + dis + '>' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--end">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" aria-label="Copiar"' + dis + ' onclick="window.__igCopyDemo && window.__igCopyDemo()"><i class="far fa-copy"></i></button></div></div>');
+                    break;
+                case 'multiples-acciones':
+                    html = fieldWrap('API key', 'Copy, reveal, rotate y revoke (form-8).',
+                        '<div class="' + groupClass() + '" role="group">' +
+                        '<input class="ubits-input-group__control ubits-input-group__control--mono" readonly value="sk_live_••••••••••••••••••••" aria-label="API key"' + dis + '>' +
+                        '<div class="ubits-input-group__addon ubits-input-group__addon--end"><span class="ubits-input-group__actions">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar clave" aria-label="Copiar clave"' + dis + ' onclick="window.__igCopyDemo && window.__igCopyDemo()"><i class="far fa-copy"></i></button>' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Mostrar clave" aria-label="Mostrar clave"' + dis + '><i class="far fa-eye"></i></button>' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Rotar clave" aria-label="Rotar clave"' + dis + '><i class="far fa-arrows-rotate"></i></button>' +
+                        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Revocar clave" aria-label="Revocar clave"' + dis + '><i class="far fa-trash"></i></button>' +
+                        '</span></div></div>');
+                    break;
+            }
+            el.innerHTML = html;
+            if (typeof initTooltip === 'function') initTooltip(el);
+        }
+
+        function showCopyFeedback() {
+            var fb = document.getElementById('ig-copy-feedback');
+            if (!fb) return;
+            fb.style.display = 'block';
+            window.clearTimeout(showCopyFeedback._t);
+            showCopyFeedback._t = window.setTimeout(function () { fb.style.display = 'none'; }, 1500);
+        }
+        window.__igCopyDemo = function () {
+            if (navigator.clipboard) navigator.clipboard.writeText(DEMO_SECRET).catch(function(){});
+            showCopyFeedback();
+        };
+
+        function makeBtns(containerId, items, getActive, onPick, size) {
+            var row = document.getElementById(containerId);
+            if (!row) return;
+            row.innerHTML = items.map(function (item) {
+                var id = item.id || item;
+                var label = item.label || item;
+                var active = getActive(id);
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--' + (size || 'sm') + ' preview-control-btn' + (active ? ' active' : '') + '" data-id="' + id + '">' + label + '</button>';
+            }).join('');
+            row.querySelectorAll('button').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    onPick(btn.getAttribute('data-id'));
+                });
+            });
+        }
+
+        function refreshControls() {
+            makeBtns('ig-variant-btns', VARIANTS, function (id) { return state.variant === id; }, function (id) { state.variant = id; refreshAll(); });
+            makeBtns('ig-size-btns', ['xs', 'sm', 'md', 'lg'], function (id) { return state.size === id; }, function (id) { state.size = id; refreshAll(); });
+            makeBtns('ig-state-btns', [
+                { id: 'default', label: 'Default' },
+                { id: 'disabled', label: 'Disabled' },
+                { id: 'invalid', label: 'Invalid' }
+            ], function (id) {
+                if (id === 'default') return !state.disabled && !state.invalid;
+                if (id === 'disabled') return state.disabled;
+                return state.invalid;
+            }, function (id) {
+                state.disabled = id === 'disabled';
+                state.invalid = id === 'invalid';
+                if (id === 'default') { state.disabled = false; state.invalid = false; }
+                refreshAll();
+            });
+        }
+
+        function refreshAll() {
+            refreshControls();
+            renderPreview();
+        }
+
+        refreshAll();
+    })();
+    </script>
+</body>
+</html>

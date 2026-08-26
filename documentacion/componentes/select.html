@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Select | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/select.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/combobox.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        .sel-control-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .sel-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 96px;
+        }
+        .sel-props-divider {
+            color: var(--ubits-fg-1-medium);
+            margin: 0 0 12px;
+            padding-top: 4px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        .sel-switch-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .sel-switch-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
+        }
+        .sel-preview-note {
+            margin-top: 12px;
+            color: var(--ubits-fg-1-medium);
+            font-size: var(--font-size-xs);
+            line-height: 1.4;
+        }
+        .sel-composition-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            align-items: flex-end;
+        }
+        .sel-composition-row .ubits-input-field {
+            margin-bottom: 0;
+        }
+        .sel-composition-row .ubits-input-helper:empty {
+            display: none;
+        }
+        .sel-composition-row__action {
+            flex-shrink: 0;
+            align-self: flex-end;
+        }
+    </style>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/select.js"></script>
+    <script src="../../components/combobox.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/switch.js"></script>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 48px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 16px; color: var(--ubits-accent-brand);">Select</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 720px; margin: 0 auto; line-height: 1.6;">
+                                Selector single o multi (React). Vanilla: single vía <code>createSelect</code> + dropdown oficial.
+                                Paridad React: <code>/design-system/components/select</code>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 16px;">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p id="select-preview-intro" class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige una variante ReUI. Debajo aparecen solo las propiedades que aplican a esa variante.
+                            </p>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative; overflow: visible;">
+                                <div id="select-preview-stage" style="max-width: 520px; width: 100%;"></div>
+                                <p id="select-preview-note" class="ubits-body-xs-regular sel-preview-note" style="display: none;"></p>
+                            </div>
+
+                            <div style="margin-top: 24px;" id="select-controls">
+                                <div class="sel-control-row">
+                                    <span class="ubits-body-sm-bold sel-control-row__label">Variante:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-variant"></div>
+                                </div>
+
+                                <p class="ubits-body-xs-regular sel-props-divider" id="props-divider" style="display: none;">
+                                    Propiedades de esta variante
+                                </p>
+
+                                <div class="sel-control-row" id="row-size" style="display: none;">
+                                    <span class="ubits-body-sm-bold sel-control-row__label">Tamaño:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-size"></div>
+                                </div>
+
+                                <div class="sel-control-row" id="row-state" style="display: none;">
+                                    <span class="ubits-body-sm-bold sel-control-row__label">Estado:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-state"></div>
+                                </div>
+
+                                <div class="sel-control-row" id="row-chevron" style="display: none;">
+                                    <span class="ubits-body-sm-bold sel-control-row__label">Chevron:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-chevron"></div>
+                                </div>
+
+                                <div class="sel-control-row" id="row-mandatory-style" style="display: none;">
+                                    <span class="ubits-body-sm-bold sel-control-row__label">Obligatorio:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-mandatory-style"></div>
+                                </div>
+
+                                <div class="sel-switch-row" id="block-switches" style="display: none;">
+                                    <div class="sel-switch-item">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="sw-label-left" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label ubits-body-sm-regular">Etiqueta izquierda</span>
+                                        </label>
+                                    </div>
+                                    <div class="sel-switch-item">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="sw-mandatory" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label ubits-body-sm-regular">Obligatorio</span>
+                                        </label>
+                                    </div>
+                                    <div class="sel-switch-item">
+                                        <label class="ubits-switch ubits-switch--sm">
+                                            <input type="checkbox" class="ubits-switch__input" id="sw-helper" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label ubits-body-sm-regular">Helper</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
+    <script>
+    (function () {
+        var VARIANT = 'basico';
+        var SIZE = 'sm';
+        var comboboxPreviewApi = null;
+        var STATE = 'default';
+        var CHEVRON = 'down';
+        var LABEL_LEFT = false;
+        var MANDATORY = false;
+        var MANDATORY_STYLE = 'text';
+        var SHOW_HELPER = false;
+        var FILTER_Q = '';
+
+        function ensureSelectDialogModal() {
+            if (document.getElementById('sel-dialog-modal')) return;
+            document.body.insertAdjacentHTML('beforeend', getModalHtml({
+                overlayId: 'sel-dialog-modal',
+                title: 'Elegir país',
+                size: 'sm',
+                showFooter: false,
+                bodyHtml: '<div id="sel-dialog-field" style="padding:8px 0 16px;width:100%;"></div>'
+            }));
+            var closeBtn = document.querySelector('#sel-dialog-modal .ubits-modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function () { closeModal('sel-dialog-modal'); });
+            }
+            createSelect({
+                containerId: 'sel-dialog-field',
+                label: 'País',
+                options: OPTS.basico,
+                value: 'co',
+                size: SIZE
+            });
+        }
+        var VARIANTS = [
+            { id: 'basico', label: 'Básico' },
+            { id: 'con-iconos', label: 'Con iconos' },
+            { id: 'agrupado', label: 'Agrupado' },
+            { id: 'con-descripcion', label: 'Con descripción' },
+            { id: 'status-dots', label: 'Status dots' },
+            { id: 'multi-dots', label: 'Multi + dots' },
+            { id: 'con-chips', label: 'Con chips' },
+            { id: 'con-avatar', label: 'Con avatar' },
+            { id: 'con-badges', label: 'Con badges' },
+            { id: 'solo-badges', label: 'Solo badges' },
+            { id: 'pais-flag', label: 'País + bandera' },
+            { id: 'clearable', label: 'Clearable' },
+            { id: 'lista-larga', label: 'Lista larga' },
+            { id: 'opcion-disabled', label: 'Opción disabled' },
+            { id: 'timezone', label: 'Timezone + offset' },
+            { id: 'en-dialog', label: 'En diálogo' },
+            { id: 'con-input', label: 'Con Input' },
+            { id: 'con-boton', label: 'Con botón' },
+            { id: 'en-grupo', label: 'Selects en grupo' }
+        ];
+
+        var NO_SIZE = { 'con-input': 1, 'en-dialog': 1, 'en-grupo': 1 };
+        var NO_STATE = { 'en-dialog': 1, 'con-input': 1, 'con-boton': 1, 'en-grupo': 1 };
+        var NO_FIELD = { 'en-dialog': 1, 'con-input': 1, 'con-boton': 1, 'en-grupo': 1 };
+        var REACT_ONLY = {};
+
+        var OPTS_STATUS = [
+            { value: 'ready', label: 'Listo', dotColor: 'var(--ubits-feedback-accent-success)' },
+            { value: 'progress', label: 'En progreso', dotColor: 'var(--ubits-feedback-accent-info)' },
+            { value: 'blocked', label: 'Bloqueado', dotColor: 'var(--ubits-feedback-accent-error)' },
+            { value: 'draft', label: 'Borrador', dotColor: 'var(--ubits-fg-1-medium)' }
+        ];
+
+        var OPTS = {
+            basico: [
+                { value: 'co', label: 'Colombia' },
+                { value: 'mx', label: 'México' },
+                { value: 'cl', label: 'Chile' },
+                { value: 'ar', label: 'Argentina' }
+            ],
+            'con-iconos': [
+                { value: 'curso', label: 'Curso', icon: 'far fa-graduation-cap' },
+                { value: 'ruta', label: 'Ruta', icon: 'far fa-route' },
+                { value: 'podcast', label: 'Podcast', icon: 'far fa-podcast' }
+            ],
+            agrupado: [
+                { isSectionLabel: true, label: 'Frutas' },
+                { value: 'apple', label: 'Manzana' },
+                { value: 'banana', label: 'Banano' },
+                { value: 'orange', label: 'Naranja' },
+                { divider: true },
+                { isSectionLabel: true, label: 'Verduras' },
+                { value: 'carrot', label: 'Zanahoria' },
+                { value: 'broccoli', label: 'Brócoli' }
+            ],
+            'con-descripcion': [
+                { value: 'viewer', label: 'Solo lectura', description: 'Puede ver contenidos, no editar.' },
+                { value: 'editor', label: 'Editor', description: 'Crea y edita contenidos del espacio.' },
+                { value: 'admin', label: 'Administrador', description: 'Gestiona acceso y facturación.' }
+            ],
+            'status-dots': [
+                { value: 'ready', label: 'Listo', dotColor: 'var(--ubits-feedback-accent-success)' },
+                { value: 'progress', label: 'En progreso', dotColor: 'var(--ubits-feedback-accent-info)' },
+                { value: 'blocked', label: 'Bloqueado', dotColor: 'var(--ubits-feedback-accent-error)' },
+                { value: 'draft', label: 'Borrador', dotColor: 'var(--ubits-fg-1-medium)' }
+            ],
+            'multi-dots': [
+                { value: 'ready', label: 'Listo', dotColor: 'var(--ubits-feedback-accent-success)' },
+                { value: 'error', label: 'Error', dotColor: 'var(--ubits-feedback-accent-error)' },
+                { value: 'building', label: 'Construyendo', dotColor: 'var(--ubits-feedback-accent-warning)' },
+                { value: 'queued', label: 'En cola', dotColor: 'var(--ubits-feedback-accent-info)' },
+                { value: 'initializing', label: 'Inicializando', dotColor: 'var(--ubits-fg-1-high)' },
+                { value: 'canceled', label: 'Cancelado', dotColor: 'var(--ubits-accent-purple)' }
+            ],
+            'con-avatar': [
+                { value: 'ana', label: 'Ana García', avatar: 'images/avatars/serv_f27_ana.jpg' },
+                { value: 'mariana', label: 'Mariana López', avatar: 'images/avatars/cons_f27_mariana.jpg' },
+                { value: 'unassigned', label: 'Sin asignar', avatar: '' }
+            ],
+            'con-chips': [
+                { value: 'E001', label: 'Patricia Elena Bermúdez Ríos', description: 'Gerente General · pateleber@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=100&h=100&fit=crop' },
+                { value: 'E002', label: 'Ricardo Ospina Duque', description: 'Director Comercial · rospid@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop' },
+                { value: 'E052', label: 'Carmen Rosa Díaz Herrera', description: 'Líder de Recursos Humanos · crdiaz@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=100&h=100&fit=crop' },
+                { value: 'E043', label: 'Daniela Cristina Velásquez Parra', description: 'Analista de Recursos Humanos · dvelap@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1629747490241-624f07d70e1e?w=100&h=100&fit=crop' },
+                { value: 'E005', label: 'Andrea Suárez Gómez', description: 'Coordinadora de Atención al Cliente · asuarg@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop' },
+                { value: 'E010', label: 'Laura Valentina Rodríguez Martínez', description: 'Asesora Comercial · lrodrm@fiqsha.demo', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop' }
+            ],
+            'con-badges': [
+                { value: 'p0', label: 'Urgente', statusTag: { text: 'P0', variant: 'error' } },
+                { value: 'p1', label: 'Alta', statusTag: { text: 'P1', variant: 'warning' } },
+                { value: 'p2', label: 'Media', statusTag: { text: 'P2', variant: 'info' } }
+            ],
+            'solo-badges': [
+                { value: 'progress', label: 'En progreso', statusTag: { text: 'En progreso', variant: 'warning' } },
+                { value: 'done', label: 'Completado', statusTag: { text: 'Completado', variant: 'success' } },
+                { value: 'pending', label: 'Pendiente', statusTag: { text: 'Pendiente', variant: 'info' } },
+                { value: 'cancelled', label: 'Cancelado', statusTag: { text: 'Cancelado', variant: 'neutral' } },
+                { value: 'rejected', label: 'Rechazado', statusTag: { text: 'Rechazado', variant: 'error' } }
+            ],
+            'pais-flag': [
+                { value: 'co', label: 'Colombia', leftHtml: '<span aria-hidden="true">🇨🇴</span>' },
+                { value: 'mx', label: 'México', leftHtml: '<span aria-hidden="true">🇲🇽</span>' },
+                { value: 'cl', label: 'Chile', leftHtml: '<span aria-hidden="true">🇨🇱</span>' }
+            ],
+            'opcion-disabled': [
+                { value: 'apple', label: 'Manzana' },
+                { value: 'banana', label: 'Banano' },
+                { value: 'grape', label: 'Uva', disabled: true },
+                { value: 'orange', label: 'Naranja' }
+            ],
+            timezone: [
+                { isSectionLabel: true, label: 'América' },
+                { value: 'bog', label: 'Bogotá', metaText: 'UTC−5' },
+                { value: 'mex', label: 'Ciudad de México', metaText: 'UTC−6' },
+                { divider: true },
+                { isSectionLabel: true, label: 'Europa' },
+                { value: 'mad', label: 'Madrid', metaText: 'UTC+1' }
+            ]
+        };
+
+        OPTS.clearable = OPTS.basico;
+        OPTS['lista-larga'] = Array.from({ length: 40 }, function (_, i) {
+            return { value: 'item-' + (i + 1), label: 'Opción ' + (i + 1) };
+        });
+
+        var LABELS = {
+            basico: 'País',
+            'con-iconos': 'Tipo de contenido',
+            agrupado: 'Categoría',
+            'con-descripcion': 'Nivel de acceso',
+            'status-dots': 'Estado',
+            'multi-dots': 'Estados',
+            'con-avatar': 'Asignar a',
+            'con-chips': 'Destinatarios',
+            'con-badges': 'Prioridad',
+            'solo-badges': 'Estado',
+            'pais-flag': 'País',
+            timezone: 'Zona horaria',
+            clearable: 'País',
+            'lista-larga': 'Opción',
+            'opcion-disabled': 'Fruta'
+        };
+
+        function controlBtn(label, active, onClick) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' + (active ? ' active' : '');
+            b.innerHTML = '<span class="ubits-body-sm-regular">' + label + '</span>';
+            b.addEventListener('click', onClick);
+            return b;
+        }
+
+        function firstValue(opts) {
+            var o = (opts || []).find(function (x) { return x.value && !x.disabled; });
+            return o ? o.value : '';
+        }
+
+        function mountSelect(containerId, opts, extra) {
+            extra = extra || {};
+            createSelect({
+                containerId: containerId,
+                label: extra.label != null ? extra.label : (LABELS[VARIANT] || 'País'),
+                showLabel: extra.showLabel !== false,
+                labelPosition: LABEL_LEFT ? 'left' : 'top',
+                placeholder: extra.placeholder || 'Selecciona una opción',
+                options: opts,
+                value: extra.value != null ? extra.value : firstValue(opts),
+                multiple: !!extra.multiple,
+                values: extra.values || [],
+                multipleSummaryLabel: extra.multipleSummaryLabel,
+                valueDisplay: extra.valueDisplay || 'default',
+                clearable: !!extra.clearable,
+                size: SIZE,
+                disabled: STATE === 'disabled',
+                error: STATE === 'invalid' ? (extra.multiple ? 'Selecciona al menos un estado' : 'Selecciona una opción válida') : undefined,
+                helperText: extra.helperText || (VARIANT === 'multi-dots' ? 'Puedes elegir varios; se muestran como dots solapados' : 'Texto de ayuda del campo'),
+                showHelper: SHOW_HELPER && STATE !== 'invalid',
+                mandatory: MANDATORY,
+                mandatoryStyle: MANDATORY_STYLE
+            });
+        }
+
+        function initPreviewTooltips() {
+            if (typeof initTooltip !== 'function') return;
+            initTooltip('#select-preview-stage [data-tooltip]');
+        }
+
+        function renderPreview() {
+            var stage = document.getElementById('select-preview-stage');
+            var note = document.getElementById('select-preview-note');
+            if (comboboxPreviewApi && typeof comboboxPreviewApi.destroy === 'function') {
+                comboboxPreviewApi.destroy();
+                comboboxPreviewApi = null;
+            }
+            stage.innerHTML = '';
+            note.style.display = 'none';
+            note.textContent = '';
+
+            if (VARIANT === 'en-dialog') {
+                stage.innerHTML =
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="sel-open-dialog">' +
+                    '<span>Abrir diálogo</span></button>';
+                document.getElementById('sel-open-dialog').addEventListener('click', function () {
+                    if (typeof getModalHtml !== 'function' || typeof showModal !== 'function') return;
+                    ensureSelectDialogModal();
+                    showModal('sel-dialog-modal');
+                });
+                return;
+            }
+
+            if (VARIANT === 'con-input') {
+                stage.innerHTML =
+                    '<div class="sel-composition-row" style="max-width:480px;">' +
+                    '<div style="flex:1;" id="sel-filter-input"></div>' +
+                    '<div style="width:160px;" id="select-preview-field"></div></div>';
+                createInput({
+                    containerId: 'sel-filter-input',
+                    type: 'search',
+                    label: 'Buscar',
+                    placeholder: 'Escribe para filtrar…',
+                    value: FILTER_Q,
+                    size: SIZE === 'xs' ? 'sm' : SIZE,
+                    onChange: function (v) { FILTER_Q = v; }
+                });
+                mountSelect('select-preview-field', OPTS_STATUS, { label: 'Estado', showHelper: false, value: 'ready' });
+                return;
+            }
+
+            if (VARIANT === 'con-boton') {
+                stage.innerHTML =
+                    '<div class="sel-composition-row" style="max-width:420px;">' +
+                    '<div style="flex:1;" id="select-preview-field"></div>' +
+                    '<div class="sel-composition-row__action"><button type="button" class="ubits-button ubits-button--primary ubits-button--md"><span>Enviar</span></button></div></div>';
+                mountSelect('select-preview-field', OPTS[VARIANT] || OPTS.basico, { showHelper: false });
+                return;
+            }
+
+            if (VARIANT === 'en-grupo') {
+                stage.innerHTML =
+                    '<div style="display:flex;flex-direction:column;gap:16px;width:100%;max-width:520px;">' +
+                    '<div style="display:flex;gap:8px;align-items:stretch;">' +
+                    '<div style="flex:1;min-width:0;" id="sel-grp-env"></div>' +
+                    '<div style="width:140px;flex-shrink:0;" id="sel-grp-ver"></div></div>' +
+                    '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
+                    '<div style="width:200px;" id="sel-grp-avatar"></div>' +
+                    '<div style="width:160px;" id="sel-grp-status"></div>' +
+                    '<div class="ubits-button-group ubits-button-group--neutral ubits-button-group--sm">' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" data-tooltip="Filtrar" aria-label="Filtrar"><i class="far fa-filter"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" data-tooltip="Ordenar" aria-label="Ordenar"><i class="far fa-arrow-down-wide-short"></i></button>' +
+                    '</div></div></div>';
+                createSelect({ containerId: 'sel-grp-env', showLabel: false, label: 'Entorno', options: [
+                    { value: 'dev', label: 'Development' }, { value: 'stg', label: 'Staging' }, { value: 'prd', label: 'Production' }
+                ], value: 'dev', size: SIZE === 'lg' ? 'md' : SIZE, placeholder: 'Env:' });
+                createSelect({ containerId: 'sel-grp-ver', showLabel: false, label: 'Versión', options: [
+                    { value: 'v1', label: 'v1' }, { value: 'v2', label: 'v2' }, { value: 'v3', label: 'v3' }
+                ], value: 'v2', size: SIZE === 'lg' ? 'md' : SIZE });
+                createSelect({ containerId: 'sel-grp-avatar', showLabel: false, options: OPTS['con-avatar'], value: 'ana', size: 'sm' });
+                createSelect({ containerId: 'sel-grp-status', showLabel: false, options: OPTS_STATUS, value: 'ready', size: 'sm' });
+                initPreviewTooltips();
+                return;
+            }
+
+            if (VARIANT === 'con-chips') {
+                stage.innerHTML = '<div id="select-preview-field" style="max-width:360px"></div>';
+                if (typeof createCombobox === 'function') {
+                    comboboxPreviewApi = createCombobox({
+                        containerId: 'select-preview-field',
+                        label: 'Destinatarios',
+                        placeholder: 'Agregar destinatario',
+                        options: OPTS['con-chips'],
+                        values: ['E001', 'E052'],
+                        size: SIZE,
+                        disabled: STATE === 'disabled',
+                        error: STATE === 'invalid' ? 'Selecciona al menos un destinatario' : '',
+                        helperText: 'Escribe para filtrar; los elegidos quedan como chips removibles',
+                        showHelper: SHOW_HELPER && STATE !== 'invalid'
+                    });
+                }
+                return;
+            }
+
+            var opts = OPTS[VARIANT] || OPTS.basico;
+            var wrap = document.createElement('div');
+            wrap.id = 'select-preview-field';
+            wrap.style.maxWidth = '360px';
+            stage.appendChild(wrap);
+
+            if (VARIANT === 'multi-dots') {
+                mountSelect('select-preview-field', opts, {
+                    multiple: true,
+                    values: ['ready', 'error', 'building', 'queued', 'initializing'],
+                    multipleSummaryLabel: 'Estado',
+                    showLabel: false,
+                    placeholder: 'Selecciona estados',
+                    clearable: true
+                });
+                return;
+            }
+
+            if (VARIANT === 'solo-badges') {
+                mountSelect('select-preview-field', opts, { valueDisplay: 'badge-only', label: 'Estado' });
+                return;
+            }
+
+            if (VARIANT === 'clearable') {
+                mountSelect('select-preview-field', opts, { clearable: true });
+                return;
+            }
+
+            mountSelect('select-preview-field', opts);
+        }
+
+        function renderControls() {
+            var showSize = !NO_SIZE[VARIANT];
+            var showState = !NO_STATE[VARIANT];
+            var showField = !NO_FIELD[VARIANT];
+            var showProps = showSize || showState || showField;
+
+            document.getElementById('props-divider').style.display = showProps ? 'block' : 'none';
+            document.getElementById('row-size').style.display = showSize ? 'flex' : 'none';
+            document.getElementById('row-state').style.display = showState ? 'flex' : 'none';
+            document.getElementById('row-chevron').style.display = showField ? 'flex' : 'none';
+            document.getElementById('row-mandatory-style').style.display = showField && MANDATORY ? 'flex' : 'none';
+            document.getElementById('block-switches').style.display = showField ? 'flex' : 'none';
+
+            var vHost = document.getElementById('ctrl-variant');
+            vHost.innerHTML = '';
+            VARIANTS.forEach(function (v) {
+                vHost.appendChild(controlBtn(v.label, VARIANT === v.id, function () {
+                    VARIANT = v.id;
+                    renderControls();
+                    renderPreview();
+                }));
+            });
+
+            var sHost = document.getElementById('ctrl-size');
+            sHost.innerHTML = '';
+            ['xs', 'sm', 'md', 'lg'].forEach(function (s) {
+                sHost.appendChild(controlBtn(s.toUpperCase(), SIZE === s, function () {
+                    SIZE = s;
+                    renderControls();
+                    renderPreview();
+                }));
+            });
+
+            var stHost = document.getElementById('ctrl-state');
+            stHost.innerHTML = '';
+            [
+                { id: 'default', label: 'Normal' },
+                { id: 'invalid', label: 'Inválido' },
+                { id: 'disabled', label: 'Disabled' }
+            ].forEach(function (s) {
+                stHost.appendChild(controlBtn(s.label, STATE === s.id, function () {
+                    STATE = s.id;
+                    renderControls();
+                    renderPreview();
+                }));
+            });
+
+            var chHost = document.getElementById('ctrl-chevron');
+            chHost.innerHTML = '';
+            chHost.appendChild(controlBtn('Abajo', CHEVRON === 'down', function () {
+                CHEVRON = 'down';
+                renderControls();
+            }));
+            chHost.appendChild(controlBtn('Arriba/abajo', CHEVRON === 'up-down', function () {
+                CHEVRON = 'up-down';
+                renderControls();
+            }));
+
+            var mHost = document.getElementById('ctrl-mandatory-style');
+            mHost.innerHTML = '';
+            mHost.appendChild(controlBtn('(obligatorio)', MANDATORY_STYLE === 'text', function () {
+                MANDATORY_STYLE = 'text';
+                renderControls();
+                renderPreview();
+            }));
+            mHost.appendChild(controlBtn('*', MANDATORY_STYLE === 'asterisk', function () {
+                MANDATORY_STYLE = 'asterisk';
+                renderControls();
+                renderPreview();
+            }));
+
+            document.getElementById('sw-label-left').checked = LABEL_LEFT;
+            document.getElementById('sw-mandatory').checked = MANDATORY;
+            document.getElementById('sw-helper').checked = SHOW_HELPER;
+        }
+
+        document.getElementById('sw-label-left').addEventListener('change', function (e) {
+            LABEL_LEFT = e.target.checked;
+            renderPreview();
+        });
+        document.getElementById('sw-mandatory').addEventListener('change', function (e) {
+            MANDATORY = e.target.checked;
+            renderControls();
+            renderPreview();
+        });
+        document.getElementById('sw-helper').addEventListener('change', function (e) {
+            SHOW_HELPER = e.target.checked;
+            renderPreview();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof bootDocsWorkspace === 'function') {
+                bootDocsWorkspace();
+            }
+            renderControls();
+            renderPreview();
+        });
+    })();
+    </script>
+</body>
+</html>

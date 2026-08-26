@@ -104,6 +104,254 @@
 }
 
 /* ========================================
+   INPUT VARIANT: UNDERLINE (solo borde inferior)
+   ======================================== */
+
+.ubits-input--underline {
+    border: none;
+    border-bottom: 1px solid var(--ubits-border-1);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.ubits-input--underline:hover {
+    border-color: var(--ubits-accent-brand);
+    background: transparent;
+}
+
+.ubits-input--underline:focus {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: none;
+    background: transparent;
+}
+
+.ubits-input-wrapper--underline .ubits-input--invalid {
+    border-bottom-color: var(--ubits-feedback-accent-error);
+}
+
+/* ========================================
+   INPUT VARIANT: MINIMAL (sin borde ni fondo)
+   ======================================== */
+
+.ubits-input--minimal {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.ubits-input--minimal:hover,
+.ubits-input--minimal:focus {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.ubits-input-wrapper--minimal .ubits-input--invalid {
+    box-shadow: 0 0 0 1px var(--ubits-feedback-accent-error);
+}
+
+/* ========================================
+   INPUT VARIANT: PILL
+   ======================================== */
+
+.ubits-input--pill {
+    border-radius: 999px;
+}
+
+.ubits-input-wrapper--pill .ubits-input--pill {
+    border-radius: 999px;
+}
+
+/* ========================================
+   INPUT PULSED (fondo animado; se detiene en focus)
+   ======================================== */
+
+@keyframes ubitsInputPulse {
+    0%, 100% { background-color: var(--ubits-bg-1); }
+    50% { background-color: var(--ubits-bg-2); }
+}
+
+.ubits-input--pulsed:not(:focus):not(:disabled) {
+    animation: ubitsInputPulse 1.6s ease-in-out infinite;
+}
+
+.ubits-input--pulsed:focus {
+    animation: none;
+}
+
+/* ========================================
+   COLOR / FILE / RANGE
+   ======================================== */
+
+.ubits-input--color {
+    padding: 4px;
+    min-height: 40px;
+    cursor: pointer;
+}
+
+.ubits-input--file {
+    padding: var(--padding-sm);
+    height: auto;
+    min-height: 40px;
+    line-height: 1.4;
+}
+
+.ubits-input-wrapper--range {
+    display: block;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    min-height: 0;
+}
+
+.ubits-input-range-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    min-height: 24px;
+}
+
+.ubits-input--range,
+.ubits-input.ubits-input--range {
+    flex: 1;
+    width: 100%;
+    height: 24px;
+    min-height: 24px;
+    margin: 0;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+    accent-color: var(--ubits-accent-brand);
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.ubits-input--range:hover,
+.ubits-input--range:focus {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none;
+}
+
+.ubits-input--range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ubits-border-1);
+}
+
+.ubits-input--range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -5px;
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    border: 2px solid var(--ubits-bg-1);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
+    cursor: pointer;
+}
+
+.ubits-input--range::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ubits-border-1);
+    border: none;
+}
+
+.ubits-input--range::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    border: 2px solid var(--ubits-bg-1);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
+    cursor: pointer;
+}
+
+.ubits-input-range-value {
+    min-width: 1.5rem;
+    text-align: right;
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   PASSWORD STRENGTH
+   ======================================== */
+
+.ubits-input-password-strength {
+    margin-top: var(--gap-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.ubits-input-password-strength__bars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.ubits-input-password-strength__bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--ubits-border-1);
+    transition: background 0.2s ease;
+}
+
+.ubits-input-password-strength__bar--on {
+    background: var(--ubits-feedback-accent-warning);
+}
+
+.ubits-input-password-strength__bar--on[data-score='3'],
+.ubits-input-password-strength__bar--on[data-score='4'] {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-input-password-strength__bar--on[data-score='1'] {
+    background: var(--ubits-feedback-accent-error);
+}
+
+.ubits-input-password-strength__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ubits-input-password-strength__ok,
+.ubits-input-password-strength__pending {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
+.ubits-input-password-strength__ok {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-input-password-strength__pending {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
    INPUT SIZES - Matching button heights
    ======================================== */
 
@@ -247,14 +495,16 @@ textarea.ubits-input:disabled {
 }
 
 /* createInput: select y calendario usan input readonly + icono absoluto; el texto largo no debe solapar la flecha/calendario */
-.ubits-input-wrapper > input.ubits-input[readonly] {
+.ubits-input-wrapper > input.ubits-input[readonly],
+.ubits-input-wrapper > button.ubits-select-trigger {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
 }
 
-.ubits-input-wrapper > input.ubits-input[readonly] ~ i {
+.ubits-input-wrapper > input.ubits-input[readonly] ~ i,
+.ubits-input-wrapper > button.ubits-select-trigger ~ i {
     z-index: 2;
 }
 
@@ -272,12 +522,126 @@ textarea.ubits-input:disabled {
     line-height: 19.5px;
 }
 
+.ubits-input-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    margin-bottom: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-input-label-row .ubits-input-label {
+    margin-bottom: 0;
+}
+
+.ubits-input-label-cluster {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ubits-input-label-cluster .ubits-input-label {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.ubits-input-label-inline {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ubits-input-label-tooltip-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.ubits-input-label-tooltip-btn:hover {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-input-label-row--left {
+    margin-bottom: 0;
+    /* Alinear con el input (no con helper/contador debajo) */
+    align-self: start;
+    padding-top: 10px; /* fallback md */
+}
+
+.ubits-input-field--label-left-xs > .ubits-input-label-row--left { padding-top: 4px; }
+.ubits-input-field--label-left-sm > .ubits-input-label-row--left { padding-top: 6px; }
+.ubits-input-field--label-left-md > .ubits-input-label-row--left { padding-top: 10px; }
+.ubits-input-field--label-left-lg > .ubits-input-label-row--left { padding-top: 14px; }
+
+.ubits-input-label-end {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+}
+
+.ubits-input-label-end a {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-accent-brand);
+    text-decoration: none;
+}
+
+.ubits-input-label-end a:hover {
+    text-decoration: underline;
+}
+
+.ubits-input-error-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.ubits-input-error-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+    color: var(--ubits-feedback-accent-error);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.4;
+}
+
+.ubits-input-error-item i {
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
 .ubits-input-mandatory {
     color: var(--ubits-fg-1-medium);
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     line-height: 16.5px;
+}
+
+.ubits-input-mandatory-asterisk {
+    color: var(--ubits-feedback-accent-error);
+    font-weight: var(--font-weight-semibold);
+    margin-left: 2px;
+}
+
+.ubits-input-helper-error {
+    color: var(--ubits-feedback-accent-error);
 }
 
 /* Etiqueta a la izquierda del control (createInput: labelPosition: 'left') */
@@ -293,9 +657,27 @@ textarea.ubits-input:disabled {
     align-items: start;
 }
 
+.ubits-input-field--label-left > .ubits-input-label-row--left {
+    margin-bottom: 0;
+    align-self: start;
+    max-width: min(42vw, 200px);
+}
+
+.ubits-input-field--label-left > .ubits-input-label-row--left .ubits-input-label--left {
+    margin-bottom: 0;
+    max-width: min(42vw, 200px);
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.ubits-input-field--label-left.ubits-input-field--has-textarea > .ubits-input-label-row--left {
+    align-self: flex-start;
+    padding-top: var(--padding-sm);
+}
+
 .ubits-input-field--label-left > .ubits-input-label--left {
     margin-bottom: 0;
-    align-self: center;
+    align-self: start;
     max-width: min(42vw, 200px);
     overflow-wrap: break-word;
     hyphens: auto;

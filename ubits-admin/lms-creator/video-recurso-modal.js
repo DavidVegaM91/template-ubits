@@ -1772,10 +1772,10 @@
             containerId: 'cc-vsubir-fu-wrap',
             id:          'cc-vsubir-fu',
             title:       'Video del recurso',
-            accept:      'video/mp4,video/webm,video/ogg,video/quicktime,.mp4,.webm,.ogg,.mov',
-            maxSizeMb:   250,
-            maxLabel:    '250 MB',
-            formats:     'MP4, WEBM, MOV · Hasta 250 MB',
+            accept:      'video/mp4,.mp4',
+            maxSizeMb:   500,
+            maxLabel:    '500 MB',
+            formats:     'MP4 · Hasta 500 MB',
             onChange: function (file) {
                 _fileBlob = file || null;
                 if (_fileBlobUrl) { URL.revokeObjectURL(_fileBlobUrl); _fileBlobUrl = null; }

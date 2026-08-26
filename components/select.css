@@ -1,0 +1,157 @@
+/* UbitsSelect — trigger rico (iconos, dots, avatar, multi) sobre chrome de input.css */
+
+button.ubits-input.ubits-select-trigger {
+    appearance: none;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-family: var(--ubits-font-family-sans);
+    font-size: inherit;
+    font-weight: var(--font-weight-regular);
+    line-height: inherit;
+    color: var(--ubits-fg-1-high);
+    text-align: left;
+    overflow: hidden;
+}
+
+button.ubits-input.ubits-select-trigger:disabled {
+    cursor: not-allowed;
+}
+
+.ubits-select-trigger-inner {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.ubits-select-trigger-placeholder {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-select-trigger-selected {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.ubits-select-trigger-selected--multi {
+    gap: var(--gap-md);
+}
+
+.ubits-select-trigger-leading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-select-trigger-leading .ubits-avatar,
+.ubits-select-trigger-leading .ubits-avatar-shell {
+    flex-shrink: 0;
+}
+
+.ubits-select-trigger-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.ubits-select-trigger-trailing {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.ubits-select-trigger-inline-tag {
+    flex-shrink: 0;
+}
+
+.ubits-select-trigger-dot-stack {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ubits-select-trigger-dot-stack-item {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-bg-1);
+    margin-left: -4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.ubits-select-trigger-dot-stack-item:first-child {
+    margin-left: 0;
+}
+
+.ubits-select-trigger-summary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.ubits-select-trigger-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.ubits-select-clear-btn {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+}
+
+.ubits-select-clear-btn:hover {
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-2);
+}
+
+button.ubits-select-trigger.ubits-select-trigger--clearable ~ i.far.fa-angle-down {
+    right: 8px;
+}
+
+.ubits-input-wrapper > button.ubits-select-trigger ~ i {
+    z-index: 2;
+}
