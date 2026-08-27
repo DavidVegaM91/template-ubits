@@ -2057,14 +2057,15 @@
 
     // =====================================================================================
     // MVP del Agente de evaluaciones (versión que SÍ puede construir desarrollo)
-    // La versión "ideal" (evalAgentStart + cards/bottom-sheet/multiselect) queda INTACTA.
+    // Default vanilla = MVP. La versión "ideal" (cards/bottom-sheet) queda INTACTA para
+    // switch (?eval=ideal) y es la que se muestra en React.
     //
     // SWITCH entre versiones:
-    //   - Por defecto: EVAL_AGENT_MODE_DEFAULT ('mvp' | 'ideal') — cambia esta línea para el switch definitivo.
+    //   - Por defecto: EVAL_AGENT_MODE_DEFAULT ('mvp' | 'ideal')
     //   - En vivo (para demos): URL ?eval=mvp  ó  ?eval=ideal
     //   - En vivo (consola):    window.setEvalAgentMode('ideal')  ó  window.setEvalAgentMode('mvp')  (guarda en localStorage)
     // =====================================================================================
-    var EVAL_AGENT_MODE_DEFAULT = 'ideal'; // ← cambia a 'mvp' para mostrar la experiencia MVP
+    var EVAL_AGENT_MODE_DEFAULT = 'mvp';
 
     function getEvalAgentMode() {
         try {

@@ -856,6 +856,12 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 
 ### Experiencia dentro del panel de IA
 
+**Default vanilla = MVP** (lo que desarrollo puede construir). La experiencia **ideal** (tarjetas + bottom sheet) se muestra en React; en vanilla queda oculta y se puede forzar con `?eval=ideal`.
+
+Al abrirse en MVP, el agente saluda, muestra una **tabla con la configuración actual** del cuestionario y pregunta si se continúa o se modifica algún parámetro. El resto del hilo es conversacional (cantidad, dificultad, material), sin tarjetas de camino.
+
+La experiencia **ideal** (referencia, no el default vanilla):
+
 Al abrirse, el agente se presenta con un mensaje de bienvenida y pregunta **cómo** quiere crearse la evaluación. La persona elige entre dos caminos mediante **tarjetas**:
 
 | Camino | Qué implica |
