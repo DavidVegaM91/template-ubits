@@ -874,7 +874,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 - Se **cierra** el panel de IA (y cualquier modal auxiliar de ese flujo).
 - En el área de preguntas aparece un **estado de carga** (misma línea visual que otros generadores con IA del Creator, p. ej. portada).
 - Tras un tiempo de proceso (en el prototipo es **simulado**), el sistema **rellena la lista de preguntas** a partir de un **banco interno** de ítems alineados con un tema de negocio de referencia (en el demo: **resolución de conflictos y trabajo en equipo**), filtrados por **dificultad** y **tipos** elegidos. Las nuevas preguntas se **añaden después** de las que el usuario ya hubiera escrito a mano.
-- Aparece un **aviso reversible** (`ubits-alert--ia`, con acción): texto del tipo «N preguntas generadas por IA» y botón **Deshacer**, que restaura solo el estado **previo** a esa generación. **No** se muestra badge «Generado con IA» en cada tarjeta de pregunta (el alert basta).
+- **No** se muestra el alert «N preguntas generadas por IA» ni el botón Deshacer (pedido de producto). **No** hay badge «Generado con IA» en cada tarjeta.
 
 ### Edición manual del builder
 

@@ -119,12 +119,6 @@
         if (existing) return existing;
         var host = document.createElement('div');
         host.id = 'ccEvalEmptyHost';
-        // Insertar debajo de la barra superior (y debajo del undo banner si existe)
-        var undo = rootEl.querySelector('#cc-eval-undo-banner');
-        if (undo && undo.parentNode === rootEl) {
-            rootEl.insertBefore(host, undo.nextSibling);
-            return host;
-        }
         var bar = rootEl.querySelector('.cc-eval-config-bar');
         if (bar && bar.parentNode === rootEl) {
             rootEl.insertBefore(host, bar.nextSibling);
@@ -838,7 +832,6 @@
     // ---------------------------
 
     var CC_EVAL_CFG_MODAL_ID = 'cc-eval-config-modal';
-    var CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID = 'cc-eval-undo-ia-confirm-modal';
 
     function openEvalConfigModal(pageState) {
         if (typeof global.openModal !== 'function') return;
@@ -1706,79 +1699,6 @@
         });
     }
 
-    /**
-     * Confirmación estándar tipo eliminar (modal sm + Cancelar + error «Sí, eliminar»).
-     * @param {number} count - Número de preguntas generadas por IA que se perderían.
-     * @param {function} onConfirm - Tras confirmar y cerrar el modal.
-     */
-    function openUndoAiGeneratedQuestionsConfirmModal(count, onConfirm) {
-        var n = Math.max(0, parseInt(count, 10) || 0);
-        function runConfirm() {
-            if (typeof global.closeModal === 'function') {
-                global.closeModal(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
-            }
-            if (typeof onConfirm === 'function') onConfirm();
-        }
-        if (typeof global.openModal !== 'function') {
-            runConfirm();
-            return;
-        }
-        var bodyLead =
-            n === 1
-                ? '¿Seguro que deseas eliminar la pregunta que acabas de generar con IA? Perderás ese contenido.'
-                : '¿Seguro que deseas eliminar las <strong>' + drEsc(String(n)) + '</strong> preguntas que acabas de generar con IA? Perderás ese contenido.';
-        global.openModal({
-            overlayId: CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID,
-            title: 'Confirmar eliminación',
-            bodyHtml:
-                '<p class="ubits-body-md-regular" style="margin:0;">' + bodyLead + '</p>',
-            footerHtml:
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-eval-undo-ia-cancel"><span>Cancelar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-eval-undo-ia-confirm"><span>Sí, eliminar</span></button>',
-            size: 'sm',
-            closeOnOverlayClick: true
-        });
-        var ov = document.getElementById(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
-        if (!ov) return;
-        function closeOnly() {
-            if (typeof global.closeModal === 'function') {
-                global.closeModal(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
-            }
-        }
-        var cancelBtn = ov.querySelector('#cc-eval-undo-ia-cancel');
-        var confirmBtn = ov.querySelector('#cc-eval-undo-ia-confirm');
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', closeOnly);
-        }
-        if (confirmBtn) {
-            confirmBtn.addEventListener('click', runConfirm);
-        }
-    }
-
-    function showUndoBanner(rootEl, count, onUndo) {
-        var existing = rootEl.querySelector('#cc-eval-undo-banner');
-        if (existing) existing.remove();
-        var bar = rootEl.querySelector('.cc-eval-config-bar');
-        if (!bar || !bar.parentNode) return;
-        var wrap = document.createElement('div');
-        wrap.innerHTML = buildAlertHtml('ia', '<span class="ubits-body-sm-semibold">' + count + ' preguntas generadas por IA</span>', {
-            rootId: 'cc-eval-undo-banner',
-            role: 'status',
-            blockText: true,
-            actionsHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs cc-eval-undo-btn"><span>Deshacer</span></button>'
-        });
-        var banner = wrap.firstElementChild;
-        bar.parentNode.insertBefore(banner, bar.nextSibling);
-        wireAlertDismiss(banner, function () { banner.remove(); });
-        banner.querySelector('.cc-eval-undo-btn').addEventListener('click', function () {
-            openUndoAiGeneratedQuestionsConfirmModal(count, function () {
-                onUndo();
-                banner.remove();
-                if (typeof global.showToast === 'function') global.showToast('info', 'Se deshizo la generación de preguntas.');
-            });
-        });
-    }
-
     // ---------------------------
     // Persistencia por página (serializar ↔ hidratar)
     // ---------------------------
@@ -2133,16 +2053,6 @@
         pageState.activeQId = prevModels.length ? prevActive : 1;
         renderQuestions(rootEl, pageState);
         applyFocusModes(rootEl);
-
-        showUndoBanner(rootEl, questions.length, function () {
-            // Deshacer: restaurar solo las preguntas manuales anteriores
-            pageState.questions = prevModels;
-            pageState.activeQId = prevActive;
-            rootEl._ccEvalActiveQId = prevActive;
-            renderQuestions(rootEl, pageState);
-            applyFocusModes(rootEl);
-            renderEmptyStateIfNeeded(rootEl, function () { addQuestionAndFocus(rootEl, pageState); });
-        });
     }
 
     // =====================================================================================
