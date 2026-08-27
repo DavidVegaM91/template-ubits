@@ -450,7 +450,7 @@ El usuario ve **ocho tarjetas** en este orden. Cada una abre un **flujo hermano 
 | 3 | **Texto** | Flujo hermano inmersivo Texto. |
 | 4 | **Embebido** | Flujo hermano inmersivo Embebido. |
 | 5 | **SCORM** | Flujo hermano inmersivo SCORM (IA / upload según producto). |
-| 6 | **Evaluación final** | Flujo hermano inmersivo Evaluación. |
+| 6 | **Evaluación final** | Nace la página en Recursos con editor **inline** (puede ir vacía). El inmersivo queda fuera del flujo oficial. |
 | 7 | **Encuesta libre** | Flujo hermano inmersivo Encuesta libre. |
 | 8 | **Encuesta de satisfacción** | Flujo hermano inmersivo Encuesta de satisfacción. |
 

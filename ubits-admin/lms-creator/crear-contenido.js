@@ -3051,7 +3051,8 @@
 
     /**
      * Maneja la selección de tipo del modal «Añadir página».
-     * La página NACE solo al confirmar el recurso (P5/P6). Cancelar modal = sin página vacía.
+     * La página NACE al confirmar el recurso (P5/P6), salvo Evaluación: nace de inmediato
+     * con editor inline (puede ir vacía). Cancelar modal = sin página vacía.
      * @param {string} tipo
      * @param {{ sectionEl?: Element }} ctx
      */
@@ -3199,38 +3200,27 @@
         }
 
         if (tipo === 'evaluacion-final') {
-            /* Evaluación: flujo inmersivo fullscreen (paridad React agregar-recurso/evaluacion-final).
-               Cancelar = sin página. Confirmar (≥1 pregunta) = nace la página. */
-            if (typeof window.openAgregarEvaluacionImmersive !== 'function') {
+            /* Oficial: nace la página con editor inline (0 preguntas permitidas).
+               El inmersivo (openAgregarEvaluacionImmersive) queda fuera del flujo. */
+            if (typeof window.rcMountEvalForm !== 'function') {
                 if (typeof window.showToast === 'function') {
-                    window.showToast('error', 'No se pudo abrir el flujo de evaluación.');
+                    window.showToast('error', 'No se pudo cargar la evaluación.');
                 }
                 return;
             }
-            window.openAgregarEvaluacionImmersive({
-                onConfirm: function (result) {
-                    var draftKey =
-                        (result && result.draftPageKey) ||
-                        window.CC_EVAL_ADD_DRAFT_PAGE_KEY ||
-                        'cc-eval-add-draft';
-                    var createdEval = createPageForTipo();
-                    if (!createdEval) {
-                        if (typeof window.ccEvalClearPageState === 'function') {
-                            window.ccEvalClearPageState(draftKey);
-                        }
-                        return;
-                    }
-                    if (typeof window.ccEvalTransferPageState === 'function') {
-                        window.ccEvalTransferPageState(draftKey, createdEval.pageKey);
-                    }
-                    hideRecursosEmptyHost();
-                    if (rbMount && typeof window.rcMountEvalForm === 'function') {
-                        window.rcMountEvalForm(rbMount, { pageKey: createdEval.pageKey });
-                    }
-                    setRecursosPrimaryType(createdEval.pageKey, 'evaluacion-final');
-                    afterNewPageMounted(createdEval.pageKey, 'evaluacion-final');
-                }
-            });
+            if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                persistRecursosRightTitleToItemKey(CC_RECURSOS_CURRENT_PAGE_KEY);
+                snapshotCurrentRecursosPage();
+            }
+            var createdEval = createPageForTipo();
+            if (!createdEval) return;
+            hideRecursosEmptyHost();
+            if (rbMount) {
+                beforeReplaceRecursosMountIfPdfShowing(rbMount);
+                window.rcMountEvalForm(rbMount, { pageKey: createdEval.pageKey });
+            }
+            setRecursosPrimaryType(createdEval.pageKey, 'evaluacion-final');
+            afterNewPageMounted(createdEval.pageKey, 'evaluacion');
             return;
         }
 

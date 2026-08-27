@@ -14,15 +14,15 @@
 (function (global) {
     'use strict';
 
+    /* Presentación interactiva y Asistencia se ocultan en vanilla (siguen en React).
+       Ver diferencias-react-vs-vanilla.md. */
     var RESOURCES_BLOCK_SELECTOR_TYPES = [
         'video',
         'pdf',
         'texto',
         'embebido',
         'scorm',
-        'presentacion-interactiva',
         'evaluacion-final',
-        'asistencia',
         'encuesta-libre',
         'encuesta'
     ];

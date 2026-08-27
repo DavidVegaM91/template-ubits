@@ -4,7 +4,7 @@
  *
  * API:
  *   openAnadirPaginaTipoModal({ onSelect(type), onCancel? })
- *     - onSelect(type): callback al elegir tipo; recibe 'video' | 'pdf' | 'texto' | 'embebido' | 'scorm' | 'evaluacion-final' | 'asistencia' | 'encuesta-libre' | 'encuesta'
+ *     - onSelect(type): callback al elegir tipo; recibe 'video' | 'pdf' | 'texto' | 'embebido' | 'scorm' | 'evaluacion-final' | 'encuesta-libre' | 'encuesta'
  *     - onCancel: callback opcional al cancelar (botón o overlay)
  *
  * Depende: modal.js, resources-card.js, tooltip.js
@@ -15,7 +15,8 @@
     var OVERLAY_ID = 'cc-anadir-pagina-tipo-modal';
 
     /**
-     * Orden de las 8 Resources Cards según RESOURCES_BLOCK_SELECTOR_TYPES.
+     * Cards del selector (paridad Resources block vanilla).
+     * Presentación interactiva y Asistencia se ocultan en vanilla (siguen en React).
      * Se hardcodean aquí para no depender de que resources-block.js esté cargado.
      */
     var ANADIR_PAGINA_TIPOS = [
@@ -24,9 +25,7 @@
         'texto',
         'embebido',
         'scorm',
-        'presentacion-interactiva',
         'evaluacion-final',
-        'asistencia',
         'encuesta-libre',
         'encuesta'
     ];
@@ -35,9 +34,7 @@
     var ANADIR_PAGINA_DISABLED = {
         texto: true,
         'encuesta-libre': true,
-        encuesta: true,
-        /* Studio V2 solo en playground React — ver diferencias-react-vs-vanilla.md */
-        'presentacion-interactiva': true
+        encuesta: true
     };
 
     var _onSelectCallback = null;

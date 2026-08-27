@@ -1,7 +1,7 @@
 /**
- * Flujo inmersivo «Agregar evaluación» — LMS Creator T2 (vanilla).
- * Pantalla completa sobre crear/editar (sin navegar: conserva el borrador).
- * Confirmar (≥1 pregunta) → el host crea la página. Cancelar → no nace página.
+ * LEGACY — Flujo inmersivo «Agregar evaluación».
+ * Ya no se abre desde Añadir página / Resources block: el alta oficial nace
+ * la página con editor inline (puede ir vacía). Se conserva por si se reactiva.
  *
  * API:
  *   openAgregarEvaluacionImmersive({ onConfirm({ draftPageKey }), onCancel? })
