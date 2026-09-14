@@ -115,9 +115,16 @@
     }
 
     var PLAN_VIGENCIA_TZ_LABEL = 'Hora local (CDMX, UTC−6)';
+    var MESES_CORTO = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+    function formatDateShortEs(dateStr) {
+        var d = parseYmd(dateStr);
+        if (!d) return '';
+        return d.getDate() + ' ' + MESES_CORTO[d.getMonth()] + ' ' + d.getFullYear();
+    }
 
     function formatDateTimeLongEs(dateStr, timeLabel) {
-        var datePart = formatDateLongEs(dateStr);
+        var datePart = formatDateShortEs(dateStr);
         if (!datePart) return '';
         return datePart + ', ' + timeLabel;
     }
@@ -1059,7 +1066,7 @@
         if (vigenciaEl) {
             vigenciaEl.innerHTML =
                 formatPlanVigenciaPeriodo(plan.fechaInicioIso, plan.fechaFinIso) +
-                ' - tu plan termina en <strong>' + daysLeft + ' días</strong>';
+                ' - termina en <strong>' + daysLeft + ' días</strong>';
         }
         if (descEl) {
             descEl.textContent = tabId === 'competencias' ? PLAN_DESC_COMPETENCIAS : PLAN_DESC_CONTENIDOS;
