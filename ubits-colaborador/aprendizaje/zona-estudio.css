@@ -65,24 +65,24 @@
 
 .zona-estudio-plan__top {
     display: flex;
-    align-items: flex-end;
-    gap: var(--gap-lg);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-sm);
     width: 100%;
 }
 
 .zona-estudio-plan__select {
-    flex: 1 1 0;
+    width: 100%;
     min-width: 0;
 }
 
 .zona-estudio-plan__vigencia {
-    flex: 1 1 0;
+    width: 100%;
     min-width: 0;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--gap-sm);
-    min-height: 32px;
 }
 
 .zona-estudio-plan__vigencia-text {
@@ -358,11 +358,6 @@
 @media (max-width: 1023px) {
     .content-sections {
         gap: var(--gap-lg);
-    }
-
-    .zona-estudio-plan__top {
-        flex-direction: column;
-        align-items: stretch;
     }
 
     .grid-cards-container {

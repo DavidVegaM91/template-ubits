@@ -114,6 +114,21 @@
         return d.getDate() + ' de ' + MESES_LARGO[d.getMonth()] + ' de ' + d.getFullYear();
     }
 
+    var PLAN_VIGENCIA_TZ_LABEL = 'Hora local (CDMX, UTC−6)';
+
+    function formatDateTimeLongEs(dateStr, timeLabel) {
+        var datePart = formatDateLongEs(dateStr);
+        if (!datePart) return '';
+        return datePart + ', ' + timeLabel;
+    }
+
+    function formatPlanVigenciaPeriodo(fechaInicioIso, fechaFinIso) {
+        var start = formatDateTimeLongEs(fechaInicioIso, '12:00 a. m.');
+        var end = formatDateTimeLongEs(fechaFinIso, '11:59 p. m.');
+        if (!start || !end) return '';
+        return 'Del ' + start + ' al ' + end + ' · ' + PLAN_VIGENCIA_TZ_LABEL;
+    }
+
     function getPlaygroundToday() {
         var pf = window.BD_PLANES_FORMACION;
         return (pf && pf.PLAYGROUND_TODAY) ? pf.PLAYGROUND_TODAY : (function () {
@@ -1043,14 +1058,14 @@
         var daysLeft = daysUntilEnd(plan.fechaFinIso);
         if (vigenciaEl) {
             vigenciaEl.innerHTML =
-                'Del ' + formatDateLongEs(plan.fechaInicioIso) + ' al ' + formatDateLongEs(plan.fechaFinIso) +
+                formatPlanVigenciaPeriodo(plan.fechaInicioIso, plan.fechaFinIso) +
                 ' - tu plan termina en <strong>' + daysLeft + ' días</strong>';
         }
         if (descEl) {
             descEl.textContent = tabId === 'competencias' ? PLAN_DESC_COMPETENCIAS : PLAN_DESC_CONTENIDOS;
         }
         if (statusEl) {
-            statusEl.className = 'ubits-status-tag ubits-status-tag--' + getEstadoTagVariant(plan.estado) + ' ubits-status-tag--sm';
+            statusEl.className = 'ubits-status-tag ubits-status-tag--' + getEstadoTagVariant(plan.estado) + ' ubits-status-tag--xs';
             var textEl = statusEl.querySelector('.ubits-status-tag__text');
             if (textEl) textEl.textContent = plan.estado || 'Vigente';
         }
