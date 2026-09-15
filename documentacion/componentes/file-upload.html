@@ -17,7 +17,13 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/card.css">
     <link rel="stylesheet" href="../../components/file-upload.css">
+    <link rel="stylesheet" href="../../components/file-upload-layouts.css">
+    <link rel="stylesheet" href="../../components/file-upload-compact.css">
 
     <style>
         .preview-control-btn.active {
@@ -29,8 +35,25 @@
             color: white !important;
         }
         .file-upload-preview-wrap {
-            max-width: 480px;
+            max-width: 520px;
             width: 100%;
+        }
+        .file-upload-preview-wrap.is-wide {
+            max-width: 720px;
+        }
+        .fu-control-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .fu-control-row__label {
+            color: var(--ubits-fg-1-medium);
+            margin-right: 4px;
+            flex-shrink: 0;
+            padding-top: 6px;
+            min-width: 96px;
         }
     </style>
 </head>
@@ -55,7 +78,7 @@
                                 File Upload
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Bloque para importar archivos con arrastre o selección manual. Incluye descarga de plantillas, validación automática de tipo y peso, card con el archivo cargado y botón opcional de informe de errores cuando el contenido presenta inconsistencias.
+                                Bloque para importar archivos. Conserva la zona de carga UBITS de producto y cubre las variantes de File upload: básico, avatar, compacto, galería, progreso, tabla, imágenes, ordenable, tarjetas y portada.
                             </p>
                         </div>
 
@@ -66,56 +89,53 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Aquí puedes ver el componente File Upload en acción. Usa los controles para explorar los distintos estados.
+                                Elige una variante. Zona de carga es el bloque UBITS de producto; Compacto usa File upload compact; el resto cubre las demos de File upload.
                             </p>
 
-                            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: var(--gap-md); flex-wrap: wrap;">
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" role="switch" id="fu-preview-show-header" checked aria-checked="true" aria-label="Mostrar encabezado del bloque">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                    <span class="ubits-switch__label">Mostrar encabezado</span>
-                                </label>
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" role="switch" id="fu-preview-multiple" aria-checked="false" aria-label="Múltiples archivos">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                    <span class="ubits-switch__label">Múltiples archivos</span>
-                                </label>
-                                <span class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium);">Título y acciones (plantilla, informe). Desactiva para vista solo dropzone.</span>
-                            </div>
-
-                            <!-- Preview Container -->
-                            <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; display: flex; justify-content: center;">
-                                <div class="file-upload-preview-wrap">
-                                    <div id="preview-container"></div>
+                            <div class="fu-control-row">
+                                <span class="ubits-body-sm-bold fu-control-row__label">Variante</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--sm preview-variant-btn" data-variant="dropzone"><span>Zona de carga</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="basic"><span>Básico</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="avatar"><span>Avatar</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="compact"><span>Compacto</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="gallery"><span>Galería</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="progress"><span>Progreso</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="table"><span>Tabla</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="images"><span>Imágenes</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="sortable"><span>Ordenable</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="cards"><span>Tarjetas</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="cover"><span>Portada</span></button>
                                 </div>
                             </div>
 
-                            <!-- Preview Controls -->
-                            <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewState('empty')">
-                                    <span>Vacío</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')">
-                                    <span>Cargando archivo</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('loaded')">
-                                    <span>Archivo cargado</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('file-errors')">
-                                    <span>Errores en el archivo</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing-error')">
-                                    <span>Error: procesado</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')">
-                                    <span>Error: tipo</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-size')">
-                                    <span>Error: peso</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing')">
-                                    <span>Procesando</span>
-                                </button>
+                            <div id="fu-dropzone-props">
+                                <div class="fu-control-row">
+                                    <span class="ubits-body-sm-bold fu-control-row__label">Propiedades</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="fu-btn-header"><span>Encabezado</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="fu-btn-multiple"><span>Varios archivos</span></button>
+                                    </div>
+                                </div>
+                                <div class="fu-control-row">
+                                    <span class="ubits-body-sm-bold fu-control-row__label">Estado</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewState('empty')"><span>Vacío</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')"><span>Cargando archivo</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('loaded')"><span>Archivo cargado</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('file-errors')"><span>Errores en el archivo</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing-error')"><span>Error: procesado</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')"><span>Error: tipo</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-size')"><span>Error: peso</span></button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing')"><span>Procesando</span></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; display: flex; justify-content: center;">
+                                <div class="file-upload-preview-wrap" id="fu-preview-wrap">
+                                    <div id="preview-container"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -263,7 +283,10 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
     <script src="../../script.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/progress-bar.js"></script>
     <script src="../../components/file-upload.js"></script>
+    <script src="../../components/file-upload-layouts.js"></script>
+    <script src="../../components/file-upload-compact.js"></script>
 
     <script>
         var FILE_UPLOAD_DEMO_MULTI = [
@@ -271,17 +294,78 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
             { name: 'politica-compliance.docx', sizeKb: 88.5 },
             { name: 'notas-reunion.md', sizeKb: 12.2 }
         ];
+        var SEED_IMAGES = [
+            { name: 'portada-1.jpg', sizeKb: 180, type: 'image/jpeg', previewUrl: '../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg' },
+            { name: 'portada-2.jpg', sizeKb: 164, type: 'image/jpeg', previewUrl: '../../images/cards-learn/portadas-ia/02-personas-en-oficina.jpg' },
+            { name: 'portada-3.jpg', sizeKb: 172, type: 'image/jpeg', previewUrl: '../../images/cards-learn/portadas-ia/03-personas-en-oficina.jpg' }
+        ];
+        var SEED_FILES = [
+            { name: 'documento.pdf', sizeKb: 520, type: 'application/pdf' },
+            { name: 'intro.zip', sizeKb: 248, type: 'application/zip' },
+            { name: 'notas.xlsx', sizeKb: 86, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', status: 'error' }
+        ];
         var _fuPreviewMultiple = false;
+        var _fuShowHeader = true;
+        var _fuVariant = 'dropzone';
         var _fuPreviewCurrentState = 'empty';
         var _uploadingTimer = null;
 
-        function isFuMultiple() {
-            var sw = document.getElementById('fu-preview-multiple');
-            return !!(sw && sw.checked);
+        function isFuMultiple() { return _fuPreviewMultiple; }
+
+        function fuLoadedSuccessMessage() {
+            return isFuMultiple()
+                ? FILE_UPLOAD_DEMO_MULTI.length + ' archivos validados. Puedes continuar.'
+                : 'Archivo validado. Puedes continuar.';
+        }
+
+        function seedFor(variant) {
+            if (variant === 'gallery' || variant === 'images' || variant === 'sortable') return SEED_IMAGES.slice();
+            if (variant === 'cover') return [SEED_IMAGES[0]];
+            if (variant === 'progress' || variant === 'table' || variant === 'cards') return SEED_FILES.slice();
+            return null;
+        }
+
+        function isSingleLayout(variant) {
+            return variant === 'basic' || variant === 'avatar' || variant === 'cover';
         }
 
         function mountPreviewFileUpload() {
-            _fuPreviewMultiple = isFuMultiple();
+            var wrap = document.getElementById('fu-preview-wrap');
+            var props = document.getElementById('fu-dropzone-props');
+            if (wrap) wrap.classList.toggle('is-wide', _fuVariant === 'table' || _fuVariant === 'gallery');
+            if (props) props.style.display = _fuVariant === 'dropzone' ? '' : 'none';
+
+            if (_fuVariant === 'compact') {
+                createFileUploadCompact({
+                    containerId: 'preview-container',
+                    id: 'preview-file-upload',
+                    title: 'Importar archivo',
+                    accept: 'image/*',
+                    multiple: true,
+                    maxFiles: 3,
+                    maxSizeMb: 2
+                });
+                return;
+            }
+
+            if (_fuVariant !== 'dropzone') {
+                createFileUpload({
+                    containerId: 'preview-container',
+                    id: 'preview-file-upload',
+                    layout: _fuVariant,
+                    title: 'Importar archivo',
+                    accept: (_fuVariant === 'progress' || _fuVariant === 'table' || _fuVariant === 'cards') ? '' : 'image/*',
+                    maxSizeMb: (_fuVariant === 'table' || _fuVariant === 'cards') ? 50 : 5,
+                    multiple: !isSingleLayout(_fuVariant),
+                    maxFiles: _fuVariant === 'gallery' ? 10 : (_fuVariant === 'progress' ? 5 : undefined),
+                    hideHeader: true,
+                    successMessage: false
+                });
+                var seeded = seedFor(_fuVariant);
+                if (seeded && typeof fileUploadSetFiles === 'function') fileUploadSetFiles('preview-file-upload', seeded);
+                return;
+            }
+
             createFileUpload({
                 containerId: 'preview-container',
                 id: 'preview-file-upload',
@@ -291,6 +375,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
                     : '.csv,text/csv',
                 maxSizeMb: 5,
                 multiple: _fuPreviewMultiple,
+                hideHeader: !_fuShowHeader,
                 downloadButtons: _fuPreviewMultiple ? [] : [
                     {
                         label: 'Descargar plantilla',
@@ -314,15 +399,8 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
 
         function syncPreviewFileUploadHeader() {
             var root = document.getElementById('preview-file-upload');
-            var sw = document.getElementById('fu-preview-show-header');
-            if (!root || !sw) return;
-            var show = !!sw.checked;
-            sw.setAttribute('aria-checked', show ? 'true' : 'false');
-            if (typeof fileUploadSetHeaderVisible === 'function') {
-                fileUploadSetHeaderVisible(root, show);
-            } else {
-                root.classList.toggle('ubits-file-upload--hide-header', !show);
-            }
+            if (!root || typeof fileUploadSetHeaderVisible !== 'function') return;
+            fileUploadSetHeaderVisible(root, _fuShowHeader);
         }
 
         function injectLoadedFiles(el) {
@@ -333,19 +411,42 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
             }
         }
 
+        function setVariant(variant) {
+            _fuVariant = variant;
+            _fuPreviewCurrentState = 'empty';
+            if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+            document.querySelectorAll('.preview-variant-btn').forEach(function (btn) {
+                var active = btn.getAttribute('data-variant') === variant;
+                btn.classList.toggle('ubits-button--primary', active);
+                btn.classList.toggle('ubits-button--secondary', !active);
+            });
+            mountPreviewFileUpload();
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             bootDocsWorkspace();
             mountPreviewFileUpload();
 
-            var headerSwitch = document.getElementById('fu-preview-show-header');
-            if (headerSwitch) {
-                headerSwitch.addEventListener('change', syncPreviewFileUploadHeader);
+            document.querySelectorAll('.preview-variant-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () { setVariant(btn.getAttribute('data-variant')); });
+            });
+
+            var headerBtn = document.getElementById('fu-btn-header');
+            if (headerBtn) {
+                headerBtn.addEventListener('click', function () {
+                    _fuShowHeader = !_fuShowHeader;
+                    headerBtn.classList.toggle('ubits-button--primary', _fuShowHeader);
+                    headerBtn.classList.toggle('ubits-button--secondary', !_fuShowHeader);
+                    syncPreviewFileUploadHeader();
+                });
             }
 
-            var multiSwitch = document.getElementById('fu-preview-multiple');
-            if (multiSwitch) {
-                multiSwitch.addEventListener('change', function () {
-                    multiSwitch.setAttribute('aria-checked', multiSwitch.checked ? 'true' : 'false');
+            var multiBtn = document.getElementById('fu-btn-multiple');
+            if (multiBtn) {
+                multiBtn.addEventListener('click', function () {
+                    _fuPreviewMultiple = !_fuPreviewMultiple;
+                    multiBtn.classList.toggle('ubits-button--primary', _fuPreviewMultiple);
+                    multiBtn.classList.toggle('ubits-button--secondary', !_fuPreviewMultiple);
                     if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
                     mountPreviewFileUpload();
                     setPreviewState('empty');
@@ -380,7 +481,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
                 fileUploadClearProcessing(el);
                 previewStates.file(el);
                 if (typeof fileUploadSetSuccess === 'function') {
-                    fileUploadSetSuccess(el, 'Archivo validado. Puedes continuar.');
+                    fileUploadSetSuccess(el, fuLoadedSuccessMessage());
                 }
             },
             'file-errors': function (el) {
@@ -460,6 +561,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
         };
 
         function setPreviewState(state) {
+            if (_fuVariant !== 'dropzone') return;
             var el = document.getElementById('preview-file-upload');
             if (!el || !previewStates[state]) return;
             _fuPreviewCurrentState = state;

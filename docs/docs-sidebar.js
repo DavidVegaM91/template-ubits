@@ -51,6 +51,8 @@ var DOCS_SIDEBAR_SECTIONS = [
     { id: 'button', title: 'Button', group: 'ui' },
     { id: 'button-group', title: 'Button group', group: 'ui' },
     { id: 'calendar', title: 'Calendar', group: 'ui' },
+    { id: 'card', title: 'Card', group: 'ui' },
+    { id: 'item', title: 'Item', group: 'ui' },
     { id: 'checkbox', title: 'Checkbox', group: 'ui' },
     { id: 'chip', title: 'Chip', group: 'ui' },
     { id: 'coachmark', title: 'Coachmark', group: 'ui' },
@@ -392,6 +394,8 @@ function initDocsSidebar(activeSection) {
             'tooltip': 'tooltip.html',
             'video-player': 'video-player.html',
             'calendar': 'calendar.html',
+            'card': 'card.html',
+            'item': 'item.html',
             'submenu': 'submenu.html',
             'task-strip': 'task-strip.html'
         };

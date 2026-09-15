@@ -383,6 +383,7 @@
             href: 'ubits-admin/diagnostico/admin-diagnostico.html',
           },
           { id: 'reportes', label: 'Reportes', href: 'ubits-admin/lms-creator/reportes-aprendizaje.html' },
+          { id: 'metricas', label: 'Métricas', href: 'ubits-admin/lms-creator/metricas.html' },
         ],
       },
       {
@@ -418,7 +419,12 @@
         id: 'tareas',
         label: 'Tareas',
         icon: 'fa-layer-group',
-        href: 'ubits-colaborador/tareas/tareas.html',
+        children: [
+          { id: 'tareas-lista', label: 'Tareas', href: 'ubits-colaborador/tareas/tareas.html' },
+          { id: 'tareas-planes', label: 'Planes', href: 'ubits-colaborador/tareas/planes.html' },
+          { id: 'tareas-plantillas', label: 'Plantillas', href: 'ubits-colaborador/tareas/plantilla.html' },
+          { id: 'tareas-seguimiento', label: 'Seguimiento', href: 'ubits-colaborador/tareas/seguimiento.html' },
+        ],
       },
       {
         id: 'avisos',
@@ -426,26 +432,33 @@
         icon: 'fa-bullhorn',
         href: 'ubits-admin/empresa/comunicaciones.html',
       },
+      {
+        id: 'agente-conocimiento',
+        label: 'Agente de conocimiento',
+        icon: 'fa-book-open',
+        href: 'ubits-admin/agente-conocimiento/agente-conocimiento.html',
+      },
     ];
   }
 
   function colaboradorNav() {
     return [
       { id: 'home', label: 'Inicio', icon: 'fa-house', href: 'ubits-colaborador/aprendizaje/home-learn.html' },
+      { type: 'group', id: 'group-productos', label: 'Productos' },
       {
         id: 'aprendizaje',
         label: 'Aprendizaje',
         icon: 'fa-graduation-cap',
         children: [
-          { id: 'catalogo', label: 'Catálogo', href: 'ubits-colaborador/aprendizaje/home-learn.html' },
           {
             id: 'modo-estudio-ia',
-            label: 'Modo estudio IA',
+            label: 'Modo estudio AI',
             href: 'ubits-colaborador/aprendizaje/modo-estudio-ia.html',
           },
+          { id: 'catalogo', label: 'Catálogo', href: 'ubits-colaborador/aprendizaje/home-learn.html' },
           {
             id: 'u-corporativa',
-            label: 'U. Corporativa',
+            label: 'Universidad corporativa',
             href: 'ubits-colaborador/aprendizaje/u-corporativa.html',
           },
           {
@@ -454,6 +467,7 @@
             href: 'ubits-colaborador/aprendizaje/zona-estudio.html',
           },
           { id: 'progreso', label: 'Progreso', href: 'ubits-colaborador/aprendizaje/progreso.html' },
+          { id: 'metricas', label: 'Métricas', href: 'ubits-colaborador/desempeno/metricas.html' },
           {
             id: 'diagnostico',
             label: 'Diagnóstico',
@@ -463,7 +477,7 @@
       },
       {
         id: 'desempeno',
-        label: 'Desempeño',
+        label: 'Desempeño y cultura',
         icon: 'fa-bars-progress',
         children: [
           {
@@ -472,16 +486,15 @@
             href: 'ubits-colaborador/desempeno/evaluaciones-360.html',
           },
           { id: 'objetivos', label: 'Objetivos', href: 'ubits-colaborador/desempeno/objetivos.html' },
-          { id: 'metricas', label: 'Métricas', href: 'ubits-colaborador/desempeno/metricas.html' },
-          { id: 'reportes', label: 'Reportes', href: 'ubits-colaborador/desempeno/reportes.html' },
+          {
+            id: 'matriztalento',
+            label: 'Matriz de talento',
+            href: 'ubits-colaborador/desempeno/matriz-de-talento.html',
+          },
+          { id: 'encuestas', label: 'Encuestas', href: 'ubits-colaborador/encuestas/encuestas.html' },
         ],
       },
-      {
-        id: 'encuestas',
-        label: 'Encuestas',
-        icon: 'fa-clipboard-list-check',
-        href: 'ubits-colaborador/encuestas/encuestas.html',
-      },
+      { type: 'group', id: 'group-herramientas', label: 'Herramientas' },
       {
         id: 'tareas',
         label: 'Tareas',
@@ -490,14 +503,8 @@
           { id: 'tareas-lista', label: 'Tareas', href: 'ubits-colaborador/tareas/tareas.html' },
           { id: 'planes', label: 'Planes', href: 'ubits-colaborador/tareas/planes.html' },
           { id: 'plantillas', label: 'Plantillas', href: 'ubits-colaborador/tareas/plantilla.html' },
-          { id: 'seguimiento', label: 'Seguimiento', href: 'ubits-colaborador/tareas/seguimiento.html' },
+          { id: 'seguimiento', label: 'Seguimiento', href: 'ubits-colaborador/tareas/seguimiento-leader.html' },
         ],
-      },
-      {
-        id: 'agentes',
-        label: 'Agentes',
-        icon: 'fa-sparkles',
-        href: 'ubits-colaborador/ia-para-hr/ia-para-hr.html',
       },
     ];
   }
@@ -627,7 +634,7 @@
     'cert-config': 'certificados-config',
     personalizacion: 'u-corporativa',
     'u-corporativa': 'u-corporativa',
-    seguimiento: 'u-corporativa',
+    'personalizacion-seguimiento': 'u-corporativa',
     reportes: 'reportes',
     diagnostico: 'diagnostico',
     'diagnóstico': 'diagnostico',
@@ -647,9 +654,14 @@
     onboarding: 'onboarding',
     vacantes: 'vacantes',
     plantillasrecl: 'plantillasrecl',
-    tareas: 'tareas',
+    tareas: 'tareas-lista',
     avisos: 'avisos',
     comunicaciones: 'avisos',
+    'agente-conocimiento': 'agente-conocimiento',
+    'tareas-lista': 'tareas-lista',
+    'tareas-planes': 'tareas-planes',
+    'tareas-plantillas': 'tareas-plantillas',
+    'tareas-seguimiento': 'tareas-seguimiento',
     'ia-para-hr': 'agentes',
     agentes: 'agentes',
     catalogo: 'catalogo',
@@ -686,14 +698,16 @@
     'evaluaciones-360.html': 'eval360',
     'objetivos.html': 'objetivos',
     'metricas.html': 'metricas',
-    'reportes.html': 'reportes',
+    'matriz-de-talento.html': 'matriztalento',
     'encuestas.html': 'encuestas',
     'tareas.html': 'tareas-lista',
     'planes.html': 'planes',
     'plan-detail.html': 'planes',
     'plantilla.html': 'plantillas',
-    'seguimiento.html': 'seguimiento',
-    'ia-para-hr.html': 'agentes',
+    'seguimiento.html': 'tareas-seguimiento',
+    'seguimiento-leader.html': 'seguimiento',
+    'agente-conocimiento.html': 'agente-conocimiento',
+    'ia-para-hr.html': 'home',
     'profile.html': 'home',
     'contenidos.html': 'contenidos',
     'categorias.html': 'categorias',

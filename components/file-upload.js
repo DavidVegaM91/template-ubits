@@ -30,6 +30,7 @@
  *   maxFiles          {number}   Tope opcional en modo multiple (sin valor = sin límite)
  *   downloadButtons   {Array}    Hasta 3 objetos { label, icon?, onClick }; icon = clase FA sin 'fa-'
  *   hideHeader        {boolean}  true = oculta la fila .ubits-file-upload__header (título + acciones)
+ *   layout            {string}   'dropzone' (default) o layouts ReUI: basic, avatar, gallery, progress, table, images, sortable, cards, cover
  *   onChange          {Function} Callback (file | null) al seleccionar o quitar (modo simple)
  *   onFilesChange     {Function} Callback (File[]) con la lista (modo multiple; también se llama en simple)
  *   onError           {Function} Callback ({ type: 'type'|'size'|'max', message }) al fallar validación
@@ -112,7 +113,10 @@
     }
 
     function acceptLabel(accept) {
-        if (!accept) return 'Archivos';
+        if (!accept || accept === '*') return 'Archivos';
+        if (accept.indexOf('image/*') !== -1 && accept.split(',').every(function (s) { return s.trim().charAt(0) !== '.'; })) {
+            return 'Imágenes';
+        }
         return accept.split(',').map(function (s) {
             return s.trim().replace(/^\./, '').toUpperCase();
         }).filter(function (s) { return s.indexOf('/') === -1; }).join(', ');
@@ -494,8 +498,8 @@
             renderFileList();
             clearError();
             if (successMessage !== false) {
-                if (accepted.length === 1) showSuccess(successMessage);
-                else showSuccess(accepted.length + ' archivos validados. Puedes continuar.');
+                if (files.length === 1) showSuccess(successMessage);
+                else showSuccess(files.length + ' archivos validados. Puedes continuar.');
             }
             emitChange();
             if (lastError) {
@@ -625,6 +629,10 @@
         var container = document.getElementById(opts.containerId);
         if (!container) { console.warn('[ubits-file-upload] Contenedor no encontrado:', opts.containerId); return null; }
 
+        var layout = opts.layout || 'dropzone';
+        if (layout && layout !== 'dropzone' && typeof window.createFileUploadLayout === 'function') {
+            return window.createFileUploadLayout(opts);
+        }
         var id = opts.id || ('ubits-fu-' + opts.containerId);
         container.innerHTML = buildHtml(opts, id);
 

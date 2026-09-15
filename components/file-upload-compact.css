@@ -32,6 +32,8 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: var(--gap-sm);
+    /* 8px título → tile, igual que label → control de Input/Select */
+    margin-bottom: calc(var(--space-2) - var(--gap-lg));
 }
 
 .ubits-file-upload-compact__title {

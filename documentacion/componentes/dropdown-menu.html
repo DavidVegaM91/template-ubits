@@ -433,19 +433,19 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                             { text: 'Otra persona o grupo', value: '5' }
                         ];
                     case 'enriquecido':
-                        return [
-                            { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' }, selected: true },
-                            { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
-                            { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                    return [
+                        { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' }, selected: true },
+                        { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
                             { value: '4', text: 'Área Marketing 2025 Q1', metaText: '3 de 15 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } }
                         ];
                     case 'ya-elegidos':
-                        return [
-                            { text: 'Ana María López', value: '1', avatar: '../../images/Profile-image.jpg', alreadyChosen: true },
-                            { text: 'Carlos Ruiz', value: '2' },
-                            { text: 'Equipo de diseño', value: '3', leftIcon: 'users', alreadyChosen: true },
-                            { text: 'Otra persona o grupo', value: '4' }
-                        ];
+                    return [
+                        { text: 'Ana María López', value: '1', avatar: '../../images/Profile-image.jpg', alreadyChosen: true },
+                        { text: 'Carlos Ruiz', value: '2' },
+                        { text: 'Equipo de diseño', value: '3', leftIcon: 'users', alreadyChosen: true },
+                        { text: 'Otra persona o grupo', value: '4' }
+                    ];
                     case 'posiciones':
                         return [
                             { text: 'Perfil', value: 'profile', leftIcon: 'user' },
@@ -598,34 +598,34 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
             }
 
             function bindSearchFilter() {
-                var overlay = document.getElementById(overlayId);
-                var searchInput = document.getElementById(overlayId + '-autocomplete-input');
-                var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
+                    var overlay = document.getElementById(overlayId);
+                    var searchInput = document.getElementById(overlayId + '-autocomplete-input');
+                    var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
                 if (!searchInput || !searchClear || !overlay) return;
-                searchClear.style.pointerEvents = 'auto';
-                function filterPreviewOptions(q) {
-                    var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
-                    var qn = (q || '').toLowerCase().trim();
-                    opts.forEach(function(opt) {
-                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label') || opt.querySelector('.ubits-checkbox__label');
-                        var text = textEl ? textEl.textContent : '';
-                        opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
-                    });
-                }
-                function toggleClear() {
-                    searchClear.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-                }
+                        searchClear.style.pointerEvents = 'auto';
+                        function filterPreviewOptions(q) {
+                            var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
+                            var qn = (q || '').toLowerCase().trim();
+                            opts.forEach(function(opt) {
+                                var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label') || opt.querySelector('.ubits-checkbox__label');
+                                var text = textEl ? textEl.textContent : '';
+                                opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
+                            });
+                        }
+                        function toggleClear() {
+                            searchClear.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+                        }
                 searchClear.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    searchInput.value = '';
-                    toggleClear();
-                    filterPreviewOptions('');
-                    searchInput.focus();
+                            e.preventDefault();
+                            e.stopPropagation();
+                            searchInput.value = '';
+                            toggleClear();
+                            filterPreviewOptions('');
+                            searchInput.focus();
                 };
                 searchInput.oninput = function() {
-                    toggleClear();
-                    filterPreviewOptions(this.value);
+                            toggleClear();
+                            filterPreviewOptions(this.value);
                 };
             }
 
@@ -747,9 +747,9 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                     knobsRoot.appendChild(wrap);
                     createInput({
                         containerId: 'preview-placement-container',
-                        type: 'select',
+                    type: 'select',
                         label: 'Posición del panel',
-                        placeholder: 'Selecciona...',
+                    placeholder: 'Selecciona...',
                         selectOptions: [
                             { value: 'bottom-start', text: 'Abajo · inicio' },
                             { value: 'bottom-end', text: 'Abajo · fin' },

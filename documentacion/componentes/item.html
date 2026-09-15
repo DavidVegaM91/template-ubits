@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Item | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/item.css">
+    <style>
+        .preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; border-color: var(--ubits-accent-brand) !important; }
+        .preview-control-btn.active span { color: white !important; }
+        .ds-control-row { display: flex; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+        .ds-control-row__label { color: var(--ubits-fg-1-medium); margin-right: 4px; flex-shrink: 0; padding-top: 6px; min-width: 96px; }
+        .ds-props-divider { color: var(--ubits-fg-1-medium); margin: 0 0 12px; padding-top: 4px; border-top: 1px solid var(--ubits-border-1); }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Item</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Fila de lista para archivos, colecciones, personas o actividad. Se agrupa en listas unidas o separadas, con media, título, descripción y acciones.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige una variante (composición). Debajo combina tamaño, apariencia y si el grupo va unido o separado.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <div id="item-preview" style="min-height: 120px;"></div>
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <div class="ds-control-row">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Variante:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition"></div>
+                                </div>
+                                <p class="ubits-body-xs-regular ds-props-divider">Propiedades de esta variante</p>
+                                <div class="ds-control-row">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Tamaño:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-size="default" onclick="setSize('default')"><span>Default</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-size="sm" onclick="setSize('sm')"><span>Sm</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-size="xs" onclick="setSize('xs')"><span>Xs</span></button>
+                                    </div>
+                                </div>
+                                <div class="ds-control-row">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Apariencia:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-variant="default" onclick="setVariant('default')"><span>Default</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-variant="outline" onclick="setVariant('outline')"><span>Outline</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-variant="muted" onclick="setVariant('muted')"><span>Muted</span></button>
+                                    </div>
+                                </div>
+                                <div class="ds-control-row" id="row-layout">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Grupo:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-layout="separated" onclick="setLayout('separated')"><span>Separados</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-layout="joined" onclick="setLayout('joined')"><span>Unidos</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Átomo de lista: icono o avatar a la izquierda, contenido al centro y acciones a la derecha. El grupo unido se ve como una sola superficie.
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">Básico, con icono, clicable, archivos, personas, badges, header y pie, actividad.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-border-all"></i></div>
+                                    <div class="ubits-body-sm-bold">Apariencia</div>
+                                    <div class="ubits-body-sm-regular">Default, outline y muted; combinable con tamaños default, sm y xs.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Grupo</div>
+                                    <div class="ubits-body-sm-regular">Separados con gap o unidos en un marco con divisores.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user"></i></div>
+                                    <div class="ubits-body-sm-bold">Media</div>
+                                    <div class="ubits-body-sm-regular">Icono en caja, imagen o Avatar oficial.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/item.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var state = { composition: 'archivos', size: 'default', variant: 'outline', layout: 'separated' };
+        var COMPOSITIONS = [
+            { id: 'basico', label: 'Básico' },
+            { id: 'con-icono', label: 'Con icono' },
+            { id: 'clicable', label: 'Clicable' },
+            { id: 'archivos', label: 'Archivos' },
+            { id: 'personas', label: 'Personas' },
+            { id: 'con-badges', label: 'Con badges' },
+            { id: 'con-secciones', label: 'Header y pie' },
+            { id: 'actividad', label: 'Actividad' }
+        ];
+        function paint() {
+            renderUbitsItemDemo(document.getElementById('item-preview'), state);
+            document.querySelectorAll('#ctrl-composition .preview-control-btn').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-value') === state.composition);
+            });
+            document.querySelectorAll('[data-size]').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-size') === state.size);
+            });
+            document.querySelectorAll('[data-variant]').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-variant') === state.variant);
+            });
+            document.querySelectorAll('[data-layout]').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-layout') === state.layout);
+            });
+            document.getElementById('row-layout').style.display = state.composition === 'con-secciones' ? 'none' : '';
+        }
+        function setComposition(id) { state.composition = id; paint(); }
+        function setSize(s) { state.size = s; paint(); }
+        function setVariant(v) { state.variant = v; paint(); }
+        function setLayout(v) { state.layout = v; paint(); }
+        document.addEventListener('DOMContentLoaded', function () {
+            bootDocsWorkspace();
+            var wrap = document.getElementById('ctrl-composition');
+            COMPOSITIONS.forEach(function (c) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' + (c.id === state.composition ? ' active' : '');
+                btn.setAttribute('data-value', c.id);
+                btn.innerHTML = '<span>' + c.label + '</span>';
+                btn.onclick = function () { setComposition(c.id); };
+                wrap.appendChild(btn);
+            });
+            paint();
+        });
+    </script>
+</body>
+</html>

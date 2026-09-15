@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Card | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card.css">
+    <style>
+        .preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; border-color: var(--ubits-accent-brand) !important; }
+        .preview-control-btn.active span { color: white !important; }
+        .ds-control-row { display: flex; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+        .ds-control-row__label { color: var(--ubits-fg-1-medium); margin-right: 4px; flex-shrink: 0; padding-top: 6px; min-width: 96px; }
+        .ds-props-divider { color: var(--ubits-fg-1-medium); margin: 0 0 12px; padding-top: 4px; border-top: 1px solid var(--ubits-border-1); }
+        .ds-switch-row { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 16px; align-items: center; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Card</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Contenedor de layout con encabezado, cuerpo, pie e imagen. Sirve para choosers, carpetas tipo Drive y resúmenes. No sustituye Card content de aprendizaje.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige una variante (composición). Debajo aparecen solo las propiedades que aplican. Las propiedades no son variantes.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <div id="card-preview" style="min-height: 160px;"></div>
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <div class="ds-control-row">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Variante:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-composition"></div>
+                                </div>
+                                <p class="ubits-body-xs-regular ds-props-divider">Propiedades de esta variante</p>
+                                <div class="ds-control-row">
+                                    <span class="ubits-body-sm-bold ds-control-row__label">Tamaño:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-size="default" onclick="setSize('default')"><span>Default</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-size="sm" onclick="setSize('sm')"><span>Sm</span></button>
+                                    </div>
+                                </div>
+                                <div class="ds-switch-row" id="row-hover">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Hover elevado</span>
+                                    <label class="ubits-switch ubits-switch--sm">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-hover" role="switch" onchange="setHover(this.checked)">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Card de superficie: anillo (borde), radio y tokens UBITS. Las variantes cambian la estructura; el tamaño y el hover se combinan.
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">16 composiciones: estándar, bordes, pie, enlace, menú, tres tipos de imagen, formulario, facturación, estado, estadística, badge y acciones, icono, label.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">Default y sm, con el mismo ritmo de padding interno.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrow-up"></i></div>
+                                    <div class="ubits-body-sm-bold">Hover elevado</div>
+                                    <div class="ubits-body-sm-regular">Opcional. El card por defecto es plano (borde), no una sombra de elevación.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-image"></i></div>
+                                    <div class="ubits-body-sm-bold">Media</div>
+                                    <div class="ubits-body-sm-regular">Imagen interna redondeada, a borde, o overlay a pantalla completa.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/card.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../docs/docs-workspace-boot.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var state = { composition: 'badge-acciones', size: 'default', hoverable: false, billingOpen: false };
+        var COMPOSITIONS = [
+            { id: 'estandar', label: 'Estándar' },
+            { id: 'header-borde', label: 'Header con borde' },
+            { id: 'secciones', label: 'Secciones a borde' },
+            { id: 'header-y-pie', label: 'Header y pie' },
+            { id: 'con-enlace', label: 'Con enlace' },
+            { id: 'con-menu', label: 'Con menú' },
+            { id: 'imagen-interna', label: 'Imagen interna' },
+            { id: 'imagen-overlay', label: 'Imagen overlay' },
+            { id: 'imagen-borde', label: 'Imagen a borde' },
+            { id: 'formulario', label: 'Formulario' },
+            { id: 'facturacion', label: 'Facturación' },
+            { id: 'estado', label: 'Estado' },
+            { id: 'estadistica', label: 'Estadística' },
+            { id: 'badge-acciones', label: 'Badge y acciones' },
+            { id: 'con-icono', label: 'Con icono' },
+            { id: 'label-enlace', label: 'Label y enlace' }
+        ];
+        function paint() {
+            renderUbitsCardDemo(document.getElementById('card-preview'), state);
+            document.querySelectorAll('#ctrl-composition .preview-control-btn').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-value') === state.composition);
+            });
+            document.querySelectorAll('[data-size]').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-size') === state.size);
+            });
+            var hoverRow = document.getElementById('row-hover');
+            if (hoverRow) hoverRow.style.display = state.composition === 'imagen-overlay' ? 'none' : 'flex';
+        }
+        function setComposition(id) { state.composition = id; state.billingOpen = false; paint(); }
+        function setSize(s) { state.size = s; paint(); }
+        function setHover(v) { state.hoverable = v; paint(); }
+        document.addEventListener('DOMContentLoaded', function () {
+            bootDocsWorkspace();
+            var wrap = document.getElementById('ctrl-composition');
+            COMPOSITIONS.forEach(function (c) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'ubits-button ubits-button--secondary ubits-button--sm preview-control-btn' + (c.id === state.composition ? ' active' : '');
+                btn.setAttribute('data-value', c.id);
+                btn.innerHTML = '<span>' + c.label + '</span>';
+                btn.onclick = function () { setComposition(c.id); };
+                wrap.appendChild(btn);
+            });
+            paint();
+        });
+    </script>
+</body>
+</html>

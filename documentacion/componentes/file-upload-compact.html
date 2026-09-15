@@ -306,6 +306,12 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             return !!(sw && sw.checked);
         }
 
+        function fucLoadedSuccessMessage() {
+            return isFucMultiple()
+                ? FILE_UPLOAD_DEMO_MULTI.length + ' archivos validados. Puedes continuar.'
+                : 'Archivo validado. Puedes continuar.';
+        }
+
         function syncThumbRowVisibility() {
             var row = document.getElementById('fuc-preview-thumb-row');
             if (row) row.style.display = _fucPreviewMultiple ? 'none' : 'flex';
@@ -436,7 +442,7 @@ Importa file-upload-compact.css y file-upload-compact.js.</code></pre>
             var show = !!sw.checked;
             sw.setAttribute('aria-checked', show ? 'true' : 'false');
             if (show) {
-                fileUploadCompactSetSuccess(el, 'Archivo validado. Puedes continuar.');
+                fileUploadCompactSetSuccess(el, fucLoadedSuccessMessage());
             } else if (typeof fileUploadCompactClearSuccess === 'function') {
                 fileUploadCompactClearSuccess(el);
             } else {

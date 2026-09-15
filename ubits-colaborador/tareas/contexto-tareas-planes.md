@@ -310,20 +310,21 @@ Subtareas **no** son tareas ni planes independientes en seguimiento; solo existe
 | **CSS extra** | `seguimiento-leader.css` (si aplica overrides) |
 | **BD** | `getActividadesParaLider(SEGUIMIENTO_CURRENT_LEADER)` |
 
+**Scope**
+
+- Tareas asignadas al **líder** o a sus **reportes directos**.
+- Planes donde **algún asignado** es el líder o un reporte directo.
+- En el playground el líder demo es **María Alejandra Sánchez Pardo**.
+- **No** es el mismo scope que Planes de María ni que Seguimiento HR (empresa-completa).
+
 **Configuración antes de scripts**
 
 ```html
 <script>
   window.SEGUIMIENTO_SCOPE = 'leader';
-  window.SEGUIMIENTO_CURRENT_LEADER = 'Fernando Castro Restrepo'; // demo: jefe Ventas
+  window.SEGUIMIENTO_CURRENT_LEADER = 'María Alejandra Sánchez Pardo';
 </script>
 ```
-
-**Scope**
-
-- Tareas asignadas a **reportes directos** del líder.
-- Planes donde **algún asignado** es reporte directo.
-- **No** es el mismo scope que Planes de María ni que Seguimiento HR.
 
 ---
 
@@ -387,8 +388,8 @@ seguimiento-leader.html (mismo JS, distinto scope BD)
 | `planes.html` | `getPlanesVistaPlanes` | María: individuales + Logística + Objetivos/Encuestas |
 | `plan-detail.html` | `getPlanDetalle`, `getTareasPorPlan` | Un plan por `id` (aunque HR llegue desde seguimiento) |
 | `task-detail.html` | `getTaskDetail` | Una tarea por `id` |
-| `seguimiento.html` | `getActividadesSeguimiento` | **Toda Fiqsha** (tareas grupales + planes) |
-| `seguimiento-leader.html` | `getActividadesParaLider` | Reportes del líder configurado |
+| `seguimiento.html` | `getActividadesSeguimiento` | **Toda Fiqsha** (tareas grupales + planes). Sidenav admin. |
+| `seguimiento-leader.html` | `getActividadesParaLider` | Líder + reportes del líder configurado. Sidenav colaborador. |
 
 ---
 
@@ -415,8 +416,8 @@ seguimiento-leader.html (mismo JS, distinto scope BD)
 | `plan-detail.html` | `plan-detail.tsx` |
 | `task-detail.html` | `task-detail.tsx` |
 | `subtask-detail.html` | `subtask-detail.tsx` |
-| `seguimiento.html` | `seguimiento.tsx` |
-| `seguimiento-leader.html` | *(pendiente o misma ruta con prop scope)* |
+| `seguimiento.html` | `pages/ubits-admin/tareas/seguimiento.tsx` (`scope="empresa"`) |
+| `seguimiento-leader.html` | `pages/ubits-colaborador/tareas/seguimiento.tsx` (`scope="leader"`) |
 
 Mock: `Ubits-React/lib/mockData/bd-tareas-y-planes.ts` (generado/sync desde vanilla).
 

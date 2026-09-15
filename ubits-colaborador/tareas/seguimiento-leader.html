@@ -10,6 +10,7 @@
     <!-- Estilos base UBITS -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
 
@@ -278,11 +279,15 @@
     <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
 <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initWorkspaceLayout === 'function') {
+                initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'seguimiento', headerVariant: 'tareas' });
+            }
             if (typeof loadHeaderProduct !== 'function') return;
             loadHeaderProduct('header-product-seguimiento', {
                 variant: 'tabs-with-actions',
@@ -332,7 +337,7 @@
     <!-- Vista líder: solo actividades de reportes directos del líder (TASK_VIEW_SCOPE_LEADER). Misma base de datos. -->
     <script>
         window.SEGUIMIENTO_SCOPE = 'leader';
-        window.SEGUIMIENTO_CURRENT_LEADER = 'Fernando Castro Restrepo';
+        window.SEGUIMIENTO_CURRENT_LEADER = 'María Alejandra Sánchez Pardo';
     </script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../bd-master/bd-master-colaboradores.js"></script>

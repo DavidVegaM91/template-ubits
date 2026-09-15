@@ -512,7 +512,7 @@
 }
 
 .zona-estudio-progreso-kpi-card {
-    background: var(--ubits-bg-2);
+    background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     padding: var(--padding-sm) var(--padding-md);

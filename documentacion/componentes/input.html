@@ -124,11 +124,11 @@
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                         Elige una <strong>variante</strong> (paridad React) y ajusta tamaño, estado y knobs. Cubre la familia ReUI Input; input-group / OTP / phone-input van en oleadas aparte.
                     </p>
-
+                    
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
                         <div id="input-preview-container" style="max-width: 400px; margin: 0 auto;"></div>
                     </div>
-
+                    
                     <div style="margin-top: 24px;">
                         <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Variante</p>
                         <div id="input-variant-btns" class="dd-control-row" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
@@ -145,7 +145,7 @@
                                 <div style="margin-bottom: 16px;">
                                     <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px; display: block;">Tamaño</label>
                                     <div id="size-btn-row" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-                                </div>
+                                    </div>
 
                                 <!-- State -->
                                 <div style="margin-bottom: 16px;">
@@ -175,7 +175,7 @@
                                     </div>
                                     <div id="mandatory-style-btns" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
                                 </div>
-                            </div>
+                                </div>
 
                             <!-- Columna 2 -->
                             <div>
@@ -186,8 +186,8 @@
                                             <input type="checkbox" class="ubits-switch__input" id="helper-toggle" role="switch" checked onchange="updateInput()">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
-                                    </div>
                                 </div>
+                            </div>
 
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
@@ -220,7 +220,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -1052,8 +1052,8 @@
                         maxSizeMb: 5
                     });
                 } else {
-                    createInput({
-                        containerId: 'input-preview-container',
+            createInput({
+                containerId: 'input-preview-container',
                         type: 'file',
                         label: 'Archivo',
                         size: size
@@ -1069,7 +1069,7 @@
                         label: 'Duración',
                         labelPosition: labelLeft ? 'left' : 'top',
                         valueSec: previewDurationSec,
-                        size: size,
+                size: size,
                         helperText: showHelper ? 'Formato minutos:segundos' : undefined,
                         fullWidth: true,
                         onChange: function (sec) { previewDurationSec = sec; }

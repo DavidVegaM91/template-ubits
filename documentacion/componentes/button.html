@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
     <title>Button | UBITS Playground</title>
-
+    
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -89,29 +89,29 @@
     <div class="dashboard-container">
         <div id="sidebar-container"></div>
         <div class="tooltip" id="tooltip"></div>
-
+        
         <main class="main-content">
             <div id="top-nav-container"></div>
             <div style="display: flex;">
-                <div id="docs-dropdown-container"></div>
-                <div id="docs-sidebar-container"></div>
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
 
-                <div class="components-content">
-                    <div class="content-area" style="display: block; width: 100%;">
-                        <div style="text-align: center; margin-bottom: 60px;">
-                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                                Button
-                            </h1>
-                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Button
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
                                 Botón de acción UBITS. Composiciones ReUI visibles en el playground y propiedades ortogonales que aplican a cada una.
-                            </p>
-                        </div>
+                        </p>
+                    </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Preview del componente
-                            </h2>
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
                             <p id="button-preview-intro" class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Elige una composición ReUI. Debajo aparecen solo las propiedades que aplican a esa composición.
                             </p>
@@ -177,9 +177,9 @@
                                     <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;" id="ctrl-status-dot">
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-value="start" onclick="setStatusDotPos('start')"><span>Izquierda</span></button>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="end" onclick="setStatusDotPos('end')"><span>Derecha</span></button>
-                                    </div>
-                                </div>
-
+                            </div>
+                        </div>
+                        
                                 <div class="btn-control-row" id="row-inline-count" style="display: none;">
                                     <span class="ubits-body-sm-bold btn-control-row__label">Conteo:</span>
                                     <input type="number" id="inline-count-input" min="0" max="9999" value="456" aria-label="Número de conteo inline" style="width: 72px; padding: 6px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: 13px; color: var(--ubits-fg-1-high); background: var(--ubits-bg-1);" onchange="onInlineCountChange()" oninput="onInlineCountChange()">
@@ -197,8 +197,8 @@
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="pill-outline" onclick="setAvatarStyle('pill-outline')"><span>Píldora outline</span></button>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-value="pill-filled" onclick="setAvatarStyle('pill-filled')"><span>Píldora filled</span></button>
                                     </div>
-                                </div>
-
+                            </div>
+                            
                                 <div class="btn-switch-row" id="block-switches" style="display: none;">
                                     <div class="btn-switch-item" id="switch-pill" style="display: none;">
                                         <label class="ubits-switch ubits-switch--sm">
@@ -210,26 +210,26 @@
                                     <div class="btn-switch-item" id="switch-loading" style="display: none;">
                                         <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="loading-toggle" role="switch" onchange="updateButtonPreview()">
-                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                        </label>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
                                         <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cargando</span>
-                                    </div>
+                            </div>
                                     <div class="btn-switch-item" id="switch-fullwidth" style="display: none;">
                                         <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="fullwidth-toggle" role="switch" onchange="updateButtonPreview()">
-                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                        </label>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
                                         <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ancho completo</span>
-                                    </div>
+                            </div>
                                     <div class="btn-switch-item" id="switch-link-disabled" style="display: none;">
                                         <label class="ubits-switch ubits-switch--sm">
                                             <input type="checkbox" class="ubits-switch__input" id="link-disabled-toggle" role="switch" onchange="updateButtonPreview()">
-                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                        </label>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
                                         <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Disabled</span>
                                     </div>
-                                </div>
-
+                            </div>
+                            
                                 <div class="btn-control-row" id="row-badge-corner" style="display: none;">
                                     <span class="ubits-body-sm-bold btn-control-row__label">Badge esquina:</span>
                                     <div style="display: inline-flex; gap: 8px; flex-wrap: wrap; align-items: center;" id="ctrl-badge">
@@ -240,8 +240,8 @@
                                         <div class="btn-switch-item" id="switch-badge-max" style="display: none;">
                                             <label class="ubits-switch ubits-switch--sm">
                                                 <input type="checkbox" class="ubits-switch__input" id="badge-max-toggle" role="switch" onchange="onBadgeMaxToggle()">
-                                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                            </label>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
                                             <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tope 99+</span>
                                         </div>
                                     </div>
@@ -257,16 +257,16 @@
                                     Motions oficiales (como el badge IA al descontar tokens): «Volver» usa <code style="font-size: 0.9em;">ubits-button--motion-back</code>.
                                     Próxima oleada: hamburger, expandir, hover reveal y theme toggle. Login social Remix queda ❌.
                                 </p>
-                            </div>
                         </div>
+                    </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Características generales
-                            </h2>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
                                     <div class="ubits-body-sm-bold">15 composiciones</div>
                                     <div class="ubits-body-sm-regular">Enlace, Volver, conteos, badges, async, avatar, grupo…</div>
@@ -275,21 +275,21 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
                                     <div class="ubits-body-sm-bold">Propiedades</div>
                                     <div class="ubits-body-sm-regular">Knobs por composición: tamaño, jerarquía, badge, carga…</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-link"></i></div>
                                     <div class="ubits-body-sm-bold">Enlace / Volver</div>
                                     <div class="ubits-body-sm-regular">Variante link + motion back en chevron</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bell"></i></div>
-                                    <div class="ubits-body-sm-bold">Badge</div>
+                                <div class="ubits-body-sm-bold">Badge</div>
                                     <div class="ubits-body-sm-regular">Esquina (attention-badge), inline (badge-tag) y conteo</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
+            </div>
             </div>
         </main>
     </div>
@@ -518,7 +518,7 @@
             if (state.badgeMode === 'number') {
                 maxRow.style.display = 'flex';
                 numInput.style.display = state.badgeMaxOverflow ? 'none' : 'inline-block';
-            } else {
+                } else {
                 maxRow.style.display = 'none';
                 numInput.style.display = 'none';
             }
@@ -820,7 +820,7 @@
                         window.setTimeout(function () {
                             state.asyncPhase = 'idle';
                             updateButtonPreview();
-                        }, 2000);
+                }, 2000);
                     }, 900);
                     e.preventDefault();
                 }

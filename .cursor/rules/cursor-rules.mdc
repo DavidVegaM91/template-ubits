@@ -366,7 +366,7 @@ openModal({
 - **`ubits-colaborador/desempeno/evaluaciones-360.html`** - Evaluaciones 360
 - **`ubits-colaborador/desempeno/objetivos.html`** - Objetivos
 - **`ubits-colaborador/desempeno/metricas.html`** - Métricas
-- **`ubits-colaborador/desempeno/reportes.html`** - Reportes
+- **`ubits-colaborador/desempeno/matriz-de-talento.html`** - Matriz de talento
 
 ### **📋 FLUJO DE GESTIÓN:**
 - **`ubits-colaborador/encuestas/encuestas.html`** - Gestión de encuestas
@@ -1850,7 +1850,6 @@ Todas las páginas del template (excepto documentación) ahora usan un sistema m
 - `ubits-colaborador/desempeno/evaluaciones-360.html` - 1 sección específica
 - `ubits-colaborador/desempeno/objetivos.html` - 1 sección específica
 - `ubits-colaborador/desempeno/metricas.html` - 1 sección específica
-- `ubits-colaborador/desempeno/reportes.html` - 1 sección específica
 - `ubits-colaborador/encuestas/encuestas.html` - 1 sección específica
 - `ubits-colaborador/reclutamiento/reclutamiento.html` - 1 sección específica
 - `ubits-colaborador/tareas/planes.html` - 1 sección específica

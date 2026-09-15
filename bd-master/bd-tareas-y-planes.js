@@ -1504,6 +1504,7 @@
     function getActividadesParaLider(nombreLider) {
         const reportes = getReportesDirectosEjemplo(nombreLider) || [];
         const setReportes = new Set(reportes);
+        setReportes.add(nombreLider);
         return actividadesSeguimiento.filter(function (act) {
             if (act.tipo === 'tarea' && act.asignado) return setReportes.has(act.asignado.nombre);
             if (act.tipo === 'plan' && act.asignados && act.asignados.length) {

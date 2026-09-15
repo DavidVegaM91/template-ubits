@@ -457,10 +457,10 @@
             if (filledEl) filledEl.hidden = true;
             renderFileList();
             setHelper(null);
-            if (accepted.length === 1) {
+            if (files.length === 1) {
                 setHelper('Archivo validado. Puedes continuar.', 'success');
             } else {
-                setHelper(accepted.length + ' archivos validados. Puedes continuar.', 'success');
+                setHelper(files.length + ' archivos validados. Puedes continuar.', 'success');
             }
             emitChange(null);
             if (lastError) fireError(lastError);

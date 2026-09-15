@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>UBITS Playground - Matriz de talento</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-contenido-principal">
+                            <p class="ubits-body-md-regular">Matriz de talento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="profile-menu-container"></div>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/layout-workspace.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'matriztalento', headerVariant: 'desempeno' });
+            loadProfileMenu('profile-menu-container');
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', { productName: 'Matriz de talento', breadcrumbItems: [] });
+            }
+        });
+    </script>
+</body>
+</html>

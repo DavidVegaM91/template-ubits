@@ -290,6 +290,9 @@
     <script src="../../components/header-product.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initWorkspaceLayout === 'function') {
+                initWorkspaceLayout({ audience: 'admin', activeSidebar: 'tareas-seguimiento', headerVariant: 'tareas' });
+            }
             if (typeof loadHeaderProduct !== 'function') return;
             loadHeaderProduct('header-product-seguimiento', {
                 variant: 'tabs-with-actions',

@@ -1,0 +1,344 @@
+/* Layouts ReUI del File Upload (vanilla). Tokens --ubits-*. */
+
+.ubits-fu-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+.ubits-fu-layout__stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+.ubits-fu-layout__surface {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--padding-2xl);
+    border: 1px dashed var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ubits-fu-layout__surface:hover,
+.ubits-fu-layout__surface--drag {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-fu-layout__icon-well {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    font-size: 20px;
+}
+
+.ubits-fu-layout__meta {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-fu-layout .ubits-body-sm-bold,
+.ubits-fu-layout .ubits-body-md-bold {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-fu-layout__text-btn {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--ubits-accent-brand);
+    cursor: pointer;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.ubits-fu-layout__basic,
+.ubits-fu-layout__avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-fu-layout__basic-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-fu-layout__basic-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-fu-layout__basic-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ubits-fu-layout__avatar-stage {
+    position: relative;
+}
+
+.ubits-fu-layout__avatar-drop {
+    cursor: pointer;
+    border-radius: var(--border-radius-full);
+    border: 1px dashed var(--ubits-border-1);
+    padding: 4px;
+}
+
+.ubits-fu-layout__avatar-drop--filled {
+    border-style: solid;
+}
+
+.ubits-fu-layout__avatar-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.ubits-fu-layout__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-fu-layout__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    flex: 1;
+}
+
+.ubits-fu-layout__grid,
+.ubits-fu-layout__sort-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--gap-md);
+}
+
+.ubits-fu-layout__cards,
+.ubits-fu-layout__image-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-fu-layout__grid-item,
+.ubits-fu-layout__sort-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-fu-layout__grid-item img,
+.ubits-fu-layout__sort-item img,
+.ubits-fu-layout__thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ubits-fu-layout__thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-fu-layout__thumb-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.ubits-fu-layout__grid-overlay,
+.ubits-fu-layout__grid-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.ubits-fu-layout__grid-item:hover .ubits-fu-layout__grid-overlay,
+.ubits-fu-layout__grid-item:hover .ubits-fu-layout__grid-caption {
+    opacity: 1;
+}
+
+.ubits-fu-layout__grid-overlay {
+    top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: var(--gap-xs);
+}
+
+.ubits-fu-layout__grid-caption {
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-sm);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: var(--ubits-fg-inverse, #fff);
+}
+
+.ubits-fu-layout__file-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.ubits-fu-layout__file-row,
+.ubits-fu-layout__card-row,
+.ubits-fu-layout__table-name {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+.ubits-fu-layout__file-row {
+    padding: var(--padding-sm);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+}
+
+.ubits-fu-layout__file-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.ubits-fu-layout__sort-item {
+    cursor: grab;
+}
+
+.ubits-fu-layout__sort-item--dragging {
+    opacity: 0.6;
+}
+
+.ubits-fu-layout__sort-handle {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    color: var(--ubits-fg-inverse, #fff);
+}
+
+.ubits-fu-layout__sort-remove {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+}
+
+.ubits-fu-layout__cover {
+    position: relative;
+    min-height: 180px;
+    overflow: hidden;
+    border: 1px dashed var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    cursor: pointer;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-fu-layout__cover-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.ubits-fu-layout__cover-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-xs);
+    min-height: 180px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-fu-layout__cover-actions {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: var(--gap-xs);
+}
+
+.ubits-fu-layout__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ubits-fu-layout__table th,
+.ubits-fu-layout__table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-fu-layout__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.ubits-fu-layout__lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--border-radius-lg);
+}
+
+.ubits-fu-layout__input {
+    display: none;
+}

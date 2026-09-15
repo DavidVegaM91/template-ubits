@@ -24,7 +24,7 @@
             '        <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>' +
             '        <span class="ubits-toolbar-panel__meta">' +
             '          <span class="ubits-body-sm-regular" id="' + I('cursos-meta-count') + '" aria-live="polite">0/0</span>' +
-            '          <span class="ubits-body-sm-regular">resultados</span>' +
+            '          <span class="ubits-body-sm-regular">contenidos</span>' +
             '        </span>' +
             '      </div>' +
             '      <div class="ubits-toolbar-panel__actions">' +

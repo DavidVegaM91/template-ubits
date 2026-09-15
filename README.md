@@ -241,7 +241,7 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
   - `creator-personalizacion` - LMS Creator: Universidad corporativa, Seguimiento
 - **Sidebar** - Navegación lateral con **3 variantes** (`components/sidebar.js`):
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
-  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño) → Herramientas (Tareas, Avisos). **Diagnóstico** vive dentro de Aprendizaje, debajo de Reportes. Selección: Dashboard, Vacantes, Plantillas (sin Créditos). Desempeño incluye PDI entre Matriz de talento y Encuestas. Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú; Diagnóstico va dentro de Aprendizaje, debajo de Progreso. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
+  - **Variante admin:** Workspace sidenav — Inicio → Productos (Selección, Aprendizaje, Desempeño y cultura) → Herramientas (Tareas acordeón, Avisos internos, Agente de conocimiento). **Diagnóstico**, **Reportes** y **Métricas** viven dentro de Aprendizaje. Tareas abre Tareas, Planes, Plantillas y Seguimiento (HR). Selección: Dashboard, Onboarding, Vacantes, Plantillas (sin Créditos). Desempeño incluye PDI entre Matriz de talento y Encuestas. Cabecera: logo de la empresa + tres puntos (`Menú de empresa`: Licencias, Créditos IA, Configuración y sucursales Fiqsha/Alpha/Beta/Omega). **Configuración** ya no está en el AppHeader. Colaborador: logo de empresa sin menú; Productos (Aprendizaje, Desempeño y cultura) + Herramientas (Tareas acordeón, Seguimiento = vista líder). Aprendizaje: Modo estudio AI, Catálogo, Universidad corporativa, Zona de estudio, Progreso, Métricas, Diagnóstico. Agentes no está en el rail. Design system del playground: logo UBITS. Pie oficial `workspace-footer` al final del main (no sticky; se oculta en Agente IA). Incluye feedback en el footer del sidebar.
   - **Variante creator (deprecada):** el rail oscuro ya no se usa en LMS Creator. Las listas van en Workspace admin. Ver [LMS Creator](#lms-creator-producto-de-admin).
 - **Navegación móvil** — hamburguesa del AppHeader abre el sidebar Workspace a pantalla completa (encima del header). Cerrar con el botón X o Escape. **TabBar y Floating Menu de producto están eliminados.**
 - **Profile Menu** - Menú desplegable del perfil de usuario
@@ -538,8 +538,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 #### **📈 Módulo de Desempeño (ubits-colaborador/desempeno/):**
 - **`evaluaciones-360.html`** - Evaluaciones 360 (1 sección)
 - **`objetivos.html`** - Objetivos (1 sección)
-- **`metricas.html`** - Métricas (1 sección)
-- **`reportes.html`** - Reportes (1 sección)
+- **`metricas.html`** - Métricas (1 sección; sidenav: Aprendizaje)
+- **`matriz-de-talento.html`** - Matriz de talento (1 sección)
 
 #### **📋 Módulo de Encuestas (ubits-colaborador/encuestas/):**
 - **`encuestas.html`** - Encuestas (1 sección)
@@ -1233,7 +1233,6 @@ Cuando el hijo de una `section-*` **no** debe verse como tarjeta blanca (carruse
 - **`evaluaciones-360.html`** - Contenido específico 360 (con header-product)
 - **`objetivos.html`** - Contenido específico objetivos (con header-product)
 - **`metricas.html`** - Contenido específico métricas (con header-product)
-- **`reportes.html`** - Contenido específico reportes (con header-product)
 - **`encuestas.html`** - Contenido específico encuestas (con header-product)
 - **`reclutamiento.html`** - Contenido específico reclutamiento (con header-product, sin SubNav)
 - **`planes.html`** - Contenido específico planes (con header-product)

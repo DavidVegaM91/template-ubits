@@ -1,0 +1,307 @@
+/* ========================================
+   UBITS CARD — layout ReUI, look tokens --ubits-*
+   ======================================== */
+
+.ubits-card {
+  --card-spacing: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-spacing);
+  padding-block: var(--card-spacing);
+  padding-inline: 0;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--ubits-bg-1);
+  color: var(--ubits-fg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  text-align: left;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.ubits-card--sm {
+  --card-spacing: var(--space-3);
+}
+
+.ubits-card:has(.ubits-card__footer):not(.ubits-card--flush):not(.ubits-card--overlay) {
+  padding-bottom: 0;
+}
+
+.ubits-card:has(> .ubits-card__media:first-child) {
+  padding-top: 0;
+}
+
+.ubits-card--flush {
+  padding: 0;
+  gap: 0;
+}
+
+.ubits-card--overflow-visible {
+  overflow: visible;
+}
+
+.ubits-card--hoverable:hover {
+  border-color: var(--ubits-border-2);
+  box-shadow: var(--ubits-elevation-overlay);
+  transform: translateY(-2px);
+}
+
+.ubits-card--interactive {
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  text-decoration: none;
+}
+
+.ubits-card--interactive:focus-visible {
+  outline: 2px solid var(--ubits-accent-brand);
+  outline-offset: 2px;
+}
+
+.ubits-card--overlay {
+  position: relative;
+  height: 24rem;
+  padding: 0;
+  gap: 0;
+  border: 0;
+}
+
+.ubits-card__header {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: min-content;
+  gap: 4px var(--gap-sm);
+  align-items: start;
+  padding-inline: var(--card-spacing);
+}
+
+.ubits-card__header:has(.ubits-card__action) {
+  grid-template-columns: 1fr auto;
+}
+
+.ubits-card__header--bordered {
+  border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-card__header--bordered:not(.ubits-card__header--compact) {
+  padding-bottom: var(--card-spacing);
+}
+
+.ubits-card__header--compact {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding-block: var(--space-2);
+}
+
+.ubits-card--flush .ubits-card__header:not(.ubits-card__header--compact) {
+  padding: var(--card-spacing);
+}
+
+.ubits-card--flush .ubits-card__header--compact {
+  padding: var(--space-2) var(--card-spacing);
+}
+
+.ubits-card__title {
+  grid-column: 1;
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-card--sm .ubits-card__title {
+  font-size: var(--font-size-sm);
+  line-height: 19.5px;
+}
+
+.ubits-card__title--link {
+  display: block;
+  text-decoration: none;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-card__title--link:hover {
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-card__description {
+  grid-column: 1;
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-card__action {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.ubits-card__header--compact .ubits-card__action {
+  grid-column: auto;
+  grid-row: auto;
+  align-items: center;
+}
+
+.ubits-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+  padding-inline: var(--card-spacing);
+}
+
+.ubits-card__content > .ubits-button,
+.ubits-card__content > button {
+  align-self: flex-start;
+}
+
+.ubits-card--flush .ubits-card__content:not(.ubits-card__content--flush) {
+  padding: var(--card-spacing);
+}
+
+.ubits-card__content--flush {
+  padding: 0;
+}
+
+.ubits-card__content--divided {
+  border-block: 1px solid var(--ubits-border-1);
+  padding-block: var(--space-3);
+}
+
+.ubits-card__media {
+  overflow: hidden;
+  width: 100%;
+}
+
+.ubits-card__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.ubits-card__media--inset {
+  height: 12rem;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.ubits-card__media--inset img {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.ubits-card__media--overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.ubits-card__media--overlay img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.ubits-card--overlay:hover .ubits-card__media--overlay img {
+  transform: scale(1.1);
+}
+
+.ubits-card__overlay-fade {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  pointer-events: none;
+}
+
+.ubits-card--overlay:hover .ubits-card__overlay-fade {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.ubits-card__overlay-body {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-6);
+  box-sizing: border-box;
+}
+
+.ubits-card--overlay .ubits-card__title,
+.ubits-card--overlay .ubits-card__description {
+  color: #fff;
+}
+
+.ubits-card--overlay .ubits-card__description {
+  opacity: 0.9;
+}
+
+.ubits-card--media-hover .ubits-card__media--inset img {
+  transition: transform 0.35s ease;
+}
+
+.ubits-card--media-hover:hover .ubits-card__media--inset img {
+  transform: scale(1.05);
+}
+
+.ubits-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--card-spacing);
+  background: var(--ubits-bg-2);
+  border-top: 1px solid var(--ubits-border-1);
+  border-radius: 0 0 var(--border-radius-xl) var(--border-radius-xl);
+}
+
+.ubits-card__footer--plain {
+  background: transparent;
+  border-top: none;
+  border-radius: 0;
+  padding-block: var(--space-2);
+}
+
+.ubits-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--border-radius-md);
+  font-size: 1.125rem;
+  background: var(--ubits-feedback-bg-info-subtle);
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-card__icon--subtle {
+  background: var(--ubits-feedback-bg-info-subtle);
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-card__icon--brand {
+  background: var(--ubits-accent-brand);
+  color: var(--ubits-btn-primary-fg);
+}
+
+.ubits-card__icon--muted {
+  background: var(--ubits-bg-3);
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-card--sm .ubits-card__icon {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+}
