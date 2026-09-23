@@ -205,7 +205,8 @@
         return (
             '<div class="cc-vmodal-panel cc-vmodal-panel--hidden" id="cc-pim-tab-subir">' +
             '<div class="cc-vmodal-subir-layout">' +
-            '<div class="cc-vmodal-subir-centered">' +
+            '<div class="cc-vmodal-subir-centered cc-pim-headline-stack">' +
+            '<p class="cc-pim-idea-headline-intro__text">Sube la imagen que <span class="cc-pim-headline-brand">hará brillar</span> tu contenido</p>' +
             '<div id="cc-pim-subir-fu-wrap"></div></div></div></div>'
         );
     }
@@ -215,7 +216,7 @@
             '<div class="cc-vmodal-panel cc-vmodal-panel--hidden" id="cc-pim-tab-trailer">' +
             '<div class="cc-vmodal-enlace-layout">' +
             '<div class="cc-vmodal-enlace-centered">' +
-            '<p class="cc-vmodal-enlace-title">Pega el <span class="cc-vmodal-enlace-title-em">enlace del tráiler</span> que quieres cargar</p>' +
+            '<p class="cc-pim-idea-headline-intro__text">Pega el <span class="cc-pim-headline-brand">enlace del tráiler</span> que quieres cargar</p>' +
             '<div id="cc-pim-trailer-input-wrap"></div></div></div></div>'
         );
     }
@@ -531,6 +532,7 @@
             containerId: 'cc-pim-subir-fu-wrap',
             id: 'cc-pim-subir-fu',
             title: 'Imagen de portada',
+            hideHeader: true,
             accept: 'image/jpeg,image/png,.jpg,.jpeg,.png',
             maxSizeMb: MAX_IMAGE_MB,
             maxLabel: '5 MB',

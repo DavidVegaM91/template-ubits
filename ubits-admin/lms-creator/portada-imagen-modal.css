@@ -68,13 +68,27 @@
     margin: 0;
     font-size: 1.5rem;
     line-height: 1.25;
-    font-weight: 400;
+    /* Texto grande con resaltado: lo normal en medium, lo resaltado en bold (IA → degradado; lo demás → azul). */
+    font-weight: 500;
     font-family: var(--ubits-font-family-sans);
     color: var(--ubits-fg-1-high);
 }
 
+/* Resaltado sin IA (Subir portada, Tráiler): azul de marca. */
+.cc-pim-headline-brand {
+    font-weight: 700;
+    color: var(--ubits-accent-brand);
+}
+
+/* Subir portada: título y cargador con el mismo aire que Tráiler. */
+.cc-pim-headline-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
 .cc-pim-idea-headline-intro__gradient {
-    font-weight: 600;
+    font-weight: 700;
     background: linear-gradient(
         90deg,
         var(--modo-ia-gradient-a, rgb(255, 84, 22)),
