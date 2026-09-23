@@ -40,12 +40,10 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.cc-asistencia-recurso-modal__sessions-header {
+/* Fila del botón «Agregar sesión», bajo la lista de sesiones. */
+.cc-asistencia-recurso-modal__add-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
-    flex-wrap: wrap;
+    margin-top: var(--gap-md);
 }
 
 .cc-asistencia-recurso-modal__session-list {

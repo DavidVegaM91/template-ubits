@@ -1,6 +1,9 @@
 /**
  * Modal «Agregar asistencia» — LMS Creator T2.
- * Instrucciones (opcional) + sesiones con nombre (inline edit) y fecha/hora, o sesión libre.
+ * Instrucciones (opcional) + autoasistencia + sesiones con nombre y fecha/hora.
+ * `autoAsistencia` sustituye al antiguo «Sesión libre»: aquel decidía si había
+ * ventanas de fecha (y al activarlo borraba las sesiones); este solo decide
+ * QUIÉN confirma. Las sesiones son ahora siempre obligatorias.
  *
  * API:
  *   openAsistenciaRecursoModal({ initialData?, lockPastSessions?, onReady(payload), onBack?, onDismiss? })
@@ -27,7 +30,7 @@
     var _sessions = [];
     var _lockedIds = {};
     var _lockPast = false;
-    var _freeSession = false;
+    var _autoAsistencia = false;
 
     function esc(s) {
         return String(s == null ? '' : s)
@@ -159,7 +162,6 @@
     }
 
     function canConfirm() {
-        if (_freeSession) return !hasLockedSessions();
         if (!_sessions.length) return false;
         return _sessions.every(isSessionDraftComplete);
     }
@@ -204,11 +206,11 @@
             '<div class="cc-asistencia-recurso-modal__section" id="cc-asistencia-rte-mount"></div>' +
             '<div class="cc-asistencia-recurso-modal__section">' +
             '<div class="cc-asistencia-recurso-modal__switch-row">' +
-            '<p class="ubits-body-md-bold cc-asistencia-recurso-modal__title">Sesión libre</p>' +
+            '<p class="ubits-body-md-bold cc-asistencia-recurso-modal__title">Autoasistencia</p>' +
             '<label class="ubits-switch ubits-switch--md">' +
             '<input type="checkbox" class="ubits-switch__input" role="switch" id="' +
             FREE_ID +
-            '" aria-label="Sesión libre">' +
+            '" aria-label="Autoasistencia">' +
             '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
             '</label></div>' +
             '<p class="ubits-body-sm-regular cc-asistencia-recurso-modal__hint" id="cc-asistencia-free-hint"></p>' +
@@ -216,18 +218,14 @@
             '<div class="cc-asistencia-recurso-modal__section" id="' +
             SESSIONS_WRAP_ID +
             '">' +
-            '<div class="cc-asistencia-recurso-modal__sessions-header">' +
-            '<p class="ubits-body-md-bold cc-asistencia-recurso-modal__title">Sesiones</p>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="' +
-            ADD_ID +
-            '"><i class="far fa-plus"></i><span>Añadir sesión</span></button>' +
-            '</div>' +
-            '<p class="ubits-body-sm-regular cc-asistencia-recurso-modal__hint">' +
-            'Elige el día y el horario en que los estudiantes podrán confirmar que asistieron. Fuera de ese periodo no podrán hacerlo.' +
-            '</p>' +
             '<div id="' +
             LIST_ID +
             '" class="cc-asistencia-recurso-modal__session-list"></div>' +
+            '<div class="cc-asistencia-recurso-modal__add-row">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="' +
+            ADD_ID +
+            '"><span>Agregar sesión</span></button>' +
+            '</div>' +
             '</div></div></div>'
         );
     }
@@ -235,19 +233,16 @@
     function updateFreeHint(overlay) {
         var hint = overlay.querySelector('#cc-asistencia-free-hint');
         if (!hint) return;
-        hint.textContent = hasLockedSessions()
-            ? 'No puedes pasar a sesión libre mientras haya sesiones que ya ocurrieron.'
-            : 'Si está activo, el estudiante puede confirmar asistencia en cualquier momento, sin ventanas de fecha y hora.';
+        hint.textContent =
+            'Si está activa, el participante confirma su propia asistencia. Si está desactivada, ' +
+            'el administrador es quien confirma la asistencia de los participantes.';
     }
 
     function syncFreeUi(overlay) {
         var wrap = overlay.querySelector('#' + SESSIONS_WRAP_ID);
         var sw = overlay.querySelector('#' + FREE_ID);
-        if (sw) {
-            sw.checked = !!_freeSession;
-            sw.disabled = hasLockedSessions();
-        }
-        if (wrap) wrap.hidden = !!_freeSession;
+        if (sw) sw.checked = !!_autoAsistencia;
+        if (wrap) wrap.hidden = false;
         updateFreeHint(overlay);
         syncConfirmBtn(overlay);
     }
@@ -273,18 +268,23 @@
                     sid +
                     '">' +
                     '<div class="cc-asistencia-session-card__top">' +
-                    '<div class="cc-asistencia-session-card__name">' +
-                    '<input type="text" class="ubits-inline-edit ubits-body-sm-bold" maxlength="80" placeholder="Nombre de la sesión" aria-label="Nombre de la sesión" value="' +
-                    esc(session.name) +
-                    '"' +
-                    (locked ? ' readonly' : '') +
-                    '>' +
-                    '</div>' +
+                    '<label class="ubits-body-sm-bold" for="cc-asistencia-name-' +
+                    sid +
+                    '">Nombre de la sesión</label>' +
                     (locked
                         ? ''
-                        : '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-asistencia-remove="' +
+                        : '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" data-asistencia-remove="' +
                           sid +
                           '" aria-label="Eliminar sesión" data-tooltip="Eliminar sesión"><i class="far fa-trash"></i></button>') +
+                    '</div>' +
+                    '<div class="cc-asistencia-session-card__name">' +
+                    '<input type="text" id="cc-asistencia-name-' +
+                    sid +
+                    '" class="ubits-input ubits-input--md" maxlength="80" placeholder="Nombre de la sesión" aria-label="Nombre de la sesión" value="' +
+                    esc(session.name) +
+                    '"' +
+                    (locked ? ' disabled' : '') +
+                    '>' +
                     '</div>' +
                     (locked
                         ? '<p class="ubits-body-sm-regular cc-asistencia-recurso-modal__hint">Esta sesión ya ocurrió y no se puede editar ni eliminar.</p>'
@@ -308,7 +308,7 @@
             var locked = !!_lockedIds[session.id];
             var card = list.querySelector('[data-session-id="' + session.id + '"]');
             if (!card) return;
-            var nameInput = card.querySelector('.ubits-inline-edit');
+            var nameInput = card.querySelector('.cc-asistencia-session-card__name input');
             if (nameInput && !locked) {
                 nameInput.addEventListener('input', function () {
                     session.name = nameInput.value;
@@ -382,16 +382,13 @@
         payload = payload || {};
         var instructions = String(payload.instructionsHtml || '').trim();
         var sessions = payload.sessions || [];
-        var free = !!payload.freeSession;
         var instructionsBlock = instructions
             ? '<div class="cc-asistencia-rendered__instructions ubits-body-md-regular">' +
               instructions +
               '</div>'
             : '';
         var sessionsHtml;
-        if (free) {
-            sessionsHtml = '<p class="ubits-body-md-regular cc-asistencia-rendered__free">Sesión libre</p>';
-        } else if (!sessions.length) {
+        if (!sessions.length) {
             sessionsHtml = '<p class="ubits-body-md-regular cc-asistencia-rendered__free">Sin sesiones</p>';
         } else {
             sessionsHtml =
@@ -435,20 +432,18 @@
         if (!canConfirm()) return;
         var instructionsHtml =
             typeof global.getRichTextHtml === 'function' ? global.getRichTextHtml('#' + RTE_ID) : '';
-        var builtSessions = _freeSession
-            ? []
-            : _sessions.map(function (draft, index) {
-                  return {
-                      id: draft.id,
-                      label: sessionNameFromDraft(draft, index),
-                      startIso: toIso(draft.date, draft.startTime),
-                      endIso: toIso(draft.date, draft.endTime),
-                  };
-              });
+        var builtSessions = _sessions.map(function (draft, index) {
+            return {
+                id: draft.id,
+                label: sessionNameFromDraft(draft, index),
+                startIso: toIso(draft.date, draft.startTime),
+                endIso: toIso(draft.date, draft.endTime),
+            };
+        });
         var payload = {
             instructionsHtml: instructionsHtml,
             sessions: builtSessions,
-            freeSession: !!_freeSession,
+            autoAsistencia: !!_autoAsistencia,
             gradingEnabled: false,
             passingScore: null,
         };
@@ -476,7 +471,7 @@
         _lockPast = !!opts.lockPastSessions;
         var initial = opts.initialData || null;
         _sessions = draftsFromInitial(initial && initial.sessions);
-        _freeSession = !!(initial && initial.freeSession);
+        _autoAsistencia = !!(initial && initial.autoAsistencia);
         _lockedIds = {};
         if (_lockPast && initial && initial.sessions) {
             initial.sessions.forEach(function (s) {
@@ -562,11 +557,7 @@
             var freeSw = overlay.querySelector('#' + FREE_ID);
             if (freeSw) {
                 freeSw.addEventListener('change', function () {
-                    if (freeSw.checked && hasLockedSessions()) {
-                        freeSw.checked = false;
-                        return;
-                    }
-                    _freeSession = !!freeSw.checked;
+                    _autoAsistencia = !!freeSw.checked;
                     syncFreeUi(overlay);
                 });
             }
