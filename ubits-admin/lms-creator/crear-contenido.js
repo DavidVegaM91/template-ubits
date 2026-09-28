@@ -5085,16 +5085,22 @@
                         pageKey: CC_DEMO_PG_EVAL_2,
                         tipo: 'evaluacion',
                         active: false
-                    },
-                    {
-                        label: 'Evaluación de cierre',
-                        pageKey: CC_DEMO_PG_EVAL_HIDDEN,
-                        tipo: 'evaluacion',
-                        active: false,
-                        hidden: true,
-                        hiddenSinceIso: ccDaysAgoIsoLocal(1)
                     }
-                ],
+                ].concat(
+                    /* Ocultar páginas solo existe al editar: en la creación el demo no trae la evaluación oculta. */
+                    window.CC_PUBLISHED_EDIT_MODE
+                        ? [
+                              {
+                                  label: 'Evaluación de cierre',
+                                  pageKey: CC_DEMO_PG_EVAL_HIDDEN,
+                                  tipo: 'evaluacion',
+                                  active: false,
+                                  hidden: true,
+                                  hiddenSinceIso: ccDaysAgoIsoLocal(1)
+                              }
+                          ]
+                        : []
+                ),
                 active: false
             }
         ];
