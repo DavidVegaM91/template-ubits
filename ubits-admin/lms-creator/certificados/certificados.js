@@ -8,7 +8,9 @@
 
     var MODAL_CONFIRMACION_ID = 'certificados-modal-confirmacion';
     var MODAL_SIN_RESULTADOS_ID = 'certificados-modal-sin-resultados';
-    var MAIL_PREVIEW_DELAY_MS = 3000;
+    /* Solo prototipo: el correo se abre cuando se cierra el aviso de «Solicitud registrada» (el success dura 3,5 s).
+       En el producto el aviso no trae botón ni abre nada: el correo le llega al admin cuando el archivo está listo. */
+    var MAIL_PREVIEW_DELAY_MS = 3700;
     var MAIL_FILLED_HTML_KEY = 'certificados-mail-filled-html';
     var MAIL_FILLED_ACTIVE_KEY = 'certificados-mail-filled-active';
     var mailPreviewTimer = null;
@@ -100,7 +102,7 @@
             form.incluirInactivos ? '1' : '0',
             currentMode === 'contenido' ? (form.contenidoId || '') : '',
             currentMode === 'colaborador' ? (form.colaboradorId || '') : '',
-            currentMode === 'colaborador' ? (form.tipoContenidos || '') : ''
+            currentMode === 'colaborador' || currentMode === 'global' ? (form.tipoContenidos || '') : ''
         ].join('|');
     }
 
@@ -527,7 +529,21 @@
 
         if (contenidoWrap) contenidoWrap.hidden = mode !== 'contenido';
         if (colabWrap) colabWrap.hidden = mode !== 'colaborador';
-        if (tipoWrap) tipoWrap.hidden = mode !== 'colaborador';
+        if (tipoWrap) tipoWrap.hidden = mode !== 'colaborador' && mode !== 'global';
+
+        /* «Tipo de contenidos»: por colaborador va a lo ancho; en global, a la izquierda de las fechas (misma fila). */
+        var fechasRow = document.getElementById('certificados-row-fechas');
+        if (tipoWrap && fechasRow) {
+            if (mode === 'global') {
+                tipoWrap.classList.remove('certificados-form-field--full');
+                fechasRow.insertBefore(tipoWrap, fechasRow.firstChild);
+                fechasRow.classList.add('certificados-form-row--triple');
+            } else {
+                tipoWrap.classList.add('certificados-form-field--full');
+                fechasRow.parentNode.insertBefore(tipoWrap, fechasRow);
+                fechasRow.classList.remove('certificados-form-row--triple');
+            }
+        }
 
         if (hint) {
             hint.textContent = 'Al finalizar el proceso, recibirás en tu correo un archivo .zip con los certificados.';
@@ -798,6 +814,7 @@
             rows += '<ul class="ubits-body-md-regular certificados-modal-why-list">' +
                 '<li>Nadie ha finalizado contenidos en ese periodo.</li>' +
                 '<li>Los contenidos finalizados no generan certificado.</li>' +
+                '<li>Revisa si seleccionaste el tipo de contenido correcto (UBITS / creados por tu empresa).</li>' +
                 '</ul>';
         }
         return '<div class="certificados-modal-body">' + intro + rows + '</div>';

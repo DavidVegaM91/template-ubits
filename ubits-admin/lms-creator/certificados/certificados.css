@@ -47,6 +47,11 @@
     width: 100%;
 }
 
+/* Global: «Tipo de contenidos» a la izquierda de las fechas. */
+.certificados-form-row--triple {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .certificados-form-field {
     min-width: 0;
 }
