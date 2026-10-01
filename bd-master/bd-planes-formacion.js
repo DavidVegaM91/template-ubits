@@ -8,7 +8,8 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 12;
+    /** Bump: plan demo masivo HU-LMS-015 (asignaciones desiguales). */
+    var STORAGE_SCHEMA_VERSION = 13;
     var HORAS_META_COMPETENCIAS = 2;
     /** Usuario demo zona de estudio (María Alejandra — bd-master-colaboradores E006). */
     var PLAYGROUND_DEMO_USER_ID = 'E006';
@@ -23,6 +24,8 @@
      * Completado / sin iniciar = competencias. En curso = contenidos del área (1/3 ítems al 100 %).
      * Comunicación 2026 no se genera (evita un 4.º vigente). Tiempo de estudio del mes: 4 h 30 min (11.º en el ranking de la empresa).
      */
+    /** Plan Vigente con varias competencias y asignación desigual (tab Competencias / Agregar usuario). */
+    var DEMO_PLAN_COMPETENCIAS_MASIVO = 'pf-k-demo-masivo-2026';
     var DEMO_PROGRESO_PLAN_COMPLETADO = 'pf-k-024-2026';
     var DEMO_PROGRESO_PLAN_SIN_INICIAR = 'pf-k-020-2026';
     var DEMO_PROGRESO_MINUTOS_ESTUDIO_LIDER = 4 * 60 + 30;
@@ -592,8 +595,110 @@
         return planes;
     }
 
+    /**
+     * Plan demo HU-LMS-015: no es “toda la empresa × 1 competencia”.
+     * Varias competencias + subset de personas + asignación desigual → Agregar usuario tiene candidatos.
+     */
+    function generateDemoMasivoCompetenciasPlan() {
+        var planId = DEMO_PLAN_COMPETENCIAS_MASIVO;
+        var start = '2026-01-01';
+        var end = '2026-12-31';
+        var estado = getEstadoPlan({ fechaInicioIso: start, fechaFinIso: end }, PLAYGROUND_TODAY);
+        var comps = [
+            { id: 'comp-024', nombre: 'Liderazgo' },
+            { id: 'comp-020', nombre: 'Inglés' },
+            { id: 'comp-004', nombre: 'Comunicación' },
+            { id: 'comp-027', nombre: 'Negociación' }
+        ];
+        var empleados = []
+            .concat(getReportesDirectos('E002'))
+            .concat(getReportesDirectos('E008'))
+            .concat(getReportesDirectos('E052'));
+        var seen = {};
+        empleados = empleados.filter(function (c) {
+            var id = String(c.id);
+            if (seen[id]) return false;
+            seen[id] = true;
+            return true;
+        });
+        if (empleados.length < 4) {
+            empleados = getTodosColaboradoresEmpresa().slice(0, 12);
+        }
+
+        var competenciaPorUsuario = {};
+        var consumoPorUsuario = {};
+        var asignaciones = [];
+
+        empleados.forEach(function (col, idx) {
+            var cid = String(col.id);
+            var pattern = idx % 4;
+            var picked = [];
+            if (pattern === 0) picked = [comps[0], comps[1]];
+            else if (pattern === 1) picked = [comps[0], comps[2]];
+            else if (pattern === 2) picked = [comps[1], comps[2], comps[3]];
+            else picked = [comps[0]];
+
+            competenciaPorUsuario[cid] = picked.map(function (comp, cIdx) {
+                var pct = planSinProgresoReal(estado)
+                    ? 0
+                    : Math.min(95, 15 + ((hashStr(planId + '|' + cid + '|' + comp.id) % 8) * 10) + cIdx * 5);
+                return {
+                    id: comp.id,
+                    title: comp.nombre,
+                    nombre: comp.nombre,
+                    habilidades: [],
+                    progress: pct,
+                    status: progressStatus(pct)
+                };
+            });
+            consumoPorUsuario[cid] = genConsumoCompetencia(
+                planId,
+                cid,
+                picked[0].id,
+                start,
+                end,
+                HORAS_META_COMPETENCIAS,
+                estado
+            );
+            asignaciones.push({
+                id: 'fila-usuario-' + cid,
+                colaboradorId: cid,
+                nombreUsuario: (col.nombre || '').trim(),
+                avatar: col.avatar || null,
+                contenidos: picked.map(function (comp) {
+                    return { id: comp.id, title: comp.nombre, nombre: comp.nombre, habilidades: [] };
+                }),
+                contenidosCount: picked.length
+            });
+        });
+
+        var planDraft = {
+            id: planId,
+            tipo: 'competencias',
+            nombre: 'Demo competencias masivas 2026',
+            fechaInicioIso: start,
+            fechaFinIso: end,
+            fechaInicio: isoToDisplay(start),
+            fechaFin: isoToDisplay(end),
+            estado: estado,
+            anio: 2026,
+            horasEstudioMeta: HORAS_META_COMPETENCIAS,
+            horasEstudioPorCompetencia: HORAS_META_COMPETENCIAS,
+            creadorId: 'E052',
+            asignaciones: asignaciones,
+            competenciaPorUsuario: competenciaPorUsuario,
+            consumoPorUsuario: consumoPorUsuario,
+            progresoAgregado: 0,
+            demoMasivo: true
+        };
+        planDraft.progresoAgregado = progresoUsuariosPlanCompleto(planDraft);
+        return planDraft;
+    }
+
     function buildSeedPlanes() {
-        var planes = generateContenidosPlans().concat(generateCompetenciasPlans());
+        var planes = [generateDemoMasivoCompetenciasPlan()]
+            .concat(generateContenidosPlans())
+            .concat(generateCompetenciasPlans());
         applyPlaygroundDemoUserProgress(planes);
         return planes;
     }
@@ -952,6 +1057,7 @@
 
     global.BD_PLANES_FORMACION = {
         PLAYGROUND_TODAY: PLAYGROUND_TODAY,
+        DEMO_PLAN_COMPETENCIAS_MASIVO: DEMO_PLAN_COMPETENCIAS_MASIVO,
         HORAS_META_COMPETENCIAS: HORAS_META_COMPETENCIAS,
         get planes() { return db.planes; },
         getPlanById: getPlanById,
